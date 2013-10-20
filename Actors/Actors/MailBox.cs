@@ -8,22 +8,31 @@ namespace Actors
 {
 	public class MailBox
 	{
-		public MailBox(int id){
+		public MailBox(ActorId id)
+			: this(id, 256, TimeSpan.FromMilliseconds(10))
+		{}
+		public MailBox(ActorId id, int limit, TimeSpan defaultTimeout){
 			this.Id = id;
+			this.limit = limit;
+			this.defaultTimeout = defaultTimeout;
 		}
 
 		LinkedList<Mail> mail = new LinkedList<Mail>();
+		int limit;
+		TimeSpan defaultTimeout;
+		const int checkIntervalMs = 10;
 #if MONO
 		PollingResetEvent hasMail = new PollingResetEvent(false);
 #else
 		AutoResetEvent hasMail = new AutoResetEvent(false);
 #endif
 
-		public int Id {get; private set;}
+		public ActorId Id {get; private set;}
 		public event Action Received;
 
-		public Mail CheckFor (Func<Mail, bool> filter, int timeout)
+		public Mail CheckFor (Func<Mail, bool> filter, TimeSpan? timeout = null)
 		{
+			timeout = timeout ?? defaultTimeout;
 			do{
 				lock(mail){
 					for(var i=mail.First;i != null;i = i.Next){
@@ -35,23 +44,24 @@ namespace Actors
 						}
 					}
 				}
-				Thread.Sleep(10);
-				timeout -= 10;
-			}while(timeout > 0);
+				Sleep (ref timeout);
+			}while(timeout.Value.TotalSeconds > 0);
 			return null;
 		}
 
 		public void Receive(Mail m){
 			lock(mail){
 				mail.AddLast(m);
+				if(mail.Count > limit)
+					mail.RemoveFirst();
 				hasMail.Reset();
 				if(Received != null)
 					ThreadPool.QueueUserWorkItem(q=>Received());
 			}
 		}
 
-		public Mail WaitForAny(){
-			while(true){
+		public Mail WaitForAny(TimeSpan? timeout = null){
+			do{
 				lock(mail){
 					if(mail.Any())
 					{
@@ -61,12 +71,13 @@ namespace Actors
 					}
 				}
 
-				hasMail.WaitOne();
-			}
+				if(WaitOne (ref timeout)) continue;
+			}while(timeout.Value.TotalSeconds > 0);
+			return null;
 		}
 
-		public Mail WaitFor(int id){
-			while(true){
+		public Mail WaitFor(MessageId id, TimeSpan? timeout = null){
+			do{
 				lock(mail){
 					for(var i=mail.First;i != null;i = i.Next){
 						var m = i.Value;
@@ -76,9 +87,24 @@ namespace Actors
 						}
 					}
 				}
-				hasMail.WaitOne();
-			}
+				if(WaitOne(ref timeout)) continue;
+			}while(timeout.Value.TotalSeconds > 0);
+			return null;
 		}	
+
+		static void Sleep (ref TimeSpan? timeout)
+		{
+			Thread.Sleep (checkIntervalMs);
+			timeout -= TimeSpan.FromMilliseconds (checkIntervalMs);
+		}
+
+		bool WaitOne (ref TimeSpan? timeout)
+		{
+			bool hasOne = hasMail.WaitOne (checkIntervalMs);			
+			if(hasOne)
+				timeout -= TimeSpan.FromMilliseconds (checkIntervalMs);
+			return hasOne;
+		}
 	}
 }
 

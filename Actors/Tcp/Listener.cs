@@ -7,25 +7,33 @@ namespace Actors
 {
 	public class Listener : IDisposable
 	{
+		public Listener(TcpListener listener){
+			TcpListener.Start();
+			TcpListener.BeginAcceptSocket(EndAccept, null);
+		}
 		public Listener (string host, int port)
-		{
-			listener = new TcpListener(IPAddress.Parse(host), port);
-			listener.Start();
-			listener.BeginAcceptSocket(EndAccept, null);
+			: this(new TcpListener(IPAddress.Parse(host), port))
+		{}
+
+		public static implicit operator Listener(TcpListener l){
+			return new Listener(l);
+		}
+		public static implicit operator TcpListener(Listener l){
+			return l.TcpListener;
 		}
 
-		TcpListener listener;
+		public TcpListener TcpListener {get; private set;}
 		public event Action<TcpClient> Accepted;
 	
 		void EndAccept (IAsyncResult ar)
 		{
-			var socket = listener.EndAcceptTcpClient(ar);
+			var socket = TcpListener.EndAcceptTcpClient(ar);
 			if(Accepted != null)
 				Accepted(socket);
 		}
 
 		public void Dispose(){
-			listener.Stop();
+			TcpListener.Stop();
 		}
 	}
 }

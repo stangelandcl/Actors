@@ -12,6 +12,13 @@ namespace Actors
 			this.Client = client;
 		}
 
+		public static implicit operator MessageClient(TcpClient c){
+			return new MessageClient(c);
+		}
+		public static implicit operator TcpClient(MessageClient r){
+			return r.Client;
+		}
+
 		public TcpClient Client {get; private set;}
 
 		public void Send(byte[] bytes){

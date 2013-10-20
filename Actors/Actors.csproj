@@ -6,7 +6,7 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1950C069-77D0-4C52-BA7D-77F713A9C5A0}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>Actors</RootNamespace>
     <AssemblyName>NetworkTransport</AssemblyName>
   </PropertyGroup>
@@ -34,25 +34,46 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tcp\MessageReader.cs" />
     <Compile Include="Tcp\MessageClient.cs" />
     <Compile Include="Tcp\Message.cs" />
     <Compile Include="Actors\Actor.cs" />
-    <Compile Include="Tcp\Listener.cs" />
     <Compile Include="Actors\MailBox.cs" />
     <Compile Include="Actors\Mail.cs" />
-    <Compile Include="Actors\NewInstance.cs" />
-    <Compile Include="Network\ActorServer.cs" />
-    <Compile Include="Network\ActorChannel.cs" />
-    <Compile Include="Actors\PostOfficeActor.cs" />
-    <Compile Include="Actors\EchoActor.cs" />
     <Compile Include="Actors\PollingResetEvent.cs" />
     <Compile Include="Network\Defaults.cs" />
-    <Compile Include="Actors\RemoteActor.cs" />
     <Compile Include="Proxies\DynamicProxy.cs" />
     <Compile Include="Actors\ActorSettings.cs" />
+    <Compile Include="Routers\ISender.cs" />
+    <Compile Include="Routers\IReceiver.cs" />
+    <Compile Include="Actors\ActorId.cs" />
+    <Compile Include="Routers\IRouter.cs" />
+    <Compile Include="Routers\IDuplex.cs" />
+    <Compile Include="Actors\MessageId.cs" />
+    <Compile Include="Actors\FunctionId.cs" />
+    <Compile Include="Actors\ObjectTypeConverter.cs" />
+    <Compile Include="Routers\TcpRouter.cs" />
+    <Compile Include="Routers\INameResolver.cs" />
+    <Compile Include="Tcp\MessageConnection.cs" />
+    <Compile Include="Tcp\MessageTClient.cs" />
+    <Compile Include="Tcp\MessageTReader.cs" />
+    <Compile Include="Tcp\MessageTConnection.cs" />
+    <Compile Include="Tcp\Listener.cs" />
+    <Compile Include="Tcp\MessageListener.cs" />
+    <Compile Include="Tcp\MessageTListener.cs" />
+    <Compile Include="Routers\IMailRouter.cs" />
+    <Compile Include="Routers\IMailSender.cs" />
+    <Compile Include="Routers\MailRouter.cs" />
+    <Compile Include="Routers\MailSender.cs" />
+    <Compile Include="Routers\NameResolver.cs" />
+    <Compile Include="Servers\TcpServers.cs" />
+    <Compile Include="Servers\DisposableAction.cs" />
+    <Compile Include="Peer\TcpWorld.cs" />
+    <Compile Include="Peer\IWorld.cs" />
+    <Compile Include="Examples\EchoActor.cs" />
+    <Compile Include="Examples\NewInstance.cs" />
+    <Compile Include="Examples\PostOfficeActor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -66,5 +87,9 @@
     <Folder Include="Actors\" />
     <Folder Include="Network\" />
     <Folder Include="Proxies\" />
+    <Folder Include="Routers\" />
+    <Folder Include="Servers\" />
+    <Folder Include="Peer\" />
+    <Folder Include="Examples\" />
   </ItemGroup>
 </Project>

@@ -7,29 +7,35 @@ namespace Actors
 {
 	public class MessageReader
 	{
+		public MessageReader(TcpClient client){
+			this.client = client;
+		}
 		public event Action<Message> MessageReceived;
 
-		public MessageReader(TcpClient client){
-			Client = new MessageClient(client);
-		}
+		TcpClient client;
 
-		public MessageClient Client {get; private set;}
+		public static implicit operator MessageReader(TcpClient c){
+			return new MessageReader(c);
+		}
+		public static implicit operator TcpClient(MessageReader r){
+			return r.client;
+		}
 
 		public void Listen ()
 		{
-			var message = new Message{Buffer = new byte[4], Client = Client.Client, Reader = this};
+			var message = new Message{Buffer = new byte[4], Reader = this};
 			Listen (message, EndReadHeader);
 		}
 
 		void Listen(Message message, AsyncCallback cb)
 		{
-			message.Client.Client.BeginReceive (message.Buffer, message.Count, message.Buffer.Length, SocketFlags.None, cb, message);
+			client.Client.BeginReceive (message.Buffer, message.Count, message.Buffer.Length, SocketFlags.None, cb, message);
 		}
 
 		void EndReadHeader(IAsyncResult ar){
 			try{
 				var msg = (Message)ar.AsyncState;
-				int count = msg.Client.Client.EndReceive(ar);
+				int count = client.Client.EndReceive(ar);
 				if(count <= 0) return;
 				msg.Count += count;
 				if(msg.Count == msg.Buffer.Length){
@@ -47,7 +53,7 @@ namespace Actors
 		void EndReadMessage(IAsyncResult ar){
 			try{
 				var msg = (Message)ar.AsyncState;
-				int count = msg.Client.Client.EndReceive(ar);
+				int count = client.Client.EndReceive(ar);
 				if(count <= 0) return;
 				msg.Count += count;
 				if(msg.Count > msg.Buffer.Length)

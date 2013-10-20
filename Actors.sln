@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteConsole", "RemoteCons
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Actors", "Actors\Actors.csproj", "{1950C069-77D0-4C52-BA7D-77F713A9C5A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Actors.Example", "Actors.Example\Actors.Example.csproj", "{A409B86B-6A1D-4DE7-A009-934A97C9F76E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,26 @@ Global
 		{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}.Silverlight2|Any CPU.Build.0 = Debug|Any CPU
 		{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}.Unity|Any CPU.ActiveCfg = Debug|Any CPU
 		{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}.Unity|Any CPU.Build.0 = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.CoreOnly|Any CPU.ActiveCfg = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.CoreOnly|Any CPU.Build.0 = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Debug|x86.Build.0 = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.iOS|Any CPU.ActiveCfg = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.iOS|Any CPU.Build.0 = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Net20|Any CPU.ActiveCfg = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Net20|Any CPU.Build.0 = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Profile|Any CPU.ActiveCfg = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Profile|Any CPU.Build.0 = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Release|x86.ActiveCfg = Release|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Release|x86.Build.0 = Release|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Silverlight2|Any CPU.ActiveCfg = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Silverlight2|Any CPU.Build.0 = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Unity|Any CPU.ActiveCfg = Debug|Any CPU
+		{A409B86B-6A1D-4DE7-A009-934A97C9F76E}.Unity|Any CPU.Build.0 = Debug|Any CPU
 		{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}.CoreOnly|Any CPU.ActiveCfg = Debug|Any CPU
 		{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}.CoreOnly|Any CPU.Build.0 = Debug|Any CPU
 		{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -83,7 +105,7 @@ Global
 		{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}.Unity|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Actors\Actors.csproj
+		StartupItem = Actors.Example\Actors.Example.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
