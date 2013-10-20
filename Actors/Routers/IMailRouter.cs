@@ -4,8 +4,9 @@ namespace Actors
 {
 	public interface IMailRouter
 	{
-		IMailSender GetSender(ActorId id);
+		MessageTConnection Connect(string host);
 		void Add(MessageTConnection c);
+		void Remove(MessageTConnection c);
 		event Action<Mail> Received;
 	}
 }

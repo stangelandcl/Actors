@@ -13,7 +13,7 @@ namespace Actors
 			lock(listeners)
 				listeners.Add(listener);
 			listener.Accepted += HandleAccepted;	
-			return new DisposableAction(()=> Remove(listener), listener);
+			return new DisposableAction(o=> Remove(listener), listener);
 		}
 
 		public event Action<MessageConnection> Connected;
@@ -27,7 +27,7 @@ namespace Actors
 		void HandleAccepted (TcpClient obj)
 		{
 			if(Connected != null)
-				Connected(obj);
+				Connected(new MessageConnection(obj));
 		}
 	}
 }

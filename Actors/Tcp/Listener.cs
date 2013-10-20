@@ -8,6 +8,7 @@ namespace Actors
 	public class Listener : IDisposable
 	{
 		public Listener(TcpListener listener){
+			TcpListener = listener;
 			TcpListener.Start();
 			TcpListener.BeginAcceptSocket(EndAccept, null);
 		}

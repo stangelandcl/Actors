@@ -6,10 +6,10 @@ using System.Linq;
 
 namespace Actors
 {
-	public class MailBox
+	public class MailBox : IMailReceiver
 	{
 		public MailBox(ActorId id)
-			: this(id, 256, TimeSpan.FromMilliseconds(10))
+			: this(id, 256, TimeSpan.FromSeconds(10))
 		{}
 		public MailBox(ActorId id, int limit, TimeSpan defaultTimeout){
 			this.Id = id;
@@ -61,6 +61,7 @@ namespace Actors
 		}
 
 		public Mail WaitForAny(TimeSpan? timeout = null){
+			timeout = timeout ?? defaultTimeout;
 			do{
 				lock(mail){
 					if(mail.Any())
@@ -77,6 +78,7 @@ namespace Actors
 		}
 
 		public Mail WaitFor(MessageId id, TimeSpan? timeout = null){
+			timeout = timeout ?? defaultTimeout;
 			do{
 				lock(mail){
 					for(var i=mail.First;i != null;i = i.Next){

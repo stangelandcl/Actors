@@ -9,6 +9,7 @@ namespace Actors
 	{
 		public MessageClient (TcpClient client)
 		{
+			//client.NoDelay = true;
 			this.Client = client;
 		}
 

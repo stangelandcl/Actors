@@ -64,7 +64,6 @@
     <Compile Include="Tcp\MessageTListener.cs" />
     <Compile Include="Routers\IMailRouter.cs" />
     <Compile Include="Routers\IMailSender.cs" />
-    <Compile Include="Routers\MailRouter.cs" />
     <Compile Include="Routers\MailSender.cs" />
     <Compile Include="Routers\NameResolver.cs" />
     <Compile Include="Servers\TcpServers.cs" />
@@ -74,6 +73,14 @@
     <Compile Include="Examples\EchoActor.cs" />
     <Compile Include="Examples\NewInstance.cs" />
     <Compile Include="Examples\PostOfficeActor.cs" />
+    <Compile Include="Actors\MessageActor.cs" />
+    <Compile Include="Routers\IMailReceiver.cs" />
+    <Compile Include="Servers\TcpConnector.cs" />
+    <Compile Include="NodeEnvironment.cs" />
+    <Compile Include="Node.cs" />
+    <Compile Include="Actors\DefaultActor.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Routers\DnsAlias.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

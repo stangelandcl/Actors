@@ -5,8 +5,8 @@ namespace Actors
 {
 	public class EchoActor : Actor
 	{
-		public EchoActor (MailBox mail, IWorld world)
-			: base(mail, world)
+		public EchoActor (MailBox mail, Node node)
+			: base(mail, node)
 		{
 			this.MailBox.Received += HandleReceived;
 		}
@@ -15,7 +15,7 @@ namespace Actors
 		{
 			var msg = MailBox.CheckFor(n=>n.Name == "echo");
 			if(msg != null){
-				World.GetSender(msg.From).Reply(msg, "", "Server says: " + msg.Args[0]);
+				Node.Reply(msg, "", "Server says: " + msg.Args[0]);
 			}
 		}
 	}

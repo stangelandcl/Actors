@@ -1,7 +1,9 @@
 using System;
+using System.ComponentModel;
 
 namespace Actors
 {
+	[TypeConverter(typeof(ObjectTypeConverter<FunctionId>))]
 	public struct FunctionId
 	{
 		public FunctionId(string id){

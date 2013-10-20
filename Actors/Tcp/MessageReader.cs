@@ -9,6 +9,7 @@ namespace Actors
 	{
 		public MessageReader(TcpClient client){
 			this.client = client;
+			Listen();
 		}
 		public event Action<Message> MessageReceived;
 
@@ -21,7 +22,7 @@ namespace Actors
 			return r.client;
 		}
 
-		public void Listen ()
+		void Listen ()
 		{
 			var message = new Message{Buffer = new byte[4], Reader = this};
 			Listen (message, EndReadHeader);

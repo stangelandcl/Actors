@@ -7,7 +7,7 @@ namespace Actors
 	{
 		public MessageTListener (MessageListener l, ISerializer serializer)
 		{
-			this.listener = listener;
+			this.listener = l;
 			this.serializer = serializer;
 			listener.Connected += HandleConnected;
 		}
@@ -21,7 +21,7 @@ namespace Actors
 		void HandleConnected (MessageConnection obj)
 		{
 			if(Connected != null)
-				Connected(new MessageTConnection(obj));
+				Connected(new MessageTConnection(obj, serializer));
 		}
 
 		ISerializer serializer;

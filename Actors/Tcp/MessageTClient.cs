@@ -3,7 +3,7 @@ using Serialization;
 
 namespace Actors
 {
-	public class MessageTClient 
+	public class MessageTClient  : ISender
 	{
 		public MessageTClient (MessageClient client, ISerializer serializer)
 		{
@@ -13,7 +13,7 @@ namespace Actors
 		public MessageClient Client {get; private set;}
 		public ISerializer Serializer {get; private set;}
 
-		public void Send<T>(T item){
+		public void Send(object item){
 			Client.Send(Serializer.Serialize(item));
 		}
 	}
