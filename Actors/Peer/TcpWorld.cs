@@ -23,18 +23,18 @@ namespace Actors
 			lock(actors)
 				foreach(var entry in DnsAlias.Get(obj.To))
 					if(actors.TryGetValue(entry, out a))
-						a.MailBox.Receive(obj);
+						a.Box.Receive(obj);
 		}
 				
 		public void Add(Actor actor){
 			lock(actors)
-				actors.Add(actor.MailBox.Id, actor);
+				actors.Add(actor.Box.Id, actor);
 		}
 
 		public void Remove(ActorId id){
 			lock(actors)
 				foreach(var actor in actors.ToArray()){
-					if(actor.Value.MailBox.Id == id)
+					if(actor.Value.Box.Id == id)
 						actors.Remove(actor.Key);
 				}		
 		}

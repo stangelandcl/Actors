@@ -5,15 +5,15 @@ namespace Actors
 {
 	public class EchoActor : Actor
 	{
-		public EchoActor (MailBox mail, Node node)
-			: base(mail, node)
+		public EchoActor (string shortName)
+			: base(shortName)
 		{
-			this.MailBox.Received += HandleReceived;
+			this.Box.Received += HandleReceived;
 		}
 
 		protected override void HandleReceived ()
 		{
-			var msg = MailBox.CheckFor(n=>n.Name == "echo");
+			var msg = Box.CheckFor(n=>n.Name == "echo");
 			if(msg != null){
 				Node.Reply(msg, "", "Server says: " + msg.Args[0]);
 			}

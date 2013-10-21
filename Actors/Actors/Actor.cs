@@ -7,20 +7,25 @@ namespace Actors
 {
 	public abstract class Actor : IDisposable
 	{	
-		public Actor(MailBox box, Node env)
+		public Actor(string shortName)
+			: this(new MailBox(shortName), null)
+		{}
+
+		public Actor(MailBox box, Node node)
 		{
-			this.MailBox = box;
-			this.Node = env;
-			this.MailBox.Received += HandleReceived;
+			Node = node;
+			Box = box;
+			Box.Received += HandleReceived;
 		}
 
-		public MailBox MailBox {get; private set;}
-		public Node Node {get; private set;}
+		public MailBox Box {get; internal set;}
+		public Node Node {get; internal set;}
 
 		protected virtual void HandleReceived(){}
 
-		public void Dispose(){
-			MailBox.Received -= HandleReceived;
+
+		public virtual void Dispose(){
+			Box.Received -= HandleReceived;
 			Node.Remove(this);
 		}
 	}

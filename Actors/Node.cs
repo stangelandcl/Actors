@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Actors
 {
@@ -16,11 +17,16 @@ namespace Actors
 			Environment.World.Add(Environment.DefaultActor);
 		}
 
-		public void Add<T>(string name) where T : Actor
-		{
-			var actor = (Actor)Activator.CreateInstance(typeof(T), 
-			                                     new object[]{ new MailBox(System.Environment.MachineName + "/" + name), this}, null);
-			Environment.World.Add(actor);
+		public dynamic GetProxy(string name){
+			var r = new RemoteActor("proxy-" + name, name);
+			return new DynamicProxy(Add(r));
+		}
+
+		public T Add<T>(T a) where T : Actor{
+			a.Node = this;
+			a.Box.Id = new ActorId(System.Environment.MachineName + "/" + a.Box.Id);
+			Environment.World.Add(a);
+			return a;
 		}
 
 		public IDisposable Listen(string host, int port){
@@ -32,14 +38,15 @@ namespace Actors
 		}
 
 		public void Remove(Actor a){
-			Environment.World.Remove(a.MailBox.Id);
+			Environment.World.Remove(a.Box.Id);
 		}
 
 		#region IMailSender implementation
-		public void Send (Mail mail)
+		public MessageId Send (Mail mail)
 		{
 			var sender = new MailSender( Environment.Router.Get(mail.To).Sender);
 			sender.Send(mail);
+			return mail.MessageId;
 		}
 		public void Send (ActorId to, ActorId fromId, MessageId msg, FunctionId name, params object[] args)
 		{
@@ -48,7 +55,7 @@ namespace Actors
 		public MessageId Send (ActorId to, FunctionId name, params object[] args)
 		{
 			MessageId msg;
-			Send(new Mail{To = to, From = Environment.DefaultActor.MailBox.Id, MessageId = msg = MessageId.New(), Name = name, Args = args});
+			Send(new Mail{To = to, From = Environment.DefaultActor.Box.Id, MessageId = msg = MessageId.New(), Name = name, Args = args});
 			return msg;
 		}
 		public void Reply (Mail mail, FunctionId name, params object[] args)
@@ -63,14 +70,14 @@ namespace Actors
 		}
 
 		public T Receive<T>(){
-			var mail = Environment.DefaultActor.MailBox.WaitForAny();
+			var mail = Environment.DefaultActor.Box.WaitForAny();
 			if(mail == null) return default(T);
 			return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertTo(mail.Args[0], typeof(T));
 		}
 
 		T Receive<T> (MessageId msg)
 		{
-			var mail = Environment.DefaultActor.MailBox.WaitFor (msg);
+			var mail = Environment.DefaultActor.Box.WaitFor (msg);
 			if(mail == null) return default(T);
 			return (T)TypeDescriptor.GetConverter (typeof(T)).ConvertTo (mail.Args [0], typeof(T));
 		}

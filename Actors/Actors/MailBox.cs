@@ -27,7 +27,7 @@ namespace Actors
 		AutoResetEvent hasMail = new AutoResetEvent(false);
 #endif
 
-		public ActorId Id {get; private set;}
+		public ActorId Id {get; internal set;}
 		public event Action Received;
 
 		public Mail CheckFor (Func<Mail, bool> filter, TimeSpan? timeout = null)

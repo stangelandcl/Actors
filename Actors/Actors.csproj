@@ -81,6 +81,7 @@
     <Compile Include="Actors\DefaultActor.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Routers\DnsAlias.cs" />
+    <Compile Include="Proxies\RemoteActor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
