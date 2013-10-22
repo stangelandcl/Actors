@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -8,7 +8,7 @@
     <ProjectGuid>{1950C069-77D0-4C52-BA7D-77F713A9C5A0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Actors</RootNamespace>
-    <AssemblyName>NetworkTransport</AssemblyName>
+    <AssemblyName>Actors</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -19,6 +19,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -27,14 +28,34 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Serialization\ISerializer.cs">
+      <Link>Serialization\ISerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Serialization\JsonSerializer.cs">
+      <Link>Serialization\JsonSerializer.cs</Link>
+    </Compile>
+    <Compile Include="ConvertEx.cs" />
+    <Compile Include="Examples\Actors\BandwidthActor.cs" />
+    <Compile Include="Examples\Actors\ConsoleClientActor.cs" />
+    <Compile Include="Examples\Actors\ConsoleProcessActor.cs" />
+    <Compile Include="Examples\Actors\PingActor.cs" />
+    <Compile Include="Examples\Clients\BandwidthClient.cs" />
+    <Compile Include="Examples\Clients\PingClient.cs" />
+    <Compile Include="Functions\FunctionDefinition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\Delay.cs" />
     <Compile Include="Tcp\MessageReader.cs" />
     <Compile Include="Tcp\MessageClient.cs" />
     <Compile Include="Tcp\Message.cs" />
@@ -70,9 +91,8 @@
     <Compile Include="Servers\DisposableAction.cs" />
     <Compile Include="Peer\TcpWorld.cs" />
     <Compile Include="Peer\IWorld.cs" />
-    <Compile Include="Examples\EchoActor.cs" />
-    <Compile Include="Examples\NewInstance.cs" />
-    <Compile Include="Examples\PostOfficeActor.cs" />
+    <Compile Include="Examples\Actors\EchoActor.cs" />
+    <Compile Include="Examples\Actors\NewInstance.cs" />
     <Compile Include="Actors\MessageActor.cs" />
     <Compile Include="Routers\IMailReceiver.cs" />
     <Compile Include="Servers\TcpConnector.cs" />
@@ -85,19 +105,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Serialization\Serialization.csproj">
-      <Project>{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}</Project>
-      <Name>Serialization</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tcp\" />
-    <Folder Include="Actors\" />
-    <Folder Include="Network\" />
-    <Folder Include="Proxies\" />
-    <Folder Include="Routers\" />
-    <Folder Include="Servers\" />
-    <Folder Include="Peer\" />
-    <Folder Include="Examples\" />
+    <ProjectReference Include="..\RemoteConsole\RemoteConsole.csproj">
+      <Project>{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}</Project>
+      <Name>RemoteConsole</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

@@ -7,9 +7,10 @@ namespace Actors
 	public class Node
 	{
 		public NodeEnvironment Environment {get;set;}
+        public static Node Default = new Node();
 
 		public Node()
-		: this(new NodeEnvironment()){}
+		    : this(new NodeEnvironment()){}
 
 		public Node(NodeEnvironment env){
 			Environment = env;
@@ -19,14 +20,14 @@ namespace Actors
 
 		public dynamic GetProxy(string name){
 			var r = new RemoteActor("proxy-" + name, name);
-			return new DynamicProxy(Add(r));
+            Add(r);
+			return new DynamicProxy(r);
 		}
 
-		public T Add<T>(T a) where T : Actor{
+		public void Add<T>(T a) where T : Actor{
 			a.Node = this;
 			a.Box.Id = new ActorId(System.Environment.MachineName + "/" + a.Box.Id);
 			Environment.World.Add(a);
-			return a;
 		}
 
 		public IDisposable Listen(string host, int port){
@@ -44,23 +45,24 @@ namespace Actors
 		#region IMailSender implementation
 		public MessageId Send (Mail mail)
 		{
+            if (mail.To.IsEmpty) throw new Exception("To address is null");
 			var sender = new MailSender( Environment.Router.Get(mail.To).Sender);
 			sender.Send(mail);
 			return mail.MessageId;
 		}
 		public void Send (ActorId to, ActorId fromId, MessageId msg, FunctionId name, params object[] args)
-		{
+		{           
 			Send(new Mail{To = to, From = fromId, MessageId = msg, Name = name, Args = args});
 		}
 		public MessageId Send (ActorId to, FunctionId name, params object[] args)
-		{
+		{            
 			MessageId msg;
 			Send(new Mail{To = to, From = Environment.DefaultActor.Box.Id, MessageId = msg = MessageId.New(), Name = name, Args = args});
 			return msg;
 		}
-		public void Reply (Mail mail, FunctionId name, params object[] args)
+		public void Reply (Mail mail, params object[] args)
 		{
-			Send(new Mail{To = mail.From, From = mail.To, MessageId = mail.MessageId, Name = name, Args = args});
+			Send(new Mail{To = mail.From, From = mail.To, MessageId = mail.MessageId, Name = "On" + mail.Name + "Reply", Args = args});
 		}
 		#endregion
 

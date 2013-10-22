@@ -17,21 +17,29 @@ namespace Actors
 		bool signalled;
 
 		public bool Reset(){
-			return signalled = true;
+			return signalled = false;
 		}
+        public bool Set()
+        {
+            return signalled = true;
+        }
 
 		public bool WaitOne(){
-			while(!signalled)
-				Thread.Sleep(100);
+            while (!signalled)
+                Thread.Yield();
 			signalled = false;
 			return true;
 		}
 
+        public bool WaitOne(TimeSpan s)
+        {
+            return WaitOne((int)s.TotalMilliseconds);
+        }
+
 		public bool WaitOne(int timeoutInMs){
-			while(!signalled && timeoutInMs > 0){
-				Thread.Sleep(10);
-				timeoutInMs -= 10;
-			}
+            var start = DateTime.Now;
+            while (!signalled && (DateTime.Now - start).TotalMilliseconds < timeoutInMs)
+                Thread.Yield();			
 			signalled = false;
 			return true;
 		}

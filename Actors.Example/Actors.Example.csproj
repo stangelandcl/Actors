@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -44,6 +44,10 @@
     <ProjectReference Include="..\Actors\Actors.csproj">
       <Project>{1950C069-77D0-4C52-BA7D-77F713A9C5A0}</Project>
       <Name>Actors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RemoteConsole\RemoteConsole.csproj">
+      <Project>{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}</Project>
+      <Name>RemoteConsole</Name>
     </ProjectReference>
     <ProjectReference Include="..\Serialization\Serialization.csproj">
       <Project>{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}</Project>

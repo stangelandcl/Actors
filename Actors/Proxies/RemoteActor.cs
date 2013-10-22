@@ -42,9 +42,9 @@ namespace Actors
 			});
 		}
 
-		public void Reply (Mail mail, FunctionId name, params object[] args)
+		public void Reply (Mail mail,  params object[] args)
 		{
-			Node.Reply(mail, name, args);
+			Node.Reply(mail,args);
 		}
 
 	}

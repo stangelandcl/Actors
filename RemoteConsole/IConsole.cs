@@ -2,18 +2,24 @@ using System;
 
 namespace RemoteConsole
 {
-	public interface IConsole
+	public interface IConsole 
 	{
-		void Write(string o);
-		void WriteLine(string s);	
-		void SetCursorPosition(int x, int y);
-		int CursorTop { get;}
-		int BufferHeight { get;}
-		ConsoleKeyInfo ReadKey(bool intercept);         
-		int WindowWidth { get;}
-		void Clear();
-		string ReadLine();
+        CursorPosition CursorPosition { get; set; }
+        Screen Screen { get; set; }
+        KeyPress[] Keys { get; set; }
+        void Clear();
 	}
+    
+    public struct CursorPosition
+    {
+        public CursorPosition(int x, int y, bool isVisible)
+        {
+            X = x; Y = y; IsVisible = isVisible;
+        }
+        public int X;
+        public int Y;
+        public bool IsVisible;
+    }
 	
 	public interface IConsoleCallback{
 		void CancelKeyPress(ConsoleCancelEventArgs args);

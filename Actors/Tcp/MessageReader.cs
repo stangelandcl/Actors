@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Actors
 {
@@ -30,7 +31,7 @@ namespace Actors
 
 		void Listen(Message message, AsyncCallback cb)
 		{
-			client.Client.BeginReceive (message.Buffer, message.Count, message.Buffer.Length, SocketFlags.None, cb, message);
+			client.Client.BeginReceive (message.Buffer, message.Count, message.Buffer.Length  - message.Count, SocketFlags.None, cb, message);
 		}
 
 		void EndReadHeader(IAsyncResult ar){
@@ -60,7 +61,7 @@ namespace Actors
 				if(msg.Count > msg.Buffer.Length)
 					return;
 				if(msg.Count == msg.Buffer.Length){
-					ThreadPool.QueueUserWorkItem(o=> FireReceived (msg));
+					Task.Factory.StartNew(()=>FireReceived (msg));
 					Listen();
 				}else{
 					Listen(msg, EndReadMessage);
