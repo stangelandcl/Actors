@@ -12,6 +12,9 @@ using System.Diagnostics;
 
 namespace Actors
 {
+    /// <summary>
+    /// If you override any functions in this class be careful to add a try-catch and call Die on failure    
+    /// </summary>
 	public abstract class Actor : IDisposable
 	{
         public Actor(string shortName)
@@ -22,19 +25,31 @@ namespace Actors
 		{
 			Node = node;
 			Box = box;
-			Box.Received += HandleReceived;            
+			Box.Received += HandleReceived;
 
-            functions = GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+            functions = GetTypes(GetType()).SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(n => n.GetParameters().Length > 0 && n.GetParameters()[0].ParameterType == typeof(Mail))
-                .Where(n => n.Name != "Execute")
+                .Where(n => n.Name != "Execute"))
                 .ToDictionary(n => n.Name);
+            if (!functions.ContainsKey("Link")) throw new Exception("No link");
             IsAlive = true;
 		}
+
+        IEnumerable<Type> GetTypes(Type t)
+        {
+            yield return t;
+            if (typeof(Actor).IsAssignableFrom(t.BaseType))
+                foreach (var x in GetTypes(t.BaseType))
+                    yield return x;                    
+        }
 
 		public MailBox Box {get; internal set;}
 		public Node Node {get; internal set;}
         public bool IsAlive { get; private set; }
         Dictionary<string, MethodInfo> functions;
+        public static implicit operator ActorId(Actor a){
+            return a.Box.Id;
+        }
 
         protected virtual void HandleReceived()
         {
@@ -46,6 +61,23 @@ namespace Actors
             {
                 Trace.WriteLine("Actor.HandleReceived error " + ex);
                 Die(ex.ToString());
+            }
+        }
+
+        void Link(Mail mail, LinkStatus status, string msg)
+        {
+            switch (status)
+            {
+                case LinkStatus.Create: Node.Environment.Links.Add(mail.From, mail.To);   
+                    break;
+                case LinkStatus.Died: Die("Linked: " + mail.From + " Died");
+                    break;
+                case LinkStatus.Disconnected:
+                    break;
+                case LinkStatus.Heartbeat:
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -72,7 +104,9 @@ namespace Actors
         }
        
         /// <summary>
-        /// Run async
+        /// Run async. IMPORTANT: Use this instead of Task, Thread or ThreadPool. 
+        /// It will catch exceptions, kill the actor and remove it from the node which will
+        /// send the died message to any linked actors.
         /// </summary>
         /// <param name="action"></param>
         /// <param name="ms"></param>
@@ -80,6 +114,7 @@ namespace Actors
         {
             try
             {
+                if (!IsAlive) return;
                 if (ms > 0) TaskEx.Delay(ms).ContinueWith(task => action());
                 else Task.Factory.StartNew(action);
             }
@@ -89,20 +124,19 @@ namespace Actors
             } 
         }
 
-        protected virtual void Die(string message) 
-        {           
-            Dispose();
-        }
-       
-		public virtual void Dispose()
+        protected void Die(string message) 
         {
             try
             {
-                IsAlive = false;
-                if(Box != null)
+                // order is important in this function
+                try { Disposing(true); }
+                catch { }
+                
+                if (Box != null)
                     Box.Received -= HandleReceived;
-                if(Node != null)
-                    Node.Remove(this);
+                if (Node != null)
+                    Node.Remove(this, message);
+                IsAlive = false;
                 Node = null;
                 Box = null;
             }
@@ -110,6 +144,13 @@ namespace Actors
             {
                 Trace.WriteLine("Actor.Dispose failed " + ex);
             }
+        }
+
+        protected virtual void Disposing(bool b) { }
+       
+		public void Dispose()
+        {
+            Die("Dispose called");          
 		}
 	}
 }

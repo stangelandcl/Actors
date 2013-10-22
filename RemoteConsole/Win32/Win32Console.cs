@@ -199,6 +199,7 @@ namespace RemoteConsole
         {
             if (oldMode.HasValue && !Win32.SetConsoleMode(StdIn, oldMode.Value))
                     throw new NotImplementedException();
+            Win32.FreeConsole();
         }
     }
 }

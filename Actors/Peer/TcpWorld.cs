@@ -37,7 +37,7 @@ namespace Actors
 					if(actor.Value.Box.Id == id)
 						actors.Remove(actor.Key);
 				}		
-		}
-	}
+		}      
+    }
 }
 

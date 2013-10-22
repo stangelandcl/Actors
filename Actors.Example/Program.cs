@@ -21,8 +21,13 @@ namespace Actors.Example
                 node.Add(new BandwidthActor());
                 node.Add(new EchoActor());
                 node.Add(new PingActor());
-                node.Add(new ConsoleProcessActor("cmd.exe", "cmd.exe"));
-                Thread.Sleep(Timeout.Infinite);
+                using (var cmd = new ConsoleProcessActor("cmd.exe", "cmd.exe"))
+                {
+                    node.Add(cmd);
+                    while (cmd.IsAlive)
+                        Thread.Sleep(10);                  
+                }
+                Thread.Sleep(2000);
             }
             else
             {
@@ -59,9 +64,14 @@ namespace Actors.Example
                     Console.WriteLine("bandwidth = " + bw.Test());
 
                     var console = n2.GetProxy("localhost/cmd.exe");
-                    var realConsole = new ConsoleClientActor("cmd.exe");
-                    n2.Add(realConsole);
-                    console.Attach(realConsole.Box.Id);
+                    using (var realConsole = new ConsoleClientActor("cmd2.exe"))
+                    {
+                        n2.Add(realConsole);
+                        n2.Link(realConsole.Box.Id, ((IDynamicProxy)console).Proxy.Remote);
+                        console.SendAttach(realConsole.Box.Id);
+                        while (realConsole.IsAlive)
+                            Thread.Sleep(10);
+                    }
 
                 } // close the connection and remove from n2. Now there is no route to the first node and the echo actor
                 // TODO: set default ports so given a computer name we can try to connect to a few ports if someone

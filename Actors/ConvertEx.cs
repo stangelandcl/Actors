@@ -6,8 +6,13 @@ using System.ComponentModel;
 
 namespace Actors
 {
-    public class ConvertEx
+    public static class ConvertEx
     {
+        public static T Convert<T>(this object o)
+        {
+            return (T)ChangeType(o, typeof(T));
+        }
+
         public static object ChangeType(object o, Type t)
         {
             if (o != null && o.GetType() == t)
@@ -22,12 +27,10 @@ namespace Actors
                 if (c.CanConvertTo(t))
                     return c.ConvertTo(o, t);
             }
-            if (t.IsPrimitive)
-                return Convert.ChangeType(o, t);
-            if (o == null && t.IsClass)
-                return true;
-            if (t.IsAssignableFrom(o.GetType()))
-                return o;
+            if (t.IsPrimitive) return System.Convert.ChangeType(o, t);
+            if (t.IsEnum)      return Enum.ToObject(t, o);
+            if (o == null && t.IsClass) return o;
+            if (t.IsAssignableFrom(o.GetType()))return o;
             throw new Exception("Cannot convert to " + t.Name + " from " +
                 (o == null ? "(null)" : o.GetType().Name + ":" + o));
         }

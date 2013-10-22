@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;MONO</DefineConstants>
+    <DefineConstants>DEBUG;NMONO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -54,6 +54,7 @@
     <Compile Include="Examples\Clients\BandwidthClient.cs" />
     <Compile Include="Examples\Clients\PingClient.cs" />
     <Compile Include="Functions\FunctionDefinition.cs" />
+    <Compile Include="Link.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\Delay.cs" />
     <Compile Include="Tcp\MessageReader.cs" />

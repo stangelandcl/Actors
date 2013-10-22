@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace Actors
 {
@@ -12,7 +13,14 @@ namespace Actors
 
 		public void Send (Mail mail)
 		{
-			sender.Send(mail);
+            try
+            {
+                sender.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("send " + ex);
+            }
 		}
 
 		public void Send (ActorId to, ActorId fromId, MessageId msg, FunctionId name, params object[] args)

@@ -12,6 +12,7 @@ namespace Actors
 		public TcpConnector Connector {get;set;}
 		public ISerializer Serializer {get;set;}
 		public Actor DefaultActor {get; set;}
+        public LinkMap Links { get; set; }
 
 		public NodeEnvironment(){
 			Name = Guid.NewGuid().ToString();
@@ -20,6 +21,7 @@ namespace Actors
 			Router = new TcpRouter(Serializer);
 			World = new TcpWorld(Serializer);
 			Connector = new TcpConnector();
+            Links = new LinkMap();
 
 			Server.Connected += HandleConnected;
 			Connector.Connected += HandleConnected;
@@ -28,7 +30,7 @@ namespace Actors
 
 		void HandleReceived (Mail obj)
 		{
-			World.Dispatch(obj);
+			World.Dispatch(obj);           
 		}
 
 		void HandleConnected (MessageConnection obj)

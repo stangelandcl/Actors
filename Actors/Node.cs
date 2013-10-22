@@ -15,8 +15,10 @@ namespace Actors
 		public Node(NodeEnvironment env){
 			Environment = env;
 			Environment.DefaultActor = new DefaultActor(new MailBox(System.Environment.MachineName + "/default"), this);
-			Environment.World.Add(Environment.DefaultActor);
+			Environment.World.Add(Environment.DefaultActor);           
 		}
+
+      
 
 		public dynamic GetProxy(string name){
 			var r = new RemoteActor("proxy-" + name, name);
@@ -38,8 +40,16 @@ namespace Actors
 			return Environment.Connector.Connect(host, port);
 		}
 
-		public void Remove(Actor a){
+        public void Link(ActorId creator, ActorId other){
+            Environment.Links.Add(creator, other);
+            Send(other, creator, "Link", LinkStatus.Create, "Create");
+        }
+
+		public void Remove(Actor a, string msg = ""){
+            var links = Environment.Links.Get(a);         
 			Environment.World.Remove(a.Box.Id);
+            foreach (var link in links)
+                Send(link, a.Box.Id, "Link", LinkStatus.Died, msg); 
 		}
 
 		#region IMailSender implementation
@@ -50,9 +60,9 @@ namespace Actors
 			sender.Send(mail);
 			return mail.MessageId;
 		}
-		public void Send (ActorId to, ActorId fromId, MessageId msg, FunctionId name, params object[] args)
+		public void Send (ActorId to, ActorId fromId, FunctionId name, params object[] args)
 		{           
-			Send(new Mail{To = to, From = fromId, MessageId = msg, Name = name, Args = args});
+			Send(new Mail{To = to, From = fromId, MessageId = MessageId.New(), Name = name, Args = args});
 		}
 		public MessageId Send (ActorId to, FunctionId name, params object[] args)
 		{            
@@ -81,7 +91,7 @@ namespace Actors
 		{
 			var mail = Environment.DefaultActor.Box.WaitFor (msg);
 			if(mail == null) return default(T);
-			return (T)TypeDescriptor.GetConverter (typeof(T)).ConvertTo (mail.Args [0], typeof(T));
+            return (T)ConvertEx.ChangeType(mail.Args[0], typeof(T));
 		}
 	}
 }

@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace RemoteConsole
 {
-    public class Win32HiddenConsole 
+    public class Win32HiddenConsole  : IDisposable
     {
         public Win32HiddenConsole(string exe, params string[] args)
         {
@@ -85,9 +85,17 @@ namespace RemoteConsole
         /// </summary>
         public void Kill()
         {
+            if (!Process.GetProcesses().Where(n => n.Id == (int)process.dwProcessId).Any())
+                return;
             var proc = Process.GetProcessById((int)process.dwProcessId);
             if (proc != null)
                 proc.Kill();
+        }
+
+        public void Dispose()
+        {
+            Kill();
+            Console.Dispose();
         }
     }
  

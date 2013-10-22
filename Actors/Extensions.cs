@@ -11,6 +11,12 @@ namespace Actors
 				d[key] = v = Activator.CreateInstance<TValue>();
 			return v;
 		}
+
+        public static void AddRange<T>(this HashSet<T> a, IEnumerable<T> items)
+        {
+            foreach (var c in items)
+                a.Add(c);
+        }
 	}
 }
 

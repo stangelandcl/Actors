@@ -13,11 +13,11 @@ namespace Actors.Examples.Actors
         public ConsoleClientActor(string shortname)
             : base(shortname) 
         {
-            TaskEx.Delay(100).ContinueWith(GetKeys);
+            Run(GetKeys, 100);
         }
 
         ActorId remote;
-        IConsole console = new Win32Console();
+        Win32Console console = new Win32Console();
         void ScreenUpdate(Mail m, Screen screen, CursorPosition position)
         {
             console.Screen = screen;
@@ -25,15 +25,20 @@ namespace Actors.Examples.Actors
             remote = m.From;    
         }
 
-        void GetKeys(Task task)
+        void GetKeys()
         {
             if (!remote.IsEmpty)
             {
                 var keys = console.Keys;
                 if(keys.Any())
-                    Node.Send(remote, Box.Id, MessageId.New(), "Keys",keys);
+                    Node.Send(remote, Box.Id, "Keys",keys);
             }
-            TaskEx.Delay(100).ContinueWith(GetKeys);
+            Run(GetKeys, 100);            
+        }
+        protected override void Disposing(bool b)
+        {
+            console.Dispose();
+            base.Disposing(b);
         }
     }
 }
