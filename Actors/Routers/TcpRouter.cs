@@ -29,8 +29,11 @@ namespace Actors
 		public void Add(string computer, MessageTConnection c){
 			lock(connections)
 				connections.GetOrAdd(computer).Add(c);
+            c.Disconnected += HandleDisconnected;
 			c.Receiver.Received += HandleReceived;
-		}	
+		}
+
+      
 		public void Remove(MessageTConnection c){
 			lock(connections){
 				foreach(var conn in connections.ToArray())

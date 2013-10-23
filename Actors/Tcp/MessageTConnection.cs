@@ -11,7 +11,7 @@ namespace Actors
 		{}		
 		public MessageTConnection (MessageConnection c, ISerializer s){
 			this.Sender = new MessageTClient(c.Sender, s);
-			this.Receiver = new MessageTReader(c.Receiver, s);
+            this.Receiver = new MessageTReader(c.Receiver, s);            
 		}
 
 		public MessageTConnection (MessageTClient sender, MessageTReader reader)
@@ -20,6 +20,7 @@ namespace Actors
 			this.Receiver = reader;
 		}
 
+        public event Action<MessageTConnection> Disconnected;
 		public MessageTClient Sender {get;set;}
 		public MessageTReader Receiver {get;set;}
 	}

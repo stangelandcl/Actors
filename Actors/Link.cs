@@ -42,10 +42,13 @@ namespace Actors
             {
                 var actors = new HashSet<ActorId>();
                 List<ActorId> a;
-                if (creatorToOther.TryGetValue(id, out a))
-                    actors.AddRange(a);
-                if (otherToCreator.TryGetValue(id, out a))
-                    actors.AddRange(a);
+                foreach (var alias in DnsAlias.Get(id))
+                {
+                    if (creatorToOther.TryGetValue(alias, out a))
+                        actors.AddRange(a);
+                    if (otherToCreator.TryGetValue(alias, out a))
+                        actors.AddRange(a);
+                }
                 return actors.ToArray();
             }
         }
@@ -55,18 +58,21 @@ namespace Actors
             lock (creatorToOther)
             {
                 List<ActorId> a;
-                if (creatorToOther.TryGetValue(link.Creator, out a))
-                {
-                    a.Remove(link.Other);
-                    if (!a.Any())
-                        creatorToOther.Remove(link.Creator);
-                }
-                if (otherToCreator.TryGetValue(link.Other, out a))
-                {
-                    a.Remove(link.Creator);
-                    if (!a.Any())
-                        otherToCreator.Remove(link.Other);
-                }
+                foreach (var alias in DnsAlias.Get(link.Creator))
+                    if (creatorToOther.TryGetValue(alias, out a))
+                    {
+                        a.Remove(alias);
+                        if (!a.Any())
+                            creatorToOther.Remove(alias);
+                    }
+                foreach(var alias in DnsAlias.Get(link.Other))
+                    if (otherToCreator.TryGetValue(alias, out a))
+                    {
+                        a.Remove(alias);
+                        if (!a.Any())
+                            otherToCreator.Remove(alias);
+                    }
+                
             }
         }
     }

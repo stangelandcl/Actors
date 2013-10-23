@@ -2,6 +2,7 @@ using System;
 using System.Net.Sockets;
 using System.Diagnostics;
 using System.Net;
+using Actors.Tasks;
 
 namespace Actors
 {
@@ -28,9 +29,21 @@ namespace Actors
 	
 		void EndAccept (IAsyncResult ar)
 		{
-			var socket = TcpListener.EndAcceptTcpClient(ar);
-			if(Accepted != null)
-				Accepted(socket);
+            try
+            {
+                var socket = TcpListener.EndAcceptTcpClient(ar);
+                if (Accepted != null)
+                    TaskEx.Run(() => Accepted(socket));
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Accept failed "+ ex);
+            }
+            finally
+            {
+                TcpListener.BeginAcceptSocket(EndAccept, null);
+            }
+
 		}
 
 		public void Dispose(){

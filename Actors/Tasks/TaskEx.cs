@@ -12,6 +12,18 @@ namespace Actors.Tasks
         static readonly Task _sPreCompletedTask = GetCompletedTask();
         static readonly Task _sPreCanceledTask = GetPreCanceledTask();
 
+        public static Task Run(Action a)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    a();
+                }
+                catch { }
+            });
+        }
+
         public static Task Delay(int dueTimeMs, Action<Task> action)
         {
             return Delay(dueTimeMs).ContinueWith(action);

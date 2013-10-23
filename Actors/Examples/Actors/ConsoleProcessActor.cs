@@ -53,8 +53,13 @@ namespace Actors.Examples.Actors
 
         void Attach(Mail m, ActorId sendTo)
         {
+            AttachConsole(sendTo);
+        }
+
+        internal void AttachConsole(ActorId sendTo)
+        {
             lock (actors)
-                actors.Add(sendTo);
+                actors.Add(sendTo);            
         }
 
         void Detach(Mail m, ActorId sendTo)

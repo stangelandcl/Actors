@@ -21,13 +21,14 @@ namespace Actors.Example
                 node.Add(new BandwidthActor());
                 node.Add(new EchoActor());
                 node.Add(new PingActor());
-                using (var cmd = new ConsoleProcessActor("cmd.exe", "cmd.exe"))
-                {
-                    node.Add(cmd);
-                    while (cmd.IsAlive)
-                        Thread.Sleep(10);                  
-                }
-                Thread.Sleep(2000);
+                node.Add(new Shell());
+                //using (var cmd = new ConsoleProcessActor("cmd.exe", "cmd.exe"))
+                //{
+                //    node.Add(cmd);
+                //    while (cmd.IsAlive)
+                //        Thread.Sleep(10);                  
+                //}
+                Thread.Sleep(Timeout.Infinite);
             }
             else
             {
@@ -63,15 +64,26 @@ namespace Actors.Example
                     var bw = new BandwidthClient(n2.GetProxy("localhost/System.Bandwidth"), ping);
                     Console.WriteLine("bandwidth = " + bw.Test());
 
-                    var console = n2.GetProxy("localhost/cmd.exe");
-                    using (var realConsole = new ConsoleClientActor("cmd2.exe"))
+
+                    using (var shell = new ConsoleClientActor("cmd.exe-client"))
                     {
-                        n2.Add(realConsole);
-                        n2.Link(realConsole.Box.Id, ((IDynamicProxy)console).Proxy.Remote);
-                        console.SendAttach(realConsole.Box.Id);
-                        while (realConsole.IsAlive)
+                        n2.Add(shell);
+                        var proxy = n2.GetProxy("localhost/System.Shell");
+                        var remoteId = proxy.RunConsole("cmd.exe", new string[0], shell.Box.Id);
+                        n2.Link(shell.Box.Id, remoteId);
+                        while (shell.IsAlive)
                             Thread.Sleep(10);
                     }
+
+                    //var console = n2.GetProxy("localhost/cmd.exe");
+                    //using (var realConsole = new ConsoleClientActor("cmd2.exe"))
+                    //{
+                    //    n2.Add(realConsole);
+                    //    n2.Link(realConsole.Box.Id, ((IDynamicProxy)console).Proxy.Remote);
+                    //    console.SendAttach(realConsole.Box.Id);
+                    //    while (realConsole.IsAlive)
+                    //        Thread.Sleep(10);
+                    //}
 
                 } // close the connection and remove from n2. Now there is no route to the first node and the echo actor
                 // TODO: set default ports so given a computer name we can try to connect to a few ports if someone

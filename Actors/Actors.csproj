@@ -51,12 +51,13 @@
     <Compile Include="Examples\Actors\ConsoleClientActor.cs" />
     <Compile Include="Examples\Actors\ConsoleProcessActor.cs" />
     <Compile Include="Examples\Actors\PingActor.cs" />
+    <Compile Include="Examples\Actors\Shell.cs" />
     <Compile Include="Examples\Clients\BandwidthClient.cs" />
     <Compile Include="Examples\Clients\PingClient.cs" />
     <Compile Include="Functions\FunctionDefinition.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tasks\Delay.cs" />
+    <Compile Include="Tasks\TaskEx.cs" />
     <Compile Include="Tcp\MessageReader.cs" />
     <Compile Include="Tcp\MessageClient.cs" />
     <Compile Include="Tcp\Message.cs" />
