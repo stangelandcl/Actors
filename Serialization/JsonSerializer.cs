@@ -4,7 +4,13 @@ using System.Text;
 
 namespace Serialization
 {
-	public class JsonSerializer : ISerializer
+#if SERIALIZATION_INTERNAL
+    internal
+#else
+	public 
+#endif
+        
+        class JsonSerializer : ISerializer
 	{
 		public byte[] Serialize<T>(T item){
 			return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(item, formatting, settings));

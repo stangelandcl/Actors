@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -30,18 +30,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Screen.cs" />
+    <Compile Include="Win32\Attributes.cs" />
+    <Compile Include="Win32\Win32.cs" />
+    <Compile Include="Win32\Win32Console.cs" />
+    <Compile Include="Win32\Win32HiddenConsole.cs" />
+    <Compile Include="Win32\ControlKeyState.cs" />
+    <Compile Include="Win32\KeyPress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IConsole.cs" />
-    <Compile Include="LocalConsole.cs" />
-    <Compile Include="RemoteConsole.cs" />
+    <Compile Include="ConsoleClient.cs" />
+    <Compile Include="Win32\VirtualKeys.cs" />
+    <Compile Include="WinFormsConsoleClient.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\Actors\Actors.csproj">
-      <Project>{1950C069-77D0-4C52-BA7D-77F713A9C5A0}</Project>
-      <Name>Actors</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

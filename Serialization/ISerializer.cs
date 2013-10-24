@@ -2,7 +2,13 @@ using System;
 
 namespace Serialization
 {
-	public interface ISerializer
+#if SERIALIZATION_INTERNAL
+	internal 
+#else
+    public
+#endif
+        
+        interface ISerializer
 	{
 		byte[] Serialize<T>(T item);
 		T Deserialize<T>(byte[] bytes, int offset, int count);

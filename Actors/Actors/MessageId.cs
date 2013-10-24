@@ -15,6 +15,7 @@ namespace Actors
 		public static MessageId New(){
 			return new MessageId(Guid.NewGuid());
 		}
+        public static readonly MessageId Empty = new MessageId();
 		string id;
 
 		public bool IsEmpty{ get {return id == null;}}

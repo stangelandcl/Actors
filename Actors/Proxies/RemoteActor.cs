@@ -7,9 +7,9 @@ namespace Actors
 		public RemoteActor (string shortName, ActorId remote)
 			: base(shortName)
 		{		
-			this.remote = remote;
+			this.Remote = remote;
 		}
-		ActorId remote;
+        public ActorId Remote { get; private set; }
 
 		public Mail Receive(MessageId id){
 			return Box.WaitFor(id);
@@ -23,7 +23,7 @@ namespace Actors
 		public void Send (MessageId msg, FunctionId name, params object[] args)
 		{
 			Node.Send(new Mail{
-				To = remote,
+				To = Remote,
 				From = Box.Id,
 				Args = args,
 				MessageId = msg, 
@@ -34,7 +34,7 @@ namespace Actors
 		public MessageId Send (FunctionId name, params object[] args)
 		{
 			return Node.Send(new Mail{
-				To = remote,
+				To = Remote,
 				From = Box.Id,
 				Args = args,
 				MessageId = MessageId.New(), 
@@ -42,9 +42,9 @@ namespace Actors
 			});
 		}
 
-		public void Reply (Mail mail, FunctionId name, params object[] args)
+		public void Reply (Mail mail,  params object[] args)
 		{
-			Node.Reply(mail, name, args);
+			Node.Reply(mail,args);
 		}
 
 	}
