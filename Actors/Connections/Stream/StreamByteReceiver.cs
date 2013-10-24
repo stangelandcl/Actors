@@ -6,26 +6,24 @@ using System.Threading.Tasks;
 using Actors.Connections.Bytes;
 using Actors.Tasks;
 using System.Net;
+using System.IO;
 
 namespace Actors
 {
-    public class TcpByteReceiver : IByteReceiver
+    public class StreamByteReceiver : IByteReceiver
     {
-        public TcpByteReceiver(TcpClient client)
+        public StreamByteReceiver(IEndPoint remote, Stream client)
         {
+            Remote = remote;
             this.client = client;
             Listen();
         }
         public event Action<byte[]> Received;
-        public event Action<IByteReceiver> Disconnected;
-        public IEndPoint Remote
-        {
-            get { return new Actors.Connections.Bytes.EndPoint(((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString()); }
-        }
+        public event Action<Exception> Error;
+        public IEndPoint Remote { get; private set; }       
+        Stream client;
 
-        TcpClient client;
-
-        public class TcpFrame
+        class Frame
         {
             public byte[] Buffer;
             public int Count;
@@ -34,21 +32,21 @@ namespace Actors
         void Listen()
         {
             //create new message. this is important.
-            var message = new TcpFrame { Buffer = new byte[4] };
+            var message = new Frame { Buffer = new byte[4] };
             Listen(message, EndReadHeader);
         }
 
-        void Listen(TcpFrame message, AsyncCallback cb)
+        void Listen(Frame message, AsyncCallback cb)
         {
-            client.Client.BeginReceive(message.Buffer, message.Count, message.Buffer.Length - message.Count, SocketFlags.None, cb, message);
+            client.BeginRead(message.Buffer, message.Count, message.Buffer.Length - message.Count, cb, message);
         }
 
         void EndReadHeader(IAsyncResult ar)
         {
             try
             {
-                var msg = (TcpFrame)ar.AsyncState;
-                int count = client.Client.EndReceive(ar);
+                var msg = (Frame)ar.AsyncState;
+                int count = client.EndRead(ar);
                 if (count <= 0) return;
                 msg.Count += count;
                 if (msg.Count == msg.Buffer.Length)
@@ -62,14 +60,9 @@ namespace Actors
                     Listen(msg, EndReadHeader);
                 }
             }
-            catch (SocketException)
+            catch (Exception e)
             {
-                if (!client.Connected)
-                    Disconnected.FireEventAsync(this);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine("Error in read header" + ex);
+                Error.FireEventAsync(e);
             }
         }
 
@@ -77,8 +70,8 @@ namespace Actors
         {
             try
             {
-                var msg = (TcpFrame)ar.AsyncState;
-                int count = client.Client.EndReceive(ar);
+                var msg = (Frame)ar.AsyncState;
+                int count = client.EndRead(ar);
                 if (count <= 0) return;
                 msg.Count += count;
                 if (msg.Count > msg.Buffer.Length)
@@ -95,7 +88,7 @@ namespace Actors
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("Error in read message " + ex);
+                Error.FireEventAsync(ex);
             }
         }       
     }

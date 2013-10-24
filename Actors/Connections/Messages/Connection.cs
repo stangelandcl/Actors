@@ -8,43 +8,49 @@ using Actors.Connections.Bytes;
 
 namespace Actors.Connections.Messages
 {
-    class Connection : IConnection
+    public class Connection : IConnection
     {
         public Connection(IByteConnection b, ISerializer serializer)
-            : this(new Sender(b.Sender, serializer),
+            : this(b, new Sender(b.Sender, serializer),
                    new Receiver(b.Receiver, serializer))
         { }
 
-        public Connection(ISender sender, IReceiver receiver)
+        /// <summary>
+        /// Don't make this public. higher level class must be
+        /// used to determine if sender.error/receiver.error = disconnect
+        /// so we use byteconnection to do that
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="receiver"></param>
+        Connection(IByteConnection c, ISender sender, IReceiver receiver)
         {
+            this.connection = c;
             this.Sender = sender;
             this.Receiver = receiver;
             this.Receiver.Received += HandleReceived;
-            this.Sender.Disconnected += HandleDisconnected;
-            this.Receiver.Disconnected += HandleDisconnected;
+            connection.Disconnected += HandleDisconnected;
         }
 
         public ISender Sender { get; private set; }
         public IReceiver Receiver { get; private set; }
-
         public event Action<IConnection> Disconnected;
         public event Action<object> Received;
+        IByteConnection connection;
 
         void HandleReceived(object ob)
         {          
             Received.FireEventAsync(ob);
         }
 
-        void HandleDisconnected(ISender c)
+        void HandleDisconnected(IByteConnection c)
         {
-            Disconnected.FireEventAsync(this);
+            FireDisconnected();
         }
 
-        void HandleDisconnected(IReceiver r)
+        void FireDisconnected()
         {
             Disconnected.FireEventAsync(this);
         }
-     
         public void Send(object o)
         {
             Sender.Send(o);
@@ -53,8 +59,7 @@ namespace Actors.Connections.Messages
         public void Dispose()
         {
             Receiver.Received -= HandleReceived;
-            Sender.Disconnected -= HandleDisconnected;
-            Receiver.Disconnected -= HandleDisconnected;
+            connection.Disconnected -= HandleDisconnected;
             Sender.Dispose();
             Receiver.Dispose();
         }

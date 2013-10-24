@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net.Sockets;
 
 namespace Actors.Connections.Bytes
 {
     public class EndPoint : IEndPoint
-    {
+    {       
         public EndPoint(string name)
         {
             this.name = name;
@@ -27,6 +28,11 @@ namespace Actors.Connections.Bytes
             if (ep != null)
                 return string.Equals(name, ep.name, StringComparison.InvariantCultureIgnoreCase);
             return false;
+        }
+
+        public static IEndPoint GetRemote(TcpClient client)
+        {
+            return EndPoint.GetRemote(client);
         }
     }
 }

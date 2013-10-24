@@ -9,7 +9,8 @@ namespace RemoteConsole
     {
         public Screen(int x, int y)
         {
-            Width = x; Height = y; 
+            Width = x;
+            Height = y; 
             Buffer = new char[y * x];
             Attributes = new Attributes[Buffer.Length];
         }

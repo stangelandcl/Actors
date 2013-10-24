@@ -13,29 +13,26 @@ namespace Actors.Connections.Messages
         {
             this.sender = sender;
             this.serializer = serializer;
-            this.sender.Disconnected += HandleDisconnected;
+            this.sender.Error += HandleError;
         }
         public IEndPoint Remote { get { return sender.Remote; } }
-
+        public event Action<Exception> Error;
+        public event Action<ISender> Disconnected;
         IByteSender sender;
         ISerializer serializer;
 
-        void HandleDisconnected(IByteSender s)
+        void HandleError(Exception e)
         {
-            Disconnected.FireEventAsync(this);
+            Error.FireEventAsync(e);
         }
 
         public void Send(object o)
         {
             sender.Send(serializer.Serialize(o));
         }
-
-
-        public event Action<ISender> Disconnected;
-
         public void Dispose()
         {
-            sender.Disconnected -= HandleDisconnected;
+            sender.Error -= HandleError;
         }
     }
 }

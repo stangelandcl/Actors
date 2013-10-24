@@ -10,6 +10,6 @@ namespace Actors.Connections.Messages
     {
         IEndPoint Remote { get; }
         event Action<object> Received;
-        event Action<IReceiver> Disconnected;
+        event Action<Exception> Error;
     }
 }

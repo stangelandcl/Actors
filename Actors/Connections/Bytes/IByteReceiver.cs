@@ -9,6 +9,6 @@ namespace Actors.Connections.Bytes
     {
         IEndPoint Remote { get; }
         event Action<byte[]> Received;
-        event Action<IByteReceiver> Disconnected;
+        event Action<Exception> Error;
     }
 }

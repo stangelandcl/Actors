@@ -13,7 +13,7 @@ namespace Actors.Examples.Actors
         public ConsoleClientActor(string shortname)
             : base(shortname) 
         {
-            Run(GetKeys, 100);
+            Loop();
         }
 
         ActorId remote;
@@ -33,7 +33,12 @@ namespace Actors.Examples.Actors
                 if(keys.Any())
                     Node.Send(remote, Box.Id, "Keys",keys);
             }
-            Run(GetKeys, 100);            
+            Loop();          
+        }
+
+        private void Loop()
+        {
+            Run(GetKeys, 25);
         }
         protected override void Disposing(bool b)
         {

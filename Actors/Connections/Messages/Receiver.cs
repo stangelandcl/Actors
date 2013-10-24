@@ -14,30 +14,29 @@ namespace Actors.Connections.Messages
             this.receiver = receiver;
             this.serializer = serializer;
             this.receiver.Received += HandleReceived;
-            this.receiver.Disconnected += HandleDisconnected;
+            this.receiver.Error += HandleError;
         }
 
         IByteReceiver receiver;
         ISerializer serializer;
         public event Action<object> Received;
-        public event Action<IReceiver> Disconnected;
+        public event Action<Exception> Error;
 
-        void HandleDisconnected(IByteReceiver r)
+        void HandleError(Exception e)
         {
-            Disconnected.FireEventAsync(this);
+            Error.FireEventAsync(e);
         }
 
         void HandleReceived(byte[] b)
         {
             var obj = serializer.Deserialize<object>(b);
             Received.FireEventAsync(obj);
-        }
-
-      
+        }      
 
         public void Dispose()
         {
             receiver.Received -= HandleReceived;
+            receiver.Error -= Error;
         }
 
         public IEndPoint Remote

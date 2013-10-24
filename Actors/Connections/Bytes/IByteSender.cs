@@ -8,7 +8,7 @@ namespace Actors.Connections.Bytes
     public interface IByteSender
     {
         IEndPoint Remote { get; }
-        event Action<IByteSender> Disconnected;
+        event Action<Exception> Error;
         void Send(byte[] bytes);
     }
 }

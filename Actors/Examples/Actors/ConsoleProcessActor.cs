@@ -14,7 +14,7 @@ namespace Actors.Examples.Actors
             : base(shortname)
         {
             process = new Win32HiddenConsole(exe, args);
-            Run(Snapshot, 100);
+            Loop();
         }
 
         Win32HiddenConsole process;
@@ -43,7 +43,12 @@ namespace Actors.Examples.Actors
                 foreach (var actor in a)
                     Node.Send(actor, Box.Id, "ScreenUpdate", screen, process.Console.CursorPosition);
             }
-            Run(Snapshot, 100);
+            Loop();
+        }
+
+        private void Loop()
+        {
+            Run(Snapshot, 50);
         }
 
         void Keys(Mail m, KeyPress[] keys)
