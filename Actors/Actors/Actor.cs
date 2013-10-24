@@ -68,7 +68,7 @@ namespace Actors
         {
             switch (status)
             {
-                case LinkStatus.Create: Node.Environment.Links.Add(mail.From, mail.To);   
+                case LinkStatus.Create: Node.Links.Add(mail.From, mail.To);   
                     break;
                 case LinkStatus.Died: Die("Linked: " + mail.From + " Died");
                     break;
@@ -93,7 +93,7 @@ namespace Actors
                 var args = new object[p.Length];
                 args[0] = mail;
                 for (int i = 0; i < mail.Args.Length; i++)
-                    args[i + 1] = ConvertEx.ChangeType(mail.Args[i], p[i + 1].ParameterType);
+                    args[i + 1] = ConvertEx.Convert(mail.Args[i], p[i + 1].ParameterType);
                 Run(() => func.Invoke(this, args));
             }
             catch (Exception ex)

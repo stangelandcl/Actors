@@ -57,13 +57,12 @@ namespace RemoteConsole
         void Start(string commandline)
         {
             var info = new Win32.STARTUPINFO();
-            //info.dwFlags = Win32.STARTF.STARTF_USESHOWWINDOW;
+            info.dwFlags = Win32.STARTF.STARTF_USESHOWWINDOW;
             info.wShowWindow = Win32.SHOWWINDOW.SW_HIDE;
             if (!Win32.CreateProcess(null, commandline, IntPtr.Zero, IntPtr.Zero, false,
                 Win32.CreateProcessFlags.CREATE_NEW_PROCESS_GROUP, IntPtr.Zero, null, ref info, out process))
                 throw new Win32Exception();
-            Thread.Sleep(2 * 1000); // init console
-            uint mode;           
+            Thread.Sleep(2 * 1000); // init console         
             Win32.FreeConsole(); // this will fail if no console is attached. that is okay.
             if (!Win32.AttachConsole(process.dwProcessId))
                 throw new Win32Exception();
@@ -71,10 +70,10 @@ namespace RemoteConsole
             if ((stdout = Win32.GetStdHandle(Win32.StdHandle.Output)) == Win32.INVALID_HANDLE_VALUE)
                 throw new Win32Exception();
             if ((stdin = Win32.GetStdHandle(Win32.StdHandle.Input)) == Win32.INVALID_HANDLE_VALUE)
+                throw new Win32Exception();           
+            if ((stderr = Win32.GetStdHandle(Win32.StdHandle.Error)) == IntPtr.Zero)
                 throw new Win32Exception();
             if (!Win32.SetConsoleMode(stdin, 0))
-                throw new Win32Exception();
-            if ((stderr = Win32.GetStdHandle(Win32.StdHandle.Error)) == IntPtr.Zero)
                 throw new Win32Exception();
 
             Console = new Win32Console(stdin, stdout, stderr, process.dwProcessId);
