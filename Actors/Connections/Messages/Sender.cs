@@ -17,7 +17,6 @@ namespace Actors.Connections.Messages
         }
         public IEndPoint Remote { get { return sender.Remote; } }
         public event Action<Exception> Error;
-        public event Action<ISender> Disconnected;
         IByteSender sender;
         ISerializer serializer;
 
