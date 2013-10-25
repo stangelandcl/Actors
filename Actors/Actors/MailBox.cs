@@ -129,7 +129,7 @@ namespace Actors
 
 		void Sleep (ref TimeSpan? timeout)
 		{
-            bool hasOne = hasMail.WaitOne(checkIntervalMs); // wait but don't reset
+            hasMail.WaitOne(checkIntervalMs); // wait but don't reset
 			timeout -= TimeSpan.FromMilliseconds (checkIntervalMs);
 		}		
 	}
