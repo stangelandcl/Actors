@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Sockets;
+using System.Net;
 
 namespace Actors.Connections.Bytes
 {
@@ -32,7 +33,7 @@ namespace Actors.Connections.Bytes
 
         public static IEndPoint GetRemote(TcpClient client)
         {
-            return EndPoint.GetRemote(client);
+            return new EndPoint(((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
         }
     }
 }

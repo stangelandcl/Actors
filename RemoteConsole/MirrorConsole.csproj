@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>RemoteConsole</RootNamespace>
-    <AssemblyName>RemoteConsole</AssemblyName>
+    <RootNamespace>MirrorConsole</RootNamespace>
+    <AssemblyName>MirrorConsole</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,19 +34,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Screen.cs" />
-    <Compile Include="Win32\Attributes.cs" />
+    <Compile Include="Shared\Attributes.cs" />
     <Compile Include="Win32\Win32.cs" />
     <Compile Include="Win32\Win32Console.cs" />
     <Compile Include="Win32\Win32HiddenConsole.cs" />
-    <Compile Include="Win32\ControlKeyState.cs" />
-    <Compile Include="Win32\KeyPress.cs" />
+    <Compile Include="Shared\ControlKeyState.cs" />
+    <Compile Include="Shared\KeyPress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IConsole.cs" />
+    <Compile Include="Shared\IConsole.cs" />
     <Compile Include="ConsoleClient.cs" />
-    <Compile Include="Win32\VirtualKeys.cs" />
+    <Compile Include="Shared\VirtualKeys.cs" />
     <Compile Include="WinFormsConsoleClient.cs">
       <SubType>Form</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Posix\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization", "Serialization\Serialization.csproj", "{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteConsole", "RemoteConsole\RemoteConsole.csproj", "{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MirrorConsole", "RemoteConsole\MirrorConsole.csproj", "{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Actors", "Actors\Actors.csproj", "{1950C069-77D0-4C52-BA7D-77F713A9C5A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Actors.Example", "Actors.Example\Actors.Example.csproj", "{A409B86B-6A1D-4DE7-A009-934A97C9F76E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteConsoleTest", "RemoteConsoleTest\RemoteConsoleTest.csproj", "{A5166BDC-A8E4-4032-B28E-7BF32A5BDC45}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MirrorConsoleTest", "RemoteConsoleTest\MirrorConsoleTest.csproj", "{A5166BDC-A8E4-4032-B28E-7BF32A5BDC45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

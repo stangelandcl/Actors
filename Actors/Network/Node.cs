@@ -6,6 +6,7 @@ using Actors.Connections.Messages;
 using Actors.Proxies;
 using Serialization;
 using Actors.Connections.Tcp;
+using Actors.Connections.Bytes;
 
 namespace Actors
 {
@@ -16,13 +17,13 @@ namespace Actors
             Name = Guid.NewGuid().ToString();
             Serializer = new JsonSerializer();
             server = new TcpListeners(Serializer);
-            World = new TcpWorld(Serializer);
+            world = new TcpWorld(Serializer);
             Links = new LinkMap();	
             Default = new DefaultActor(new MailBox(System.Environment.MachineName + "/default"), this);
-            World.Add(Default);
+            world.Add(Default);
             Proxy = new ProxyFactory(this);
-            router = new ConnectionRouter();
-            server.Connected += HandleConnected;
+            router = new ConnectionRouter(this);
+            server.Connected += HandleConnected;         
         }
 
         public ProxyFactory Proxy { get; private set; }
@@ -31,12 +32,13 @@ namespace Actors
         public ISerializer Serializer { get; set; }
         public LinkMap Links { get; set; }
         public Listeners server;
-        TcpWorld World { get; set; }  
-        ConnectionRouter router;
+        protected TcpWorld world;
+        protected ConnectionRouter router;
 
-        public void Dispose()
+        public virtual void Dispose()
         {            
             server.Connected -= HandleConnected;
+            //TODO: World.Dispose(); // dispose actors
         }
 
         void HandleConnected(IConnection obj)
@@ -60,7 +62,7 @@ namespace Actors
         {
             var mail = obj as Mail;
             if (mail == null) return;
-            World.Dispatch(mail);
+            world.Dispatch(mail);
         }
 
         public IDisposable AddListener(IListener listener)
@@ -72,7 +74,7 @@ namespace Actors
         {
             a.Node = this;
             a.Box.Id = new ActorId(System.Environment.MachineName + "/" + a.Box.Id);
-            World.Add(a);
+            world.Add(a);
         }
 
         public void Link(ActorId creator, ActorId other)
@@ -83,7 +85,7 @@ namespace Actors
 
 		public void Remove(Actor a, string msg = ""){
             var links = Links.Get(a);         
-			World.Remove(a.Box.Id);
+			world.Remove(a.Box.Id);
             foreach (var link in links)
                 Send(link, a.Box.Id, "Link", LinkStatus.Died, msg); 
 		}

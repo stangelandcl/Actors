@@ -43,6 +43,7 @@ namespace Actors
                     yield return x;                    
         }
 
+        int isDisposed;
 		public MailBox Box {get; internal set;}
 		public Node Node {get; internal set;}
         public bool IsAlive { get; private set; }
@@ -128,6 +129,9 @@ namespace Actors
         {
             try
             {
+                if (Interlocked.CompareExchange(ref isDisposed, 1, 0) != 0)
+                    return;              
+                IsAlive = false;                
                 // order is important in this function
                 try { Disposing(true); }
                 catch { }
@@ -136,7 +140,7 @@ namespace Actors
                     Box.Received -= HandleReceived;
                 if (Node != null)
                     Node.Remove(this, message);
-                IsAlive = false;
+                //IsAlive = false;
                 Node = null;
                 Box = null;
             }

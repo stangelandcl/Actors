@@ -10,7 +10,23 @@ using Serialization;
 namespace Actors.Network.Tcp
 {
     public class TcpNode : Node
-    {        
+    {
+        public TcpNode(int defaultPort)
+            : base()
+        {
+            this.defaultPort = defaultPort;
+            router.ConnectionNotFound += HandleConnectionNotFound;
+        }
+        int defaultPort;
+
+        void HandleConnectionNotFound(object sender, ConnectionRouter.MissingEventArgs args)
+        {
+            var conn = new Connection(new TcpByteConnection(
+                new TcpClient(args.EndPoint.ToString(), defaultPort)), this.Serializer);
+            AddConnection(conn, isOutbound: true);
+            args.Added = true;
+        }
+
         public IDisposable AddConnection(string host, int port, ISerializer serializer)
         {
             return AddConnection(new TcpClient(host, port), serializer);
@@ -25,6 +41,12 @@ namespace Actors.Network.Tcp
         {
             var host = isLocalOnly ? "127.0.0.1" : "0.0.0.0";
             return server.Add(new Listener(new TcpByteListener(host, port), serializer));
+        }
+
+        public override void Dispose()
+        {
+            router.ConnectionNotFound -= HandleConnectionNotFound;
+            base.Dispose();
         }
     }
 }

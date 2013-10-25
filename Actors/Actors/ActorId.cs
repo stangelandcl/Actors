@@ -31,8 +31,19 @@ namespace Actors
 			return id;
 		}
 
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj.GetType() == typeof(ActorId))
+                return string.Equals(((ActorId)obj).id, id, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(id, obj as string, StringComparison.OrdinalIgnoreCase);
+        }
+        public override int GetHashCode()
+        {
+            return id.ToLower().GetHashCode();
+        }
+
 		public static implicit operator string(ActorId id){
-			return id.ToString();
+            return id.ToString();
 		}
 		public static implicit operator ActorId(string s){		
 			return new ActorId(s);

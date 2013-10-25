@@ -15,7 +15,6 @@ namespace Actors.Examples.Clients
 
         IPing ping;
 
-
         /// <summary>
         /// Returns avg time in milliseconds
         /// </summary>
@@ -26,6 +25,7 @@ namespace Actors.Examples.Clients
             var bytes = new byte[1024];
             try
             {
+                ping.Ping(bytes); // initialize proxies or whatever
                 var sw = Stopwatch.StartNew();
                 for (int i = 0; i < count; i++)
                     ping.Ping(bytes);

@@ -20,6 +20,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Debug\Actors.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -29,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\Actors.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -46,6 +48,8 @@
     <Compile Include="..\Serialization\JsonSerializer.cs">
       <Link>Serialization\JsonSerializer.cs</Link>
     </Compile>
+    <Compile Include="Builtins\Actors\DhtActor.cs" />
+    <Compile Include="Builtins\Clients\IDht.cs" />
     <Compile Include="Connections\Bytes\ByteConnection.cs" />
     <Compile Include="Connections\Bytes\EndPoint.cs" />
     <Compile Include="Connections\Bytes\IEndPoint.cs" />
@@ -63,25 +67,30 @@
     <Compile Include="Connections\Messages\Receiver.cs" />
     <Compile Include="Connections\Messages\Sender.cs" />
     <Compile Include="Connections\Ssl\Stream\SslByteConnection.cs" />
+    <Compile Include="Connections\Ssl\Stream\SslByteConnectionFactory.cs" />
     <Compile Include="Connections\Tcp\Stream\TcpStreamConnection.cs" />
     <Compile Include="Connections\Tcp\TcpConnector.cs" />
     <Compile Include="Connections\Tcp\TcpListeners.cs" />
-    <Compile Include="Examples\Clients\IBandwidth.cs" />
-    <Compile Include="Examples\Clients\IEcho.cs" />
-    <Compile Include="Examples\Clients\IPing.cs" />
-    <Compile Include="Examples\Clients\IShell.cs" />
+    <Compile Include="Dht\DhtMetadata.cs" />
+    <Compile Include="Dht\DhtRing.cs" />
+    <Compile Include="Dht\DistributedHashTable.cs" />
+    <Compile Include="Dht\ILocalData.cs" />
+    <Compile Include="Builtins\Clients\IBandwidth.cs" />
+    <Compile Include="Builtins\Clients\IEcho.cs" />
+    <Compile Include="Builtins\Clients\IPing.cs" />
+    <Compile Include="Builtins\Clients\IShell.cs" />
     <Compile Include="Extensions\ConvertEx.cs" />
     <Compile Include="Events\Publisher.cs" />
-    <Compile Include="Examples\Actors\BandwidthActor.cs" />
-    <Compile Include="Examples\Actors\ConsoleClientActor.cs" />
-    <Compile Include="Examples\Actors\ConsoleProcessActor.cs" />
-    <Compile Include="Examples\Actors\PingActor.cs" />
-    <Compile Include="Examples\Actors\Shell.cs" />
-    <Compile Include="Examples\Wrappers\BandwidthClient.cs" />
-    <Compile Include="Examples\Wrappers\PingClient.cs" />
+    <Compile Include="Builtins\Actors\BandwidthActor.cs" />
+    <Compile Include="Builtins\Actors\ConsoleClientActor.cs" />
+    <Compile Include="Builtins\Actors\ConsoleProcessActor.cs" />
+    <Compile Include="Builtins\Actors\PingActor.cs" />
+    <Compile Include="Builtins\Actors\Shell.cs" />
+    <Compile Include="Builtins\Wrappers\BandwidthClient.cs" />
+    <Compile Include="Builtins\Wrappers\PingClient.cs" />
     <Compile Include="Functions\FunctionDefinition.cs" />
     <Compile Include="Network\Link.cs" />
-    <Compile Include="Network\Tcp\TcpNode.cs" />
+    <Compile Include="Connections\Tcp\TcpNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\TaskEx.cs" />
     <Compile Include="Connections\Stream\StreamByteReceiver.cs" />
@@ -90,7 +99,6 @@
     <Compile Include="Actors\MailBox.cs" />
     <Compile Include="Actors\Mail.cs" />
     <Compile Include="Actors\PollingResetEvent.cs" />
-    <Compile Include="Network\Defaults.cs" />
     <Compile Include="Proxies\DynamicProxy.cs" />
     <Compile Include="Actors\ActorSettings.cs" />
     <Compile Include="Actors\ActorId.cs" />
@@ -109,8 +117,8 @@
     <Compile Include="Servers\DisposableAction.cs" />
     <Compile Include="Peer\TcpWorld.cs" />
     <Compile Include="Peer\IWorld.cs" />
-    <Compile Include="Examples\Actors\EchoActor.cs" />
-    <Compile Include="Examples\Actors\NewInstance.cs" />
+    <Compile Include="Builtins\Actors\EchoActor.cs" />
+    <Compile Include="Builtins\Actors\NewInstance.cs" />
     <Compile Include="Actors\MessageActor.cs" />
     <Compile Include="Mail\IMailReceiver.cs" />
     <Compile Include="Network\Node.cs" />
@@ -124,9 +132,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RemoteConsole\RemoteConsole.csproj">
+    <ProjectReference Include="..\RemoteConsole\MirrorConsole.csproj">
       <Project>{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}</Project>
-      <Name>RemoteConsole</Name>
+      <Name>MirrorConsole</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

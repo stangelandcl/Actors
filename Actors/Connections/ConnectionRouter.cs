@@ -11,6 +11,17 @@ namespace Actors
 {
     public class ConnectionRouter
     {
+        public ConnectionRouter(Node node)
+        {
+            this.node = node;
+        }
+        Node node;
+        public event EventHandler<MissingEventArgs> ConnectionNotFound;
+        public class MissingEventArgs : EventArgs{
+            public IEndPoint EndPoint;
+            public bool Added;
+        }
+
         Dictionary<IEndPoint, List<IConnection>> connections = new Dictionary<IEndPoint, List<IConnection>>();        
  
         public IDisposable Add(IConnection connection, bool isOutbound)
@@ -48,8 +59,19 @@ namespace Actors
         }       
         public IConnection Get(IEndPoint computer)
         {
+            var conn = GetInternal(computer);
+            if (conn != null) return conn;
+            var added = new MissingEventArgs{EndPoint = computer};
+            ConnectionNotFound.FireEvent(this, added);
+            if (added.Added)
+                return GetInternal(computer);
+            return conn;                       
+        }
+
+        IConnection GetInternal(IEndPoint computer)
+        {
             List<IConnection> c;
-            lock (connections)              
+            lock (connections)
                 foreach (var name in DnsAlias.Get(computer))
                     if (connections.TryGetValue(name, out c))
                         return c[0];

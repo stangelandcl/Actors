@@ -29,11 +29,11 @@ namespace Actors.Example
         private void RunAsClient()
         {
             // create a node
-            using(var node = new TcpNode())
+            using(var node = new TcpNode(18222))
             // connect to an endpoint which is in this case a separate node. 
             // so now we can route messages from actors in this node to the
             // other node
-            using (var conn = node.AddConnection("127.0.0.1", 18222, serializer))
+/* optional */ //           using (var conn = node.AddConnection("127.0.0.1", 18222, serializer))
             {
                 // send async but receive sync. send to localhost/echo which happens to
                 // be in the other node
@@ -44,7 +44,7 @@ namespace Actors.Example
 
                 // DynamicProxy wraps a remote actor.
                 var echo = node.Proxy.New<IEcho>("localhost/System.Echo");
-                // this is the same as SendReceive<string>("localhost/echo", "echo", "hey dude");
+                // this is the same as SendReceive<string>("localhost/System.Echo", "echo", "hey dude");
                 var r2 = echo.Echo("hey dude");
                 // print response
                 Console.WriteLine(r2);
@@ -94,7 +94,7 @@ namespace Actors.Example
         void RunAsServer()
         {
             // a node is like an erlang node. it is like a VM. like its own world
-            using (var node = new TcpNode())
+            using (var node = new TcpNode(18223))
             using(var server = node.AddListener(18222, serializer))
             {                              
                 // add actor, an actor is like an object. it can send & receive messages

@@ -13,11 +13,6 @@ namespace Actors.Connections.Ssl.Stream
     {
         public SslByteConnection(TcpClient client, SslStream stream)
             : base(client, stream)
-        { }
-
-        public static SslByteConnection New(TcpClient client)
-        {
-            throw new NotImplementedException();
-        }
+        { }      
     }
 }
