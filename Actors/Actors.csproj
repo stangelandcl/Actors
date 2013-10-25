@@ -49,7 +49,8 @@
       <Link>Serialization\JsonSerializer.cs</Link>
     </Compile>
     <Compile Include="Builtins\Actors\DhtActor.cs" />
-    <Compile Include="Builtins\Clients\IDht.cs" />
+    <Compile Include="Dht\DhtMemoryBackend.cs" />
+    <Compile Include="Dht\IDht.cs" />
     <Compile Include="Connections\Bytes\ByteConnection.cs" />
     <Compile Include="Connections\Bytes\EndPoint.cs" />
     <Compile Include="Connections\Bytes\IEndPoint.cs" />
@@ -73,7 +74,6 @@
     <Compile Include="Connections\Tcp\TcpListeners.cs" />
     <Compile Include="Dht\DhtMetadata.cs" />
     <Compile Include="Dht\DhtRing.cs" />
-    <Compile Include="Dht\DistributedHashTable.cs" />
     <Compile Include="Dht\ILocalData.cs" />
     <Compile Include="Builtins\Clients\IBandwidth.cs" />
     <Compile Include="Builtins\Clients\IEcho.cs" />

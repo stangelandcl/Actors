@@ -13,6 +13,12 @@ namespace Actors
 				d[key] = v = Activator.CreateInstance<TValue>();
 			return v;
 		}
+        public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> d, TKey key)
+        {
+            TValue v;
+            d.TryGetValue(key, out v);            
+            return v;
+        }
 
         public static T FindOrDefault<T>(this IEnumerable<T> items, T other)
         {

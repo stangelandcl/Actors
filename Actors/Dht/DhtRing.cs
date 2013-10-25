@@ -26,6 +26,36 @@ namespace Actors.Dht
             }
         }
 
+        public ActorId? Predecessor
+        {
+            get
+            {
+                lock (actors)
+                {
+                    var index = SelfIndex;
+                    var start = index;
+                    if(--index < 0) index = actors.Count-1;
+                    if (index == start) return null;
+                    return actors[index];
+                }
+            }
+        }
+
+        public ActorId? Successor
+        {
+            get
+            {
+                lock (actors)
+                {
+                    var index = SelfIndex;
+                    var start = index;
+                    if (++index == actors.Count) index = 0;
+                    if (index == start) return null;
+                    return actors[index];
+                }
+            }
+        }
+
         
         public void AddRange(IEnumerable<ActorId> actors)
         {

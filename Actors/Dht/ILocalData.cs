@@ -8,7 +8,7 @@ namespace Actors.Dht
 {
     public interface ILocalData : IDht
     {
-        KeyValuePair<object, object>[] Data { get; }
-        void AddRange(IEnumerable<KeyValuePair<object, object>> items);
+        KeyValuePair<object, List<object>>[] Data { get; }
+        void AddRange(IEnumerable<KeyValuePair<object, List<object>>> items);
     }
 }

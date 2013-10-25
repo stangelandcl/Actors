@@ -7,6 +7,9 @@ using Actors.Proxies;
 using Serialization;
 using Actors.Connections.Tcp;
 using Actors.Connections.Bytes;
+using Actors.Builtin.Clients;
+using Actors.Dht;
+using Actors.Builtin.Actors;
 
 namespace Actors
 {
@@ -23,6 +26,9 @@ namespace Actors
             world.Add(Default);
             Proxy = new ProxyFactory(this);
             router = new ConnectionRouter(this);
+            var dhtActor = new DhtActor(new DhtMemoryBackend());
+            Add(dhtActor);
+            Dht = dhtActor;
             server.Connected += HandleConnected;         
         }
 
@@ -31,7 +37,8 @@ namespace Actors
         public string Name { get; set; }
         public ISerializer Serializer { get; set; }
         public LinkMap Links { get; set; }
-        public Listeners server;
+        public IDht Dht { get; private set; }
+        protected Listeners server;
         protected TcpWorld world;
         protected ConnectionRouter router;
 
@@ -100,14 +107,16 @@ namespace Actors
 			mailSender.Send(mail);
 			return mail.MessageId;
 		}
-		public void Send (ActorId to, ActorId fromId, FunctionId name, params object[] args)
+		public MessageId Send (ActorId to, ActorId fromId, FunctionId name, params object[] args)
 		{           
-			Send(new Mail{To = to, From = fromId, MessageId = MessageId.New(), Name = name, Args = args});
+            var id = MessageId.New();
+			Send(new Mail{To = to, From = fromId, MessageId = id, Name = name, Args = args});
+            return id;
 		}
 		
-		public void Reply (Mail mail, params object[] args)
+		public MessageId Reply (Mail mail, params object[] args)
 		{
-			Send(new Mail{To = mail.From, From = mail.To, MessageId = mail.MessageId, Name = "On" + mail.Name + "Reply", Args = args});
+			return Send(new Mail{To = mail.From, From = mail.To, MessageId = mail.MessageId, Name = "On" + mail.Name + "Reply", Args = args});
 		}
 		#endregion		
 	}

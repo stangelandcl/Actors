@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Actors.Dht;
+using Actors.Builtin.Clients;
 
 namespace Actors.Builtin.Actors
 {
-    public class DhtActor : Actor
+    public class DhtActor : Actor, IDht
     {
         public DhtActor(ILocalData cache, string shortname = "System.Dht")
             : base(shortname)
         {
             this.cache = cache;
             this.ring = new DhtRing(Box.Id);
+            Loop();
         }
 
+        static readonly int nodeCheckIntervalMs = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
+        static readonly TimeSpan nodeCheckTime = TimeSpan.FromSeconds(5);
         ILocalData cache;
         DhtRing ring;
 
@@ -27,13 +31,13 @@ namespace Actors.Builtin.Actors
             foreach (var to in sendTo)
             {
                 var args = new object[m.Args.Length];
-                args[0] = new DhtMetadata{Originator = meta.Originator, TimeToLive = i++};
+                args[0] = new DhtMetadata { Originator = meta.Originator, TimeToLive = i++ };
                 Array.Copy(m.Args, 1, args, 1, args.Length-1);
                 Node.Send(to, Box.Id, m.Name, args);
             }
         }
 
-        void JoinReply(Mail m, DhtMetadata meta, ActorId[] actors, KeyValuePair<object, object>[] data)
+        void JoinReply(Mail m, DhtMetadata meta, ActorId[] actors, KeyValuePair<object, List<object>>[] data)
         {
             ring.AddRange(actors);
             cache.AddRange(data);
@@ -42,10 +46,21 @@ namespace Actors.Builtin.Actors
         void Join(Mail m, DhtMetadata meta)
         {
             Node.Send(meta.Originator, Box.Id, "JoinReply", ring.Actors, cache.Data);
+            SendToRing("PeerAdded", m.From);          
+        }
+     
+        void SendToRing(FunctionId name, params object[] args)
+        {
             var sendTo = ring.FindAllMax();
             int i = 0;
-            foreach (var to in sendTo) 
-                Node.Send(to, Box.Id, "PeerAdded", new DhtMetadata { Originator = Box.Id, TimeToLive = i++ });                       
+            foreach (var to in sendTo)
+            {
+                var toArgs = new object[args.Length + 1];
+                toArgs[0] = new DhtMetadata { Originator = Box.Id, TimeToLive = i++ };
+                for(int j=1;j<toArgs.Length;j++)
+                    toArgs[j] = args[j-1];
+                Node.Send(to, Box.Id, name, toArgs);
+            }
         }
 
         void PeerAdded(Mail m, DhtMetadata meta, ActorId peer)
@@ -54,15 +69,25 @@ namespace Actors.Builtin.Actors
             Forward(m);
         }
 
+        void IsAlive(Mail m)
+        {
+            Node.Reply(m);
+        }        
+
         void PeerRemoved(Mail m, DhtMetadata meta, ActorId peer)
         {
             ring.Remove(peer);
             Forward(m);
         }
 
-        void Add(Mail m, DhtMetadata meta, object key, object value)
+        void Get(Mail m, object key)
+        {            
+            Node.Reply(m, cache.Get(key));
+        }
+
+        void Replace(Mail m, DhtMetadata meta, object key, object value)
         {
-            cache[key] = value;
+            cache.Replace(key, value);
             Forward(m);
         }
 
@@ -74,33 +99,71 @@ namespace Actors.Builtin.Actors
 
         void Append(Mail m, DhtMetadata meta, object key, object value)
         {
-            var x = cache[key];
-            if (x == null)
-                x = new List<object>();
-            else if (!(x is List<object>))
-                x = new List<object>(Enumerable.Repeat(x, 1));
-            var list = (List<object>)x;
-            list.Add(value);
+            cache.Append(key, value);
             Forward(m);
         }
 
         void Remove(Mail m, DhtMetadata meta, object key, object value)
         {
-            var x = cache[key];
-            if (x == null) return;
-            if (!(x is List<object>))
-            {
-                if (x.Equals(value))
-                    cache.Remove(key);
-            }
-            else
-            {
-                var list = (List<object>)x;
-                list.Remove(value);
-                if (list.Count == 0)
-                    cache.Remove(key);
-            }
+            cache.Remove(key, value);
             Forward(m);
+        }
+
+
+        private void Loop()
+        {
+            Run(CheckAlive, nodeCheckIntervalMs);
+        }
+
+
+        void CheckAlive()
+        {
+            try
+            {
+                var predecessor = ring.Predecessor;
+                if (predecessor.HasValue)
+                    CheckAlive(predecessor.Value);
+
+                var successor = ring.Successor;
+                if (successor.HasValue)
+                    CheckAlive(successor.Value);
+            }
+            finally
+            {
+                Loop();
+            }
+        }
+
+        private void CheckAlive(ActorId node)
+        {
+            var msg = Node.Send(node, Box.Id, "IsAlive");
+            var mail = Box.WaitFor(msg, nodeCheckTime);
+            if (mail == null)
+                SendToRing("PeerRemoved", node);          
+        }
+
+        public List<object> Get(object key)
+        {
+            return cache.Get(key);
+        }
+
+        public void Replace(object key, object value)
+        {
+            SendToRing("Replace", key, value);
+        }
+        public void Remove(object key)
+        {
+            SendToRing("Remove", key);
+        }
+
+        public void Append(object key, object value)
+        {
+            SendToRing("Append", key, value);
+        }
+
+        public void Remove(object key, object value)
+        {
+            SendToRing("Remove", key, value);
         }
     }
 }

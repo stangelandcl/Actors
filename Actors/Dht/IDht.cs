@@ -7,7 +7,8 @@ namespace Actors.Builtin.Clients
 {
     public interface IDht
     {
-        object this[object key] { get; set; }
+        List<object> Get(object key);
+        void Replace(object key, object value);
         void Remove(object key);
         void Append(object key, object value);
         void Remove(object key, object value);

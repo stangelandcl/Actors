@@ -110,14 +110,16 @@ namespace Actors
         /// send the died message to any linked actors.
         /// </summary>
         /// <param name="action"></param>
-        /// <param name="ms"></param>
-        protected void Run(Action action, int ms = 0)
+        /// <param name="delayInMilliseconds"></param>
+        protected void Run(Action action, int delayInMilliseconds = 0)
         {
             try
             {
                 if (!IsAlive) return;
-                if (ms > 0) TaskEx.Delay(ms).ContinueWith(task => action());
-                else Task.Factory.StartNew(action);
+                if (delayInMilliseconds > 0)
+                    TaskEx.Delay(delayInMilliseconds).ContinueWith(task => action());
+                else 
+                    Task.Factory.StartNew(action);
             }
             catch (Exception ex)
             {
