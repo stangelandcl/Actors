@@ -47,6 +47,13 @@ namespace Actors
 		public Node Node {get; internal set;}
         public bool IsAlive { get; private set; }
         Dictionary<string, MethodInfo> functions;
+
+        public virtual void AttachNode(Node node)
+        {
+            Node = node;
+            Box.Id = new ActorId(System.Environment.MachineName + "/" + Box.Id);
+        }
+
         public static implicit operator ActorId(Actor a){
             return a.Box.Id;
         }

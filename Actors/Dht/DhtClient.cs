@@ -12,7 +12,7 @@ namespace Actors.Dht
         {
             this.dht = dht;
             this.serializer = serializer;
-            dht.KeyMatch += HandleKeyMatch;
+           // dht.KeyMatch += HandleKeyMatch;
         }
 
         IByteDht dht;
@@ -52,7 +52,7 @@ namespace Actors.Dht
 
         public void Dispose()
         {
-            dht.KeyMatch -= KeyMatch;
+          //  dht.KeyMatch -= KeyMatch;
             dht.Dispose();
         }
     }

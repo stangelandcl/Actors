@@ -92,8 +92,7 @@ namespace Actors
 
         public void Add<T>(T a) where T : Actor
         {
-            a.Node = this;
-            a.Box.Id = new ActorId(System.Environment.MachineName + "/" + a.Box.Id);
+            a.AttachNode(this);          
             world.Add(a);
         }
 

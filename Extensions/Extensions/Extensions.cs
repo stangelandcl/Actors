@@ -22,7 +22,7 @@ namespace System
 
 		public static void Connect(this TcpClient client, string host, int port, TimeSpan timeout){
 			var state = new ConnectState{Client = client};
-			client.BeginConnect(host, port, EndConnect, client);
+			client.BeginConnect(host, port, EndConnect, state);
 						
 			var sw = Stopwatch.StartNew();
 			while(state.State == 0 && sw.Elapsed < timeout)			
