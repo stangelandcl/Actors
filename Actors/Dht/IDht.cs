@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Actors.Builtin.Clients
+namespace Actors.Dht
 {
-    public interface IDht
+    public interface IDht : IDisposable
     {
-        List<object> Get(object key);
-        void Replace(object key, object value);
-        void Remove(object key);
-        void Append(object key, object value);
-        void Remove(object key, object value);
+        T Get<T>(string key);
+        void Add<T>(string key, T value);
+        void Remove(string key);
+
+        void Subscribe(string operationRegex, string keyRegex);
+        void Unsubscribe(string operationRegex, string regex);
+        event Action<string, string> KeyMatch;      
     }
 }

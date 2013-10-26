@@ -7,9 +7,12 @@ using Actors.Proxies;
 using Serialization;
 using Actors.Connections.Tcp;
 using Actors.Connections.Bytes;
-using Actors.Builtin.Clients;
 using Actors.Dht;
-using Actors.Builtin.Actors;
+using Actors.Builtins.Actors;
+using Actors.Examples;
+using Actors.Examples.Actors;
+using System.Collections.Generic;
+using Actors.Builtins.Actors.Dht;
 
 namespace Actors
 {
@@ -25,22 +28,27 @@ namespace Actors
             Default = new DefaultActor(new MailBox(System.Environment.MachineName + "/default"), this);
             world.Add(Default);
             Proxy = new ProxyFactory(this);
-            router = new ConnectionRouter(this);
-            var dhtActor = new DhtActor(new DhtMemoryBackend());
-            Add(dhtActor);
-            Dht = dhtActor;
+            router = new ConnectionRouter(this);         
             server.Connected += HandleConnected;         
-        }
+        }       
 
         public ProxyFactory Proxy { get; private set; }
         public DefaultActor Default { get; private set; }
         public string Name { get; set; }
         public ISerializer Serializer { get; set; }
-        public LinkMap Links { get; set; }
-        public IDht Dht { get; private set; }
+        public LinkMap Links { get; set; }       
         protected Listeners server;
         protected TcpWorld world;
         protected ConnectionRouter router;
+
+        public void AddBuiltins()
+        {
+            Add(new BandwidthActor());
+            Add(new EchoActor());
+            Add(new PingActor());
+            Add(new Shell());
+            Add(new DhtActor(new DhtMemoryBackend()));
+        }
 
         public virtual void Dispose()
         {            
@@ -51,6 +59,11 @@ namespace Actors
         void HandleConnected(IConnection obj)
         {
             AddConnection(obj, isOutbound: false);
+        }
+
+        public IDisposable AddConnection(Func<IConnection> connection, bool isOutBound  = true)
+        {
+            return ConnectionFactory.Connect(this, connection, isOutBound);
         }
 
         public IDisposable AddConnection(IConnection connection, bool isOutbound = true)
@@ -98,6 +111,15 @@ namespace Actors
 		}
 
 		#region IMailSender implementation
+        //public void SendStream(ActorId to, ActorId from, string name, IEnumerable<object[]> mails)
+        //{
+        //    if (to.IsEmpty) return;
+        //    var sender = router.Get(to);
+        //    if (sender == null) return;
+        //    var mailSender = new MailSender(sender.Sender);
+        //    mailSender.SendStream(
+        //}
+
 		public MessageId Send (Mail mail)
 		{
             if (mail.To.IsEmpty) return MessageId.Empty;
@@ -107,6 +129,7 @@ namespace Actors
 			mailSender.Send(mail);
 			return mail.MessageId;
 		}
+
 		public MessageId Send (ActorId to, ActorId fromId, FunctionId name, params object[] args)
 		{           
             var id = MessageId.New();

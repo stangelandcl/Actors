@@ -29,7 +29,8 @@ namespace Actors.Network.Tcp
 
         public IDisposable AddConnection(string host, int port, ISerializer serializer)
         {
-            return AddConnection(new TcpClient(host, port), serializer);
+            return AddConnection(() =>
+                new Connection(new TcpByteConnection(new TcpClient(host, port)), serializer));
         }
 
         public IDisposable AddConnection(TcpClient client, ISerializer serializer)

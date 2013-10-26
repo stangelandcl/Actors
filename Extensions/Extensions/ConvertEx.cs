@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 
-namespace Actors
+namespace System
 {
-    public static class ConvertEx
+    static class ConvertEx
     {
         public static T Convert<T>(this object o)
         {

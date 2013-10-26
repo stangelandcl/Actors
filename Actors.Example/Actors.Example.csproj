@@ -49,6 +49,10 @@
       <Project>{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}</Project>
       <Name>MirrorConsole</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Serialization\Serialization.csproj">
+      <Project>{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}</Project>
+      <Name>Serialization</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

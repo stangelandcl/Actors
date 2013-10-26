@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace Actors.Tasks
+namespace System
 {   
-    public static class TaskEx
+    static class TaskEx
     {
         static readonly Task _sPreCompletedTask = GetCompletedTask();
         static readonly Task _sPreCanceledTask = GetPreCanceledTask();

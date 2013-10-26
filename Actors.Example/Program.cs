@@ -6,6 +6,8 @@ using RemoteConsole;
 using System.Threading;
 using Actors.Network.Tcp;
 using Serialization;
+using Actors.Dht;
+using Actors.Builtins.Actors.Dht;
 
 namespace Actors.Example
 {
@@ -60,6 +62,19 @@ namespace Actors.Example
                 var bw = new BandwidthClient(bandwidth, ping);
                 Console.WriteLine("bandwidth = " + bw.Test());
 
+                using (var dht = new DhtClient(node.Proxy.New<IByteDht>("localhost/System.Dht"), new JsonSerializer()))
+                {
+                    dht.Add("abc", "123");
+                    dht.Subscribe(".*", ".*");
+                    dht.KeyMatch += (operation, key) =>
+                    {
+                        Console.WriteLine("DHT callback " + operation + " key=" + key);
+                    };
+                    dht.Add("def", "456");
+                    var x = dht.Get<string>("abc");
+                }
+
+
 
                 using (var shell = new ConsoleClientActor("cmd.exe-client"))
                 {
@@ -102,6 +117,7 @@ namespace Actors.Example
                 node.Add(new EchoActor());
                 node.Add(new PingActor());
                 node.Add(new Shell());
+                node.Add(new DhtActor(new DhtMemoryBackend()));
                 //using (var cmd = new ConsoleProcessActor("cmd.exe", "cmd.exe"))
                 //{
                 //    node.Add(cmd);

@@ -3,7 +3,6 @@ using System.Net.Sockets;
 using System.Linq;
 using System.Diagnostics;
 using Actors.Connections.Bytes;
-using Actors.Tasks;
 using System.Net;
 using System.IO;
 
@@ -29,16 +28,9 @@ namespace Actors
 
         public void Send(byte[] bytes)
         {
-            var buffer = new Message
-            {
-                Bytes = BitConverter.GetBytes(bytes.Length)
-            };                
-            SendRaw(buffer);
-            var buffer2 = new Message
-            {
-                Bytes = bytes
-            };
-            SendRaw(buffer2);
+            var b = new byte[bytes.Length + 4];
+            var buffer = new Message { Bytes = b.Write(bytes.Length).Write(bytes, 4) };                       
+            SendRaw(buffer);          
         }
 
         void SendRaw(Message buffer)

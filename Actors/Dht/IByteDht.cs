@@ -5,13 +5,15 @@ using System.Text;
 
 namespace Actors.Dht
 {
-    public interface ILocalData 
+    public interface IByteDht : IDisposable
     {
-        KeyValuePair<string, byte[]>[] Data { get; }
-        void AddRange(IEnumerable<KeyValuePair<string, byte[]>> items);
-
         byte[] Get(string key);
         void Add(string key, byte[] value);
         void Remove(string key);
+
+        void Subscribe(string operationRegex, string keyRegex);
+        void Unsubscribe(string operationRegex, string keyRegex);
+        event Action<string, string> KeyMatch;    
     }
+
 }

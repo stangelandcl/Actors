@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Actors.Dht
 {
-    class DhtRing
+    public class DhtRing
     {
         public DhtRing(DhtId self)
         {
@@ -19,37 +19,6 @@ namespace Actors.Dht
         DhtId selfId;
         List<DhtId> actors = new List<DhtId>();
         SHA1Managed sha = new SHA1Managed();
-        List<Subscription> subscriptions = new List<Subscription>();
-
-        public void Subscribe(DhtId node, string opRegex, string keyRegex)
-        {
-            var subscription = new Subscription(node, opRegex, keyRegex);
-            Subscribe(subscription);                   
-        }
-
-        public void Subscribe(Subscription subscription)
-        {
-            lock (subscriptions)
-                subscriptions.Add(subscription);
-        }
-
-        public void Unsubscribe(DhtId node, string opRegex, string keyRegex)
-        {
-            var subscription = new Subscription(node, opRegex, keyRegex);
-            Unsubscribe(subscription);
-        }
-
-        public void Unsubscribe(Subscription subscription)
-        {
-            lock (subscriptions)
-                subscriptions.Remove(subscription);
-        }
-
-        public Subscription[] GetMatches(string operation, string key)
-        {
-            lock (subscriptions)
-                return subscriptions.Where(n => n.IsMatch(operation, key)).ToArray();
-        }
 
         
         public DhtId[] Actors
@@ -91,7 +60,7 @@ namespace Actors.Dht
             }
         }
 
-        public DhtId[] FindClosest(DhtId key, float ratio = .1f, int minCount = 3, int maxCount = int.MaxValue)
+        public DhtId[] FindClosest(DhtId key, float ratio = 1f, int minCount = 3, int maxCount = int.MaxValue)
         {
             var count = (int)Math.Ceiling(actors.Count * ratio);
             count = count.Bound(minCount, maxCount);

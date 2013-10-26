@@ -42,15 +42,26 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Serialization\ISerializer.cs">
-      <Link>Serialization\ISerializer.cs</Link>
+    <Compile Include="..\Extensions\Extensions\ByteArrayComparer.cs">
+      <Link>Extensions\ByteArrayComparer.cs</Link>
     </Compile>
-    <Compile Include="..\Serialization\JsonSerializer.cs">
-      <Link>Serialization\JsonSerializer.cs</Link>
+    <Compile Include="..\Extensions\Extensions\ConvertEx.cs">
+      <Link>Extensions\ConvertEx.cs</Link>
     </Compile>
-    <Compile Include="Builtins\Actors\DhtActor.cs" />
-    <Compile Include="Dht\DhtMemoryBackend.cs" />
-    <Compile Include="Dht\IDht.cs" />
+    <Compile Include="..\Extensions\Extensions\Disposable.cs">
+      <Link>Extensions\Disposable.cs</Link>
+    </Compile>
+    <Compile Include="..\Extensions\Extensions\Extensions.cs">
+      <Link>Extensions\Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Extensions\Extensions\TaskEx.cs">
+      <Link>Extensions\TaskEx.cs</Link>
+    </Compile>
+    <Compile Include="Builtins\Actors\Dht\DhtActor.cs" />
+    <Compile Include="Builtins\Actors\Dht\HeartbeatMonitor.cs" />
+    <Compile Include="Builtins\Actors\Dht\RingSender.cs" />
+    <Compile Include="Builtins\Actors\FileCopyActor.cs" />
+    <Compile Include="Connections\Messages\ConnectionFactory.cs" />
     <Compile Include="Connections\Bytes\ByteConnection.cs" />
     <Compile Include="Connections\Bytes\EndPoint.cs" />
     <Compile Include="Connections\Bytes\IEndPoint.cs" />
@@ -72,14 +83,20 @@
     <Compile Include="Connections\Tcp\Stream\TcpStreamConnection.cs" />
     <Compile Include="Connections\Tcp\TcpConnector.cs" />
     <Compile Include="Connections\Tcp\TcpListeners.cs" />
+    <Compile Include="Dht\DhtClient.cs" />
+    <Compile Include="Dht\DhtId.cs" />
+    <Compile Include="Dht\DhtMemoryBackend.cs" />
     <Compile Include="Dht\DhtMetadata.cs" />
-    <Compile Include="Dht\DhtRing.cs" />
-    <Compile Include="Dht\ILocalData.cs" />
     <Compile Include="Builtins\Clients\IBandwidth.cs" />
     <Compile Include="Builtins\Clients\IEcho.cs" />
     <Compile Include="Builtins\Clients\IPing.cs" />
     <Compile Include="Builtins\Clients\IShell.cs" />
-    <Compile Include="Extensions\ConvertEx.cs" />
+    <Compile Include="Dht\DhtRing.cs" />
+    <Compile Include="Dht\IByteDht.cs" />
+    <Compile Include="Dht\IDht.cs" />
+    <Compile Include="Dht\ILocalData.cs" />
+    <Compile Include="Dht\Subscription.cs" />
+    <Compile Include="Dht\SubscriptionEventArgs.cs" />
     <Compile Include="Events\Publisher.cs" />
     <Compile Include="Builtins\Actors\BandwidthActor.cs" />
     <Compile Include="Builtins\Actors\ConsoleClientActor.cs" />
@@ -92,7 +109,6 @@
     <Compile Include="Network\Link.cs" />
     <Compile Include="Connections\Tcp\TcpNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extensions\TaskEx.cs" />
     <Compile Include="Connections\Stream\StreamByteReceiver.cs" />
     <Compile Include="Connections\Stream\StreamByteSender.cs" />
     <Compile Include="Actors\Actor.cs" />
@@ -114,7 +130,6 @@
     <Compile Include="Names\NameResolver.cs" />
     <Compile Include="Proxies\ProxyFactory.cs" />
     <Compile Include="Proxies\RemoteActorProxy.cs" />
-    <Compile Include="Servers\DisposableAction.cs" />
     <Compile Include="Peer\TcpWorld.cs" />
     <Compile Include="Peer\IWorld.cs" />
     <Compile Include="Builtins\Actors\EchoActor.cs" />
@@ -123,7 +138,6 @@
     <Compile Include="Mail\IMailReceiver.cs" />
     <Compile Include="Network\Node.cs" />
     <Compile Include="Actors\DefaultActor.cs" />
-    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Names\DnsAlias.cs" />
     <Compile Include="Proxies\RemoteActor.cs" />
   </ItemGroup>
@@ -135,6 +149,10 @@
     <ProjectReference Include="..\RemoteConsole\MirrorConsole.csproj">
       <Project>{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}</Project>
       <Name>MirrorConsole</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Serialization\Serialization.csproj">
+      <Project>{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}</Project>
+      <Name>Serialization</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

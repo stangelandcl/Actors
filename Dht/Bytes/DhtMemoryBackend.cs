@@ -22,7 +22,7 @@ namespace Actors.Dht
                 data[kvp.Key] = kvp.Value;
         }
 
-        public void Add(string key, byte[] value)
+        public void Put(string key, byte[] value)
         {
             data[key] = value;
 
@@ -33,7 +33,7 @@ namespace Actors.Dht
             return data.GetOrDefault(key);
         }
 
-        public void Remove(string key)
+        public void Delete(string key)
         {
             data.Remove(key);
         }

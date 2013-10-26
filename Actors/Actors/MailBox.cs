@@ -75,6 +75,31 @@ namespace Actors
 			}
 		}
 
+        //public Mail WaitForAny(IEnumerable<MessageId> ids, TimeSpan? timeout = null)
+        //{
+        //    var set = ids.ToHashSet();
+        //    timeout = timeout ?? defaultTimeout;
+        //    while (true)
+        //    {
+        //        lock (mail)
+        //        {
+        //            if (mail.Any(n=> set.Contains(n.MessageId)))
+        //            {
+        //                var m = mail.First.Value;
+        //                mail.RemoveFirst();
+        //                return m;
+        //            }
+        //        }
+
+        //        if (hasMail.WaitOne(timeout.Value))
+        //        {
+        //            lock (hasMail) hasMail.Reset();
+        //            continue;
+        //        }
+        //        return null;
+        //    }
+        //}
+
 		public Mail WaitForAny(TimeSpan? timeout = null){
 			timeout = timeout ?? defaultTimeout;
 			while(true){
