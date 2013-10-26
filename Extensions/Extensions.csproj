@@ -48,9 +48,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\ClassEqualityTemplate.tt">
-      <LastGenOutput>ClassEqualityTemplate.cs</LastGenOutput>
-    </None>
     <None Include="Templates\StructEqualityTemplate.tt" />
   </ItemGroup>
   <ItemGroup>

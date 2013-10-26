@@ -1,23 +1,20 @@
 ﻿using System;
 <# 
 	foreach(var className in ClassNames){
-		var NamespaceName = className[0];
-		var ClassName = className[1];		
+		var Split = className.Split('.');
+		var NamespaceName = "";
+		for(int i=0;i<Split.Length-1;i++){
+			if(i > 0) NamespaceName += ".";
+			NamespaceName += Split[i];
+        }
+		var ClassName = Split[Split.Length-1];	
 #>
 namespace <#= NamespaceName #>
 {
-    partial struct <#= ClassName #> : IEquatable<<#= ClassName #>>
+    partial <#= StructOrClass #> <#= ClassName #> : IEquatable<<#= ClassName #>>
     {
         public override bool Equals(object other)
-        {
-		<# 
-			string path = this.Host.ResolvePath("");
-			string file1 = Path.Combine(path, "MyClass.cs");
-			string file2 = Path.Combine(path, "MyClass2.cs");
-			Parser p = new Parser(new string[] { file1, file2 }, "T4ClassProperties.MyClass");
-			p.
-		#>
-
+        {		
 			if(other == null || other.GetType() != GetType())
 				return false;
             return Equals((<#= ClassName #>)other);
@@ -49,11 +46,13 @@ namespace <#= NamespaceName #>
 #>
 
 <#+
-    public void SetClassName(string[][] classes)
+    public void SetClassName(string structOrClass, string classes)
     {
-        ClassNames = classes;        
+		StructOrClass = structOrClass;
+        ClassNames = classes.Split(' ');
     }
  
-    string[][] ClassNames;   
+	string StructOrClass;
+    string[] ClassNames;   
 
 #>

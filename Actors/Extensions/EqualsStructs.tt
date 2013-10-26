@@ -1,8 +1,5 @@
 ﻿<#@ template language="C#" debug="true" hostSpecific="true" #>
 <#@ output extension=".g.cs" #>
-<# SetClassName(new[]{
-	new []{"Actors", "ActorId"},
-	new []{"Actors.Network", "NodeId"}
-	}); #>
+<# SetClassName("struct", "Actors.ActorId Actors.Network.NodeId"); #>
 <#@include file="../../Extensions/Templates/StructEqualityTemplate.tt" #>
 
