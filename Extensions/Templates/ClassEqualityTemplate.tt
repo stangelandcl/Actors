@@ -1,0 +1,41 @@
+﻿namespace <#= NamespaceName #>
+{
+    partial class <#= ClassName #>
+    {
+        public override bool Equals(object other)
+        {
+            return Equals(other as <#= ClassName #>);
+        }
+
+         public static bool operator==(<#= ClassName #> left, <#= ClassName #> right)
+		 {
+            if (ReferenceEquals(left, right))
+			     return true;
+			else if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+			      return false;
+            else
+                return left.Equals(right);
+        }
+
+        public static bool operator!=(<#= ClassName #> left, <#= ClassName #> right)
+        {
+            if (ReferenceEquals(left, right))
+                return false;
+            else if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+                return true;
+            else
+                return !left.Equals(right);
+        }
+    }
+}
+
+<#+
+    public void SetClassName(string namespaceName, string className)
+    {
+        NamespaceName = namespaceName;
+        ClassName = className;
+    }
+ 
+    string NamespaceName;
+    string ClassName;
+#>

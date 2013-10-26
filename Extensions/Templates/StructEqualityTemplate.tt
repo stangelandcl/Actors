@@ -1,0 +1,59 @@
+﻿using System;
+<# 
+	foreach(var className in ClassNames){
+		var NamespaceName = className[0];
+		var ClassName = className[1];		
+#>
+namespace <#= NamespaceName #>
+{
+    partial struct <#= ClassName #> : IEquatable<<#= ClassName #>>
+    {
+        public override bool Equals(object other)
+        {
+		<# 
+			string path = this.Host.ResolvePath("");
+			string file1 = Path.Combine(path, "MyClass.cs");
+			string file2 = Path.Combine(path, "MyClass2.cs");
+			Parser p = new Parser(new string[] { file1, file2 }, "T4ClassProperties.MyClass");
+			p.
+		#>
+
+			if(other == null || other.GetType() != GetType())
+				return false;
+            return Equals((<#= ClassName #>)other);
+        }		
+
+         public static bool operator==(<#= ClassName #> left, <#= ClassName #> right)
+		 {
+            if (ReferenceEquals(left, right))
+			     return true;
+			else if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+			      return false;
+            else
+                return left.Equals(right);
+        }
+
+        public static bool operator!=(<#= ClassName #> left, <#= ClassName #> right)
+        {
+            if (ReferenceEquals(left, right))
+                return false;
+            else if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+                return true;
+            else
+                return !left.Equals(right);
+        }
+    }
+}
+
+<# } // end foreach 
+#>
+
+<#+
+    public void SetClassName(string[][] classes)
+    {
+        ClassNames = classes;        
+    }
+ 
+    string[][] ClassNames;   
+
+#>

@@ -17,7 +17,7 @@ namespace Actors
 	public abstract class Actor : IDisposable
 	{
         public Actor(string shortName)
-            : this(new MailBox(shortName), null)
+            : this(new MailBox(new ActorId(shortName)), null)
         { }        
 
 		public Actor(MailBox box, Node node)
@@ -51,7 +51,7 @@ namespace Actors
         public virtual void AttachNode(Node node)
         {
             Node = node;
-            Box.Id = new ActorId(System.Environment.MachineName + "/" + Box.Id);
+            Box.Id = new ActorId(System.Environment.MachineName, Node.Id ,Box.Id.Name);
         }
 
         public static implicit operator ActorId(Actor a){

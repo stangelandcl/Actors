@@ -20,13 +20,48 @@ namespace Actors.Example
             {
                 new MainClass().RunAsServer();
             }
-            else
+            else if(args[0] == "client")
             {
                 new MainClass().RunAsClient();
+            }
+            else if (args[0] == "both")
+            {
+                new MainClass().RunAsBoth();
+            }
+            else
+            {
+                Console.WriteLine("choose server, client, or both");
             }
 		}
 
         static ISerializer serializer;
+
+        private void RunAsBoth()
+        {
+            // a node is like an erlang node. it is like a VM. like its own world
+            using (var node = new TcpNode(18223))
+            using (var server = node.AddListener(18222, serializer))
+            {
+                // add actor, an actor is like an object. it can send & receive messages
+                node.Add(new BandwidthActor());
+                node.Add(new EchoActor());
+                node.Add(new PingActor());
+                node.Add(new DhtActor(new DhtMemoryBackend()));
+
+                var echo = node.Proxy.New<IEcho>(new ActorId("localhost", "System.Echo"));
+                // this is the same as SendReceive<string>("localhost/System.Echo", "echo", "hey dude");
+                var r2 = echo.Echo("hey dude");
+                // print response
+                Console.WriteLine(r2);
+                //using (var cmd = new ConsoleProcessActor("cmd.exe", "cmd.exe"))
+                //{
+                //    node.Add(cmd);
+                //    while (cmd.IsAlive)
+                //        Thread.Sleep(10);                  
+                //}
+                Thread.Sleep(Timeout.Infinite);
+            }
+        }        
 
         private void RunAsClient()
         {
@@ -39,30 +74,30 @@ namespace Actors.Example
             {
                 // send async but receive sync. send to localhost/echo which happens to
                 // be in the other node
-                var result = node.Default.SendReceive<string>("localhost/System.Echo", "Echo", "hi");
+                var result = node.Default.SendReceive<string>(new ActorId("System.Echo"), "Echo", "hi");
                 // print response
                 Console.WriteLine(result);
 
 
                 // DynamicProxy wraps a remote actor.
-                var echo = node.Proxy.New<IEcho>("localhost/System.Echo");
+                var echo = node.Proxy.New<IEcho>(new ActorId("localhost", "System.Echo"));
                 // this is the same as SendReceive<string>("localhost/System.Echo", "echo", "hey dude");
                 var r2 = echo.Echo("hey dude");
                 // print response
                 Console.WriteLine(r2);
 
-                var ping = node.Proxy.New<IPing>("localhost/System.Ping");
+                var ping = node.Proxy.New<IPing>(new ActorId("localhost", "System.Ping"));
                 var pong = ping.Ping(new byte[1024]);
                 Console.WriteLine("ping-pong " + pong.Length);
 
                 var client = new PingClient(ping);
                 Console.WriteLine("delay = " + client.Ping(10));
 
-                var bandwidth = node.Proxy.New<IBandwidth>("localhost/System.Bandwidth");
+                var bandwidth = node.Proxy.New<IBandwidth>(new ActorId("localhost", "System.Bandwidth"));
                 var bw = new BandwidthClient(bandwidth, ping);
                 Console.WriteLine("bandwidth = " + bw.Test());
 
-                using (var dht = new DhtClient(node.Proxy.New<IByteDht>("localhost/System.Dht"), new JsonSerializer()))
+                using (var dht = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("localhost", "System.Dht")), new JsonSerializer()))
                 {
                     dht.Add("abc", "123");
                     dht.Subscribe(DhtOperation.All, ".*");
@@ -80,7 +115,7 @@ namespace Actors.Example
                 using (var shell = new ConsoleClientActor("cmd.exe-client"))
                 {
                     node.Add(shell);
-                    var proxy = node.Proxy.New<IShell>("localhost/System.Shell");
+                    var proxy = node.Proxy.New<IShell>(new ActorId("localhost", "System.Shell"));
                     var remoteId = proxy.RunConsole("cmd.exe", new string[0], shell.Box.Id);
                     node.Link(shell.Box.Id, remoteId);
                     while (shell.IsAlive)

@@ -13,7 +13,6 @@ namespace Actors.Builtins.Actors.Dht
             : base(shortname)
         {
             this.cache = cache;
-            
         }
  
         ILocalData cache;

@@ -13,6 +13,7 @@ using Actors.Examples;
 using Actors.Examples.Actors;
 using System.Collections.Generic;
 using Actors.Builtins.Actors.Dht;
+using Actors.Network;
 
 namespace Actors
 {
@@ -20,21 +21,21 @@ namespace Actors
 	{
         public Node()
         {
-            Name = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid().ToString();
             Serializer = new JsonSerializer();
             server = new TcpListeners(Serializer);
             world = new TcpWorld();
             Links = new LinkMap();	
-            Default = new DefaultActor(new MailBox(System.Environment.MachineName + "/default"), this);
+            Default = new DefaultActor(new MailBox(new ActorId(Environment.MachineName, Id, "default")), this);
             world.Add(Default);
             Proxy = new ProxyFactory(this);
             router = new ConnectionRouter();         
             server.Connected += HandleConnected;         
-        }       
+        }
 
+        public NodeId Id { get; private set; }
         public ProxyFactory Proxy { get; private set; }
-        public DefaultActor Default { get; private set; }
-        public string Name { get; set; }
+        public DefaultActor Default { get; private set; }      
         public ISerializer Serializer { get; set; }
         public LinkMap Links { get; set; }       
         protected Listeners server;

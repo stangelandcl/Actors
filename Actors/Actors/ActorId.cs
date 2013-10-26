@@ -1,53 +1,50 @@
 using System;
 using System.ComponentModel;
+using Actors.Network;
 
 namespace Actors
-{
+{   
 	[TypeConverter(typeof(ObjectTypeConverter<ActorId>))]
-	public struct ActorId
+	public partial struct ActorId
 	{
-		public ActorId(string id){
-			this.id = id;
+		public ActorId(string computer, NodeId node, string name){
+            this.machine = computer;
+            this.node = node;
+            this.name = name;
 		}
-		public ActorId(string computer, string world, string id){
-			this.id = computer + "/" + world + "/" + id;
+		public ActorId(NodeId node, string name){
+            this.machine = null;
+            this.node = node;
+            this.name = name;
 		}
-		public ActorId(string computer, string world, Guid id)
-			: this(computer, world, id.ToString())
-		{}
-		public ActorId(string world, string id)
-			: this(Environment.MachineName, world, id)
-		{}	
-		public ActorId(string world, Guid id)
-			: this(world,id.ToString())
-		{}		
+        public ActorId(string name)
+        {
+            this.machine = null;
+            this.node = NodeId.Empty;
+            this.name = name;
+        }
+        string machine, name;
+        NodeId node;
+        public string Machine { get { return machine; } set { machine = value; } }
+        public NodeId Node { get { return node; } set { node = value; } }
+        public string Name { get { return name; } set { name = value; } }
 
-		public bool IsEmpty{get{return id == null;}}
-		public static readonly ActorId Empty = new ActorId();
-
-		string id;
+        public bool IsEmpty { get { 
+            return Machine == null &&
+            Node.IsEmpty && Name == null; } }
+		public static readonly ActorId Empty = new ActorId();		
 
 		public override string ToString (){
-			return id;
+            return Machine + "/" + Node + "/" + Name;
 		}
 
-        public override bool Equals(object obj)
+        public bool Equals(ActorId id)
         {
-            if (obj != null && obj.GetType() == typeof(ActorId))
-                return string.Equals(((ActorId)obj).id, id, StringComparison.OrdinalIgnoreCase);
-            return string.Equals(id, obj as string, StringComparison.OrdinalIgnoreCase);
+            return 
+                id.machine == machine &&
+                id.node == node &&
+                id.name == name;
         }
-        public override int GetHashCode()
-        {
-            return id.ToLower().GetHashCode();
-        }
-
-		public static implicit operator string(ActorId id){
-            return id.ToString();
-		}
-		public static implicit operator ActorId(string s){		
-			return new ActorId(s);
-		}
 	}
 }
 

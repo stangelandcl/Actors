@@ -104,9 +104,15 @@
     <Compile Include="Builtins\Actors\Shell.cs" />
     <Compile Include="Builtins\Wrappers\BandwidthClient.cs" />
     <Compile Include="Builtins\Wrappers\PingClient.cs" />
+    <Compile Include="Extensions\EqualsStructs.g.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EqualsStructs.tt</DependentUpon>
+    </Compile>
     <Compile Include="Functions\FunctionDefinition.cs" />
     <Compile Include="Network\Link.cs" />
     <Compile Include="Connections\Tcp\TcpNode.cs" />
+    <Compile Include="Network\NodeId.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Connections\Stream\StreamByteReceiver.cs" />
     <Compile Include="Connections\Stream\StreamByteSender.cs" />
@@ -142,6 +148,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <None Include="Extensions\EqualsStructs.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EqualsStructs.g.cs</LastGenOutput>
+      <TransformOnBuild>True</TransformOnBuild>
+      <FormatOutput>True</FormatOutput>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -154,5 +166,7 @@
       <Name>Serialization</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
 </Project>

@@ -15,25 +15,17 @@ namespace Actors.Proxies
         Node node;
 
         static long id;
-        public T New<T>(string name)
+        public T New<T>(ActorId name)
         {
             return (T)New(name, typeof(T));
         }
-       
-        public T New<T>(string name, ActorId remote)
-        {
-            return (T)New(name, remote, typeof(T));
-        }
+           
         public T New<T>(RemoteActor a)
         {
             return (T)New(a, typeof(T));
         }
-        public object New(string name, ActorId remote, Type t)
-        {
-            return New(new RemoteActor(name, remote), t);
-        }
-
-        public object New(string name, Type t)
+       
+        public object New(ActorId name, Type t)
         {
             return New(new RemoteActor(GenerateProxyName(name), name), t);
         }
@@ -45,7 +37,7 @@ namespace Actors.Proxies
             if (o == null) throw new Exception("Could not generate proxy for " + t.Name);
             return o;
         }
-        public dynamic New(string name)
+        public dynamic New(ActorId name)
         {
             return New(GenerateProxyName(name), name);
         }
@@ -58,9 +50,9 @@ namespace Actors.Proxies
             Attach(a);
             return new DynamicProxy(a);
         }
-        private string GenerateProxyName(string name)
+        private string GenerateProxyName(ActorId name)
         {
-            return "proxy" + Interlocked.Increment(ref id) + "-" + name;
+            return "proxy-" + Guid.NewGuid().ToString().Substring(0, 8) + name.Name;                
         }
 
         private void Attach(RemoteActor a)
