@@ -60,6 +60,8 @@
     <Compile Include="Builtins\Actors\Dht\HeartbeatMonitor.cs" />
     <Compile Include="Builtins\Actors\Dht\RingSender.cs" />
     <Compile Include="Builtins\Actors\FileCopyActor.cs" />
+    <Compile Include="Connections\Local\LocalByteReceiver.cs" />
+    <Compile Include="Connections\Local\LocalByteSender.cs" />
     <Compile Include="Connections\Messages\ConnectionFactory.cs" />
     <Compile Include="Connections\Bytes\ByteConnection.cs" />
     <Compile Include="Connections\Bytes\EndPoint.cs" />

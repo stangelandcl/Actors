@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace Actors.Network
 {
-    [TypeConverter(typeof(ObjectTypeConverter<NodeId>))]
+    //[TypeConverter(typeof(ObjectTypeConverter<NodeId>))]
     public partial struct NodeId
     {
         public NodeId(string id)
@@ -18,35 +18,38 @@ namespace Actors.Network
             this.id = id.ToString();
         }
 
-        public bool IsEmpty { get { return id == null; } }
+        public static NodeId New() { return new NodeId(Guid.NewGuid()); }
+
+        public bool IsEmpty { get { return Id == null; } }
         public static readonly NodeId Empty = new NodeId();
 
         string id;
+        public string Id { get { return id; } set { id = value; } }
 
         public override string ToString()
         {
-            return id;
+            return Id;
         }
         public bool Equals(NodeId n)
         {
-            return n.id == id;
+            return n.Id == Id;
         }
 
-        public static implicit operator string(NodeId id)
-        {
-            return id.ToString();
-        }
-        public static implicit operator NodeId(string s)
-        {
-            return new NodeId(s);
-        }
-        public static implicit operator NodeId(Guid id)
-        {
-            return new NodeId(id);
-        }
-        public static implicit operator Guid(NodeId s)
-        {
-            return Guid.Parse(s.id);
-        }
+        //public static implicit operator string(NodeId id)
+        //{
+        //    return id.ToString();
+        //}
+        //public static implicit operator NodeId(string s)
+        //{
+        //    return new NodeId(s);
+        //}
+        //public static implicit operator NodeId(Guid id)
+        //{
+        //    return new NodeId(id);
+        //}
+        //public static implicit operator Guid(NodeId s)
+        //{
+        //    return Guid.Parse(s.id);
+        //}
     }
 }

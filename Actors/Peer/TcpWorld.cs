@@ -8,28 +8,42 @@ namespace Actors
 {
 	public class TcpWorld 
 	{
-		Dictionary<ActorId, Actor> actors = new Dictionary<ActorId, Actor>();
+        Dictionary<string, Actor> actors = new Dictionary<string, Actor>();		
 
 		public void Dispatch (Mail obj)
 		{
-			Actor a;
-			lock(actors)
-				foreach(var entry in DnsAlias.Get(obj.To))
-					if(actors.TryGetValue(entry, out a))
-						a.Box.Receive(obj);
+            Actor actor;
+            lock (actors)
+            {
+                if (!actors.TryGetValue(obj.To.Name, out actor))
+                    return;
+                if (!IsMatch(obj.To, actor.Box.Id))
+                    return;                     
+            }
+            actor.Box.Receive(obj);
 		}
+
+        private static bool IsMatch(ActorId id, ActorId actor)
+        {
+            return actor.Equals(id) ||
+                   (id.IsLocal && id.Name == actor.Name);
+        }
 				
 		public void Add(Actor actor){
-			lock(actors)
-				actors.Add(actor.Box.Id, actor);
+            lock (actors)
+                actors[actor.Box.Id.Name] = actor;
 		}
 
 		public void Remove(ActorId id){
-			lock(actors)
-				foreach(var actor in actors.ToArray()){
-					if(actor.Value.Box.Id == id)
-						actors.Remove(actor.Key);
-				}		
+            lock (actors)
+            {
+                Actor actor;
+                if (!actors.TryGetValue(id.Name, out actor))
+                    return;
+                if (!IsMatch(id, actor.Box.Id))
+                    return;
+                actors.Remove(id.Name);
+            }					
 		}      
     }
 }

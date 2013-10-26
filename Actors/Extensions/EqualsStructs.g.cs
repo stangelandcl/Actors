@@ -8,7 +8,10 @@ namespace Actors
 			if(other == null || other.GetType() != GetType())
 				return false;
             return Equals((ActorId)other);
-        }		
+        }	
+
+		/*public bool Equals(ActorId other){		
+			return Equals((object)other); }*/		
 
          public static bool operator==(ActorId left, ActorId right)
 		 {
@@ -41,7 +44,10 @@ namespace Actors.Network
 			if(other == null || other.GetType() != GetType())
 				return false;
             return Equals((NodeId)other);
-        }		
+        }	
+
+		/*public bool Equals(NodeId other){		
+			return Equals((object)other); }*/		
 
          public static bool operator==(NodeId left, NodeId right)
 		 {

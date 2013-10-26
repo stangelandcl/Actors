@@ -14,6 +14,7 @@ using Actors.Examples.Actors;
 using System.Collections.Generic;
 using Actors.Builtins.Actors.Dht;
 using Actors.Network;
+using Actors.Connections.Local;
 
 namespace Actors
 {
@@ -21,7 +22,7 @@ namespace Actors
 	{
         public Node()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = NodeId.New();
             Serializer = new JsonSerializer();
             server = new TcpListeners(Serializer);
             world = new TcpWorld();
@@ -29,8 +30,18 @@ namespace Actors
             Default = new DefaultActor(new MailBox(new ActorId(Environment.MachineName, Id, "default")), this);
             world.Add(Default);
             Proxy = new ProxyFactory(this);
-            router = new ConnectionRouter();         
-            server.Connected += HandleConnected;         
+            var local = CreateLocalConnection();
+            router = new ConnectionRouter(local);         
+            server.Connected += HandleConnected;
+            AddConnection(local);
+        }
+
+        private Connection CreateLocalConnection()
+        {
+            var receiver = new LocalByteReceiver(Id);
+            var sender = new LocalByteSender(Id, receiver);
+            var local = new Connection(new ByteConnection(sender, receiver), new JsonSerializer());            
+            return local;
         }
 
         public NodeId Id { get; private set; }

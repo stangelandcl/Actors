@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Actors
 {
-	[TypeConverter(typeof(ObjectTypeConverter<MessageId>))]
+	//[TypeConverter(typeof(ObjectTypeConverter<MessageId>))]
 	public struct MessageId
 	{
 		public MessageId(string id){
@@ -16,13 +16,14 @@ namespace Actors
 			return new MessageId(Guid.NewGuid());
 		}
         public static readonly MessageId Empty = new MessageId();
-		string id;
+        string id;
+        public string Id { get { return id; } set { id = value; } }
 
-		public bool IsEmpty{ get {return id == null;}}
+		public bool IsEmpty{ get {return Id == null;}}
 
 		public override string ToString ()
 		{
-			return id;
+			return Id;
 		}
 
 		public static implicit operator string(MessageId id){

@@ -10,6 +10,13 @@ using System.Threading;
 
 namespace System
 {
+    static class KeyValuePair
+    {
+         public static KeyValuePair<TKey, TValue> New<TKey, TValue>(TKey key, TValue value){
+            return new KeyValuePair<TKey,TValue>(key, value);
+        }
+    }
+
 	static class Extensions    
 	{
 		class ConnectState{
@@ -19,7 +26,7 @@ namespace System
 			public const int Connected = 1;
 			public const int TimedOut = 2;
 		}
-
+       
 		public static void Connect(this TcpClient client, string host, int port, TimeSpan timeout){
 			var state = new ConnectState{Client = client};
 			client.BeginConnect(host, port, EndConnect, state);
@@ -117,37 +124,37 @@ namespace System
                 a.Add(c);
         }
 
+        public static void FireEvent(this Action e)
+        {
+            if (e != null) e();
+        }
+        public static void FireEventAsync(this Action e)
+        {
+            if (e != null) TaskEx.Run(e);
+        }
         public static void FireEvent<T>(this Action<T> e, T args)
         {
-            if (e != null)
-                e(args);
+            if (e != null) e(args);
         }
         public static void FireEventAsync<T>(this Action<T> e, T args)
         {
-            if (e != null)
-                TaskEx.Run(() => e(args));
+            if (e != null) TaskEx.Run(() => e(args));
         }
-
         public static void FireEvent<T, T2>(this Action<T, T2> e, T args, T2 args2)
         {
-            if (e != null)
-                e(args, args2);
+            if (e != null) e(args, args2);
         }
         public static void FireEventAsync<T, T2>(this Action<T, T2> e, T args, T2 args2)
         {
-            if (e != null)
-                TaskEx.Run(() => e(args, args2));
+            if (e != null) TaskEx.Run(() => e(args, args2));
         }
-
         public static void FireEvent<T>(this EventHandler<T> e, object sender, T args) where T : EventArgs
         {
-            if (e != null)
-                e(sender, args);
+            if (e != null) e(sender, args);
         }
         public static void FireEventAsync<T>(this EventHandler<T> e, object sender, T args) where T : EventArgs
         {
-            if (e != null)
-                TaskEx.Run(() => e(sender, args));
+            if (e != null) TaskEx.Run(() => e(sender, args));
         }
        
 	}

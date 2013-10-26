@@ -6,11 +6,19 @@ using System.Linq;
 using Serialization;
 using Actors.Connections;
 using Actors.Connections.Bytes;
+using Actors.Connections.Messages;
+using Actors.Connections.Local;
 
 namespace Actors
 {
     public class ConnectionRouter
-    {       
+    {
+        public ConnectionRouter(IConnection local)
+        {
+            localConnection = local;
+        }
+        
+        IConnection localConnection;
         public event EventHandler<MissingEventArgs> ConnectionNotFound;
         public class MissingEventArgs : EventArgs{
             public IEndPoint EndPoint;
@@ -55,7 +63,7 @@ namespace Actors
         public IConnection Get(IEndPoint computer)
         {
             var conn = GetInternal(computer);
-            if (conn != null) return conn;
+            if (conn != null) return conn;           
             var added = new MissingEventArgs{EndPoint = computer};
             ConnectionNotFound.FireEvent(this, added);
             if (added.Added)
@@ -75,10 +83,18 @@ namespace Actors
 
         public IConnection Get(ActorId id)
         {
+            if (IsLocal(ref id))
+                return localConnection;
+            
             var s = id.ToString().Split('/');
             return Get(new Actors.Connections.Bytes.EndPoint(s[0]));
         }
-       
+
+        private bool IsLocal(ref ActorId id)
+        {
+            return (id.Machine == null || id.Machine == Environment.MachineName) &&
+                   (id.Node.IsEmpty || id.Node.ToString() == localConnection.Sender.Remote.ToString());
+        }       
     }
 }
 

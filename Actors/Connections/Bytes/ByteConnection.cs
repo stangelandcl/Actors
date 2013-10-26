@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Actors.Connections.Bytes
 {
-    public abstract class ByteConnection : IByteConnection
+    public class ByteConnection : IByteConnection
     {       
         public ByteConnection(IByteSender sender, IByteReceiver receiver)
         {               
@@ -19,7 +19,7 @@ namespace Actors.Connections.Bytes
         public IByteSender Sender { get; private set; }
         public IByteReceiver Receiver { get; private set; }
 
-        protected abstract void HandleError(Exception e);
+        protected virtual void HandleError(Exception e) { }
        
         void HandleReceived(byte[] bytes)
         {

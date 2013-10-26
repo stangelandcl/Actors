@@ -70,8 +70,7 @@ namespace Actors
 				if(mail.Count > limit)
 					mail.RemoveFirst();
 				hasMail.Set();
-                if (Received != null)                    
-                    Task.Factory.StartNew(Received);
+                Received.FireEventAsync();                
 			}
 		}
 

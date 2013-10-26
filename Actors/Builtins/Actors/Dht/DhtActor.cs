@@ -104,10 +104,7 @@ namespace Actors.Builtins.Actors.Dht
         void Add(Mail mail, string key, byte[] value)
         {
             foreach (var to in ring.FindClosest(key))
-            {
-                if (to.Equals((DhtId)Box.Id)) cache.Add(key, value);
-                else Node.Send(to, Box.Id, "AddLocal", key, value);
-            }
+                Node.Send(to, Box.Id, "AddLocal", key, value);            
             foreach (var subscription in ring.GetMatches(DhtOperation.Add, key))
                 Node.Send(subscription.Node, Box.Id, "SubscriptionMatched", "Add", key);
             Node.Reply(mail, "true");
@@ -116,11 +113,8 @@ namespace Actors.Builtins.Actors.Dht
         void Get(Mail mail, string key)
         {
             var msgIds = new List<MessageId>();
-            foreach (var to in ring.FindClosest(key))
-            {
-                if (to.Equals((DhtId)Box.Id)) Node.Reply(mail, cache.Get(key));
-                else msgIds.Add(Node.Send(to, Box.Id, "GetLocal", key));
-            }
+            foreach (var to in ring.FindClosest(key))            
+                msgIds.Add(Node.Send(to, Box.Id, "GetLocal", key));            
             foreach (var subscription in ring.GetMatches(DhtOperation.Get, key))
                 Node.Send(subscription.Node, Box.Id, "SubscriptionMatched", "Get", key);
             var ids = msgIds.ToHashSet();
@@ -133,10 +127,7 @@ namespace Actors.Builtins.Actors.Dht
         void Remove(Mail mail, string key)
         {
             foreach (var to in ring.FindClosest(key))
-            {
-                if (to.Equals((DhtId)Box.Id)) cache.Remove(key);
-                else Node.Send(to, Box.Id, "RemoveLocal", key);
-            }
+                Node.Send(to, Box.Id, "RemoveLocal", key);            
             foreach (var subscription in ring.GetMatches(DhtOperation.Remove, key))
                 Node.Send(subscription.Node, Box.Id, "SubscriptionMatched", "Remove", key);
             Node.Reply(mail, "true");

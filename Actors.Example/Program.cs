@@ -8,6 +8,7 @@ using Actors.Network.Tcp;
 using Serialization;
 using Actors.Dht;
 using Actors.Builtins.Actors.Dht;
+using Actors.Network;
 
 namespace Actors.Example
 {
@@ -47,19 +48,20 @@ namespace Actors.Example
                 node.Add(new EchoActor());
                 node.Add(new PingActor());
                 node.Add(new DhtActor(new DhtMemoryBackend()));
+                node.Add(new DhtActor(new DhtMemoryBackend(), "dht1"));
+                node.Add(new DhtActor(new DhtMemoryBackend(), "dht2"));
+                node.Add(new DhtActor(new DhtMemoryBackend(), "dht3"));
+                var echo = node.Proxy.New<IEcho>(new ActorId("System.Echo"));
+                Console.WriteLine(echo.Echo("hey dude"));
 
-                var echo = node.Proxy.New<IEcho>(new ActorId("localhost", "System.Echo"));
-                // this is the same as SendReceive<string>("localhost/System.Echo", "echo", "hey dude");
-                var r2 = echo.Echo("hey dude");
-                // print response
-                Console.WriteLine(r2);
-                //using (var cmd = new ConsoleProcessActor("cmd.exe", "cmd.exe"))
-                //{
-                //    node.Add(cmd);
-                //    while (cmd.IsAlive)
-                //        Thread.Sleep(10);                  
-                //}
-                Thread.Sleep(Timeout.Infinite);
+                IDht model = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht1")), new JsonSerializer());
+                model.Add("abce", "def");
+                IDht model2 = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht2")), new JsonSerializer());                
+                Console.WriteLine(model2.Get<string>("abce"));
+
+
+                Console.WriteLine("press a key to quit");
+                Console.ReadKey();              
             }
         }        
 

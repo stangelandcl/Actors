@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Actors
 {
-	[TypeConverter(typeof(ObjectTypeConverter<FunctionId>))]
+	//[TypeConverter(typeof(ObjectTypeConverter<FunctionId>))]
 	public struct FunctionId
 	{
 		public FunctionId(string id){
@@ -16,10 +16,11 @@ namespace Actors
 			return new FunctionId(Guid.NewGuid());
 		}
 
-		string id;
+        string id;
+        public string Id { get { return id; } set { id = value; } }
 
 		public override string ToString (){
-			return id;
+			return Id;
 		}
 
 		public static implicit operator string(FunctionId id){

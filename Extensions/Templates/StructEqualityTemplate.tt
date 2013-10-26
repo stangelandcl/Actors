@@ -18,7 +18,10 @@ namespace <#= NamespaceName #>
 			if(other == null || other.GetType() != GetType())
 				return false;
             return Equals((<#= ClassName #>)other);
-        }		
+        }	
+
+		/*public bool Equals(<#=ClassName#> other){		
+			return Equals((object)other); }*/		
 
          public static bool operator==(<#= ClassName #> left, <#= ClassName #> right)
 		 {
