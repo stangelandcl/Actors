@@ -8,11 +8,7 @@ namespace Actors
 		public PollingResetEvent (bool signalled)
 		{
 			this.signalled = signalled;
-		}
-
-#if DEBUG
-		Guid instanceId = Guid.NewGuid();
-#endif
+		}	
 
 		bool signalled;
 

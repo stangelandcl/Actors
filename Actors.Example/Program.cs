@@ -65,15 +65,16 @@ namespace Actors.Example
                 using (var dht = new DhtClient(node.Proxy.New<IByteDht>("localhost/System.Dht"), new JsonSerializer()))
                 {
                     dht.Add("abc", "123");
-                    dht.Subscribe(".*", ".*");
+                    dht.Subscribe(DhtOperation.All, ".*");
                     dht.KeyMatch += (operation, key) =>
                     {
                         Console.WriteLine("DHT callback " + operation + " key=" + key);
                     };
                     dht.Add("def", "456");
                     var x = dht.Get<string>("abc");
+					Console.WriteLine("DHT result " + x);
                 }
-
+				Thread.Sleep(100000);
 
 
                 using (var shell = new ConsoleClientActor("cmd.exe-client"))

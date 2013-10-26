@@ -23,12 +23,12 @@ namespace Actors
             Name = Guid.NewGuid().ToString();
             Serializer = new JsonSerializer();
             server = new TcpListeners(Serializer);
-            world = new TcpWorld(Serializer);
+            world = new TcpWorld();
             Links = new LinkMap();	
             Default = new DefaultActor(new MailBox(System.Environment.MachineName + "/default"), this);
             world.Add(Default);
             Proxy = new ProxyFactory(this);
-            router = new ConnectionRouter(this);         
+            router = new ConnectionRouter();         
             server.Connected += HandleConnected;         
         }       
 

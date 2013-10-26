@@ -4,11 +4,45 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Net.Sockets;
+using System.Diagnostics;
+using System.Threading;
 
 namespace System
 {
-	static class Extensions
-    {
+	static class Extensions    
+	{
+		class ConnectState{
+			public TcpClient Client;
+			public int State;
+			public const int Empty = 0;
+			public const int Connected = 1;
+			public const int TimedOut = 2;
+		}
+
+		public static void Connect(this TcpClient client, string host, int port, TimeSpan timeout){
+			var state = new ConnectState{Client = client};
+			client.BeginConnect(host, port, EndConnect, client);
+						
+			var sw = Stopwatch.StartNew();
+			while(state.State == 0 && sw.Elapsed < timeout)			
+				Thread.Sleep(100);
+			
+			var value = Interlocked.CompareExchange(ref state.State, ConnectState.TimedOut, ConnectState.Empty);
+			if(value != ConnectState.Connected)
+				throw new Exception("Connection timed out");
+		}
+
+		static void EndConnect(IAsyncResult result){
+			try{
+				var state = (ConnectState)result.AsyncState;
+				state.Client.EndConnect(result);
+				var value = Interlocked.CompareExchange(ref state.State, ConnectState.Connected, ConnectState.Empty);
+				if(value != ConnectState.Empty)
+					state.Client.Close();
+			}catch{}
+		}
+
         public static int IndexOf<T>(this T[] array, T item)
         {
             for (int i = 0; i < array.Length; i++)

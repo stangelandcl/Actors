@@ -7,20 +7,30 @@ using System.Text.RegularExpressions;
 
 namespace Actors.Dht
 {
+	[Flags]
+	public enum DhtOperation { 
+		Add=1, 
+		Remove=2, 
+		AddRemove = 3,
+		Get=4 ,
+		
+		All = unchecked((int)0xffffffff)
+	}
     class Subscription 
     {
-        public Subscription(DhtId id, string op, string key)
+        public Subscription(DhtId id, DhtOperation op, string key)
         {
             Node = id;
-            OperationRegex = op;
+            Operations = op;
             KeyRegex = key;
         }
-        public string OperationRegex { get; set; }
+		public DhtOperation Operations {get;set;}
         public string KeyRegex { get; set; }
         public DhtId Node { get; set; }
-        public bool IsMatch(string op, string key)
+        public bool IsMatch(DhtOperation op, string key)
         {
-            return op.IsMatch(OperationRegex) && key.IsMatch(KeyRegex);
+			var match = (op & Operations) != 0;
+            return match && key.IsMatch(KeyRegex);
         }
 
         public override int GetHashCode()
@@ -33,7 +43,7 @@ namespace Actors.Dht
                 return false;
             var o = (Subscription)obj;
             return o.Node.Equals(Node) && 
-                OperationRegex == o.OperationRegex &&
+                Operations == o.Operations &&
                 KeyRegex == o.KeyRegex;
         }
     }

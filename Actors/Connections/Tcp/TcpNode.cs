@@ -21,10 +21,14 @@ namespace Actors.Network.Tcp
 
         void HandleConnectionNotFound(object sender, ConnectionRouter.MissingEventArgs args)
         {
-            var conn = new Connection(new TcpByteConnection(
-                new TcpClient(args.EndPoint.ToString(), defaultPort)), this.Serializer);
-            AddConnection(conn, isOutbound: true);
-            args.Added = true;
+			try{
+				var tcp = new TcpClient();
+				tcp.Connect(args.EndPoint.ToString(), defaultPort, TimeSpan.FromSeconds(3));
+
+				var conn = new Connection(new TcpByteConnection(tcp), this.Serializer);
+	            AddConnection(conn, isOutbound: true);
+	            args.Added = true;
+			}catch{}
         }
 
         public IDisposable AddConnection(string host, int port, ISerializer serializer)

@@ -8,14 +8,7 @@ namespace Actors
 {
 	public class TcpWorld 
 	{
-		public TcpWorld(ISerializer serializer)
-		{
-			this.defaultSerializer = serializer;
-		}
-
-		ISerializer defaultSerializer;
 		Dictionary<ActorId, Actor> actors = new Dictionary<ActorId, Actor>();
-
 
 		public void Dispatch (Mail obj)
 		{

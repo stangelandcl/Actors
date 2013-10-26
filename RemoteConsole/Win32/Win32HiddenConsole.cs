@@ -12,14 +12,12 @@ namespace RemoteConsole
     public class Win32HiddenConsole  : IDisposable
     {
         public Win32HiddenConsole(string exe, params string[] args)
-        {
-            this.exe = exe;
+        {            
             var a = string.Join(" ", args);
             var commandLine = "\"" + exe + "\" " + a;            
             Start(commandLine);
         }
-        
-        string exe;
+                
         Win32.PROCESS_INFORMATION process;
 
         /// <summary>

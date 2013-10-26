@@ -33,19 +33,19 @@ namespace Actors.Dht
             dht.Add(key, serializer.Serialize(value));
         }
 
-        public void Subscribe(string operationRegex, string keyRegex)
+        public void Subscribe(DhtOperation operations, string keyRegex)
         {
-            dht.Subscribe(operationRegex, keyRegex);
+            dht.Subscribe(operations, keyRegex);
         }
 
-        public void Unsubscribe(string operationRegex, string keyRegex)
+		public void Unsubscribe(DhtOperation operations, string keyRegex)
         {
-            dht.Unsubscribe(operationRegex, keyRegex);
+            dht.Unsubscribe(operations, keyRegex);
         }
 
-        public event Action<string, string> KeyMatch;
+		public event Action<DhtOperation, string> KeyMatch;
 
-        void HandleKeyMatch(string operation, string key)
+		void HandleKeyMatch(DhtOperation operation, string key)
         {
             KeyMatch.FireEventAsync(operation, key);
         }

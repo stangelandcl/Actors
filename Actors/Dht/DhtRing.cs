@@ -21,9 +21,9 @@ namespace Actors.Dht
         SHA1Managed sha = new SHA1Managed();
         List<Subscription> subscriptions = new List<Subscription>();
 
-        public void Subscribe(DhtId node, string opRegex, string keyRegex)
+        public void Subscribe(DhtId node, DhtOperation operations, string keyRegex)
         {
-            var subscription = new Subscription(node, opRegex, keyRegex);
+            var subscription = new Subscription(node, operations, keyRegex);
             Subscribe(subscription);                   
         }
 
@@ -33,9 +33,9 @@ namespace Actors.Dht
                 subscriptions.Add(subscription);
         }
 
-        public void Unsubscribe(DhtId node, string opRegex, string keyRegex)
+		public void Unsubscribe(DhtId node, DhtOperation operations, string keyRegex)
         {
-            var subscription = new Subscription(node, opRegex, keyRegex);
+            var subscription = new Subscription(node, operations, keyRegex);
             Unsubscribe(subscription);
         }
 
@@ -45,7 +45,7 @@ namespace Actors.Dht
                 subscriptions.Remove(subscription);
         }
 
-        public Subscription[] GetMatches(string operation, string key)
+        public Subscription[] GetMatches(DhtOperation operation, string key)
         {
             lock (subscriptions)
                 return subscriptions.Where(n => n.IsMatch(operation, key)).ToArray();

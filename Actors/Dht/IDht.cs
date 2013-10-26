@@ -11,8 +11,8 @@ namespace Actors.Dht
         void Add<T>(string key, T value);
         void Remove(string key);
 
-        void Subscribe(string operationRegex, string keyRegex);
-        void Unsubscribe(string operationRegex, string regex);
-        event Action<string, string> KeyMatch;      
+		void Subscribe(DhtOperation operation, string keyRegex);
+		void Unsubscribe(DhtOperation operation, string regex);
+		event Action<DhtOperation, string> KeyMatch;      
     }
 }

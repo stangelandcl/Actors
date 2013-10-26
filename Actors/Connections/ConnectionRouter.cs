@@ -10,12 +10,7 @@ using Actors.Connections.Bytes;
 namespace Actors
 {
     public class ConnectionRouter
-    {
-        public ConnectionRouter(Node node)
-        {
-            this.node = node;
-        }
-        Node node;
+    {       
         public event EventHandler<MissingEventArgs> ConnectionNotFound;
         public class MissingEventArgs : EventArgs{
             public IEndPoint EndPoint;

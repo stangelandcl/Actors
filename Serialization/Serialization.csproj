@@ -32,7 +32,6 @@
     <Reference Include="System" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Package>monodevelop</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>

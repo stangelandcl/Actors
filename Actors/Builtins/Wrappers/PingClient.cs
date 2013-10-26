@@ -32,7 +32,7 @@ namespace Actors.Examples.Clients
                 sw.Stop();
                 return (double)sw.ElapsedMilliseconds / count;
             }
-            catch (Exception ex)
+            catch
             {
                 return double.PositiveInfinity;
             }           

@@ -65,16 +65,16 @@ namespace Actors.Builtins.Actors.Dht
             sender.Forward(mail);
         }
 
-        void Subscribe(Mail mail, string operationRegex, string keyRegex)
+        void Subscribe(Mail mail,DhtOperation operations, string keyRegex)
         {
-            var subscribe = new Subscription(mail.From, operationRegex, keyRegex);
+			var subscribe = new Subscription(mail.From, operations, keyRegex);
             ring.Subscribe(subscribe);
             sender.SendToRing("SubscribeContinue", subscribe);
         }
 
-        void Unsubscribe(Mail mail, string operationRegex, string keyRegex)
+		void Unsubscribe(Mail mail, DhtOperation operations, string keyRegex)
         {
-            var subscribe = new Subscription(mail.From, operationRegex, keyRegex);
+			var subscribe = new Subscription(mail.From, operations, keyRegex);
             ring.Unsubscribe(subscribe);
             sender.SendToRing("UnubscribeContinue", subscribe);
         }
@@ -100,7 +100,7 @@ namespace Actors.Builtins.Actors.Dht
         {
             foreach (var to in ring.FindClosest(key))
                 Node.Send(to, Box.Id, "AddLocal", key, value);
-            foreach (var subscription in ring.GetMatches("Add", key))
+            foreach (var subscription in ring.GetMatches(DhtOperation.Add, key))
                 Node.Send(subscription.Node, Box.Id, "SubscriptionMatched", "Add", key);
         }
 
@@ -109,7 +109,7 @@ namespace Actors.Builtins.Actors.Dht
             var msgIds = new List<MessageId>();
             foreach (var to in ring.FindClosest(key))
                 msgIds.Add(Node.Send(to, Box.Id, "GetLocal", key));
-            foreach (var subscription in ring.GetMatches("Get", key))
+            foreach (var subscription in ring.GetMatches(DhtOperation.Get, key))
                 Node.Send(subscription.Node, Box.Id, "SubscriptionMatched", "Get", key);
             var ids = msgIds.ToHashSet();
             var reply = Box.CheckFor(n=> ids.Contains(n.MessageId), TimeSpan.FromSeconds(5));
@@ -122,7 +122,7 @@ namespace Actors.Builtins.Actors.Dht
         {
             foreach (var to in ring.FindClosest(key))
                 Node.Send(to, Box.Id, "RemoveLocal", key);
-            foreach (var subscription in ring.GetMatches("Remove", key))
+            foreach (var subscription in ring.GetMatches(DhtOperation.Remove, key))
                 Node.Send(subscription.Node, Box.Id, "SubscriptionMatched", "Remove", key);
         }
 
