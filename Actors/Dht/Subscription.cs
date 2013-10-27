@@ -18,15 +18,15 @@ namespace Actors.Dht
 	}
     class Subscription 
     {
-        public Subscription(DhtId id, DhtOperation op, string key)
+        public Subscription(ActorId id, DhtOperation op, string key)
         {
-            Node = id;
+            Actor = id;
             Operations = op;
             KeyRegex = key;
         }
 		public DhtOperation Operations {get;set;}
         public string KeyRegex { get; set; }
-        public DhtId Node { get; set; }
+        public ActorId Actor { get; set; }
         public bool IsMatch(DhtOperation op, string key)
         {
 			var match = (op & Operations) != 0;
@@ -35,14 +35,14 @@ namespace Actors.Dht
 
         public override int GetHashCode()
         {
-            return Node.GetHashCode() ^ KeyRegex.GetHashCode();
+            return Actor.GetHashCode() ^ KeyRegex.GetHashCode();
         }
         public override bool Equals(object obj)
         {
             if (obj == null || obj.GetType() != GetType())
                 return false;
             var o = (Subscription)obj;
-            return o.Node.Equals(Node) && 
+            return o.Actor.Equals(Actor) && 
                 Operations == o.Operations &&
                 KeyRegex == o.KeyRegex;
         }

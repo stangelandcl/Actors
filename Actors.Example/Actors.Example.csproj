@@ -46,6 +46,10 @@
       <Project>{1950C069-77D0-4C52-BA7D-77F713A9C5A0}</Project>
       <Name>Actors</Name>
     </ProjectReference>
+    <ProjectReference Include="..\KeyValueDatabase\KeyValueDatabase.csproj">
+      <Project>{15113F7F-97D8-4CCB-8DDD-B2CCFC733667}</Project>
+      <Name>KeyValueDatabase</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RemoteConsole\MirrorConsole.csproj">
       <Project>{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}</Project>
       <Name>MirrorConsole</Name>

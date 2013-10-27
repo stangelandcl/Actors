@@ -5,6 +5,8 @@ using System.Text;
 using System.Runtime.Remoting.Proxies;
 using System.Runtime.Remoting.Messaging;
 using System.Reflection;
+using System.Threading.Tasks;
+using Fasterflect;
 
 namespace Actors.Proxies
 {
@@ -22,13 +24,34 @@ namespace Actors.Proxies
             var methodCall = (IMethodCallMessage)message;
             var method = (MethodInfo)methodCall.MethodBase;
             var msg = Remote.Send(method.Name, methodCall.Args);
-            object returnValue = null;
-            if (method.ReturnType != typeof(void))
-            {
-                var mail = Remote.Receive(msg);
-                returnValue = mail.Args[0].Convert(method.ReturnType);                
-            }
+            var returnValue = GetReturnValue(method, msg);            
             return new ReturnMessage(returnValue, null, 0, methodCall.LogicalCallContext, methodCall);            
         }
+
+        private object GetReturnValue(MethodInfo method, MessageId msg)
+        {
+            if (method.ReturnType == typeof(void)) return null;
+            if (method.IsGenericMethod && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                return TaskEx.New(() =>
+                {
+                    var mail = Remote.Receive(msg);
+                    var returnType = method.ReturnType.GetGenericArguments()[0];
+                    return mail.Args[0].Convert(returnType);
+                }, method.ReturnType);
+            }
+            else
+            {
+                var mail = Remote.Receive(msg);
+                if (mail == null || mail.Args.Length == 0)
+                {
+                    if (method.ReturnType.IsClass) return null;
+                    return method.ReturnType.CreateInstance();
+                }
+                return mail.Args[0].Convert(method.ReturnType);
+            }
+        }
     }
+
+
 }

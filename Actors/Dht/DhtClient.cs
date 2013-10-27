@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Serialization;
+using System.Threading.Tasks;
 
 namespace Actors.Dht
 {
@@ -16,21 +17,35 @@ namespace Actors.Dht
         }
 
         IByteDht dht;
-        ISerializer serializer;        
+        ISerializer serializer;
 
-        public T Get<T>(string key)
-        {
-            return serializer.Deserialize<T>(dht.Get(key));
-        }    
-
-        public void Remove(string key)
-        {
-            dht.Remove(key);
+        public void Join(ActorId[] other)
+        {            
+            dht.Join(other);        
         }
 
-        public void Add<T>(string key, T value)
+        public Task<T> Get<T>(string key)
         {
-            dht.Add(key, serializer.Serialize(value));
+            return Task.Factory.StartNew(() =>
+                serializer.Deserialize<T>(dht.Get(key)));
+        }    
+
+        public Task<IDht> Remove(string key)
+        {
+            return Task.Factory.StartNew<IDht>(() =>
+            {
+                dht.Remove(key);
+                return this;
+            });
+        }
+
+        public Task<IDht> Add<T>(string key, T value)
+        {
+            return Task.Factory.StartNew<IDht>(() =>
+            {
+                dht.Add(key, serializer.Serialize(value));
+                return this;
+            });
         }
 
         public void Subscribe(DhtOperation operations, string keyRegex)

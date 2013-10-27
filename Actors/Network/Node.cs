@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using Actors.Builtins.Actors.Dht;
 using Actors.Network;
 using Actors.Connections.Local;
+using KeyValueDatabase;
 
 namespace Actors
 {
@@ -59,7 +60,7 @@ namespace Actors
             Add(new EchoActor());
             Add(new PingActor());
             Add(new Shell());
-            Add(new DhtActor(new DhtMemoryBackend()));
+            Add(new DhtActor(KeyValueDatabase.Proxy.ProxyFactory.New<IDhtBackend>()));
         }
 
         public virtual void Dispose()
@@ -150,7 +151,7 @@ namespace Actors
 		
 		public MessageId Reply (Mail mail, params object[] args)
 		{
-			return Send(new Mail{To = mail.From, From = mail.To, MessageId = mail.MessageId, Name = "On" + mail.Name + "Reply", Args = args});
+			return Send(new Mail{To = mail.From, From = mail.To, MessageId = mail.MessageId, Name =  mail.Name + "Reply", Args = args});
 		}
 		#endregion		
 	}

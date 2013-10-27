@@ -9,6 +9,8 @@ using Serialization;
 using Actors.Dht;
 using Actors.Builtins.Actors.Dht;
 using Actors.Network;
+using KeyValueDatabase;
+using KeyValueDatabase.Proxy;
 
 namespace Actors.Example
 {
@@ -47,18 +49,21 @@ namespace Actors.Example
                 node.Add(new BandwidthActor());
                 node.Add(new EchoActor());
                 node.Add(new PingActor());
-                node.Add(new DhtActor(new DhtMemoryBackend()));
-                node.Add(new DhtActor(new DhtMemoryBackend(), "dht1"));
-                node.Add(new DhtActor(new DhtMemoryBackend(), "dht2"));
-                node.Add(new DhtActor(new DhtMemoryBackend(), "dht3"));
+                node.Add(new DhtActor(ProxyFactory.New<IDhtBackend>()));
+                for (int i = 0; i < 1000; i++)
+                {
+                    var actor = new DhtActor(ProxyFactory.New<IDhtBackend>(), "dht" + i);
+                    node.Add(actor);
+                    actor.Join(new ActorId("System.Dht"));
+                }
+                Thread.Sleep(1000);             
                 var echo = node.Proxy.New<IEcho>(new ActorId("System.Echo"));
                 Console.WriteLine(echo.Echo("hey dude"));
 
                 IDht model = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht1")), new JsonSerializer());
-                model.Add("abce", "def");
-                IDht model2 = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht2")), new JsonSerializer());                
-                Console.WriteLine(model2.Get<string>("abce"));
-
+                model = model.Add("abce", "def").Result;
+                IDht model2 = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht85")), new JsonSerializer());               
+                Console.WriteLine(model2.Get<string>("abce").Result);
 
                 Console.WriteLine("press a key to quit");
                 Console.ReadKey();              
@@ -155,7 +160,7 @@ namespace Actors.Example
                 node.Add(new EchoActor());
                 node.Add(new PingActor());
                 node.Add(new Shell());
-                node.Add(new DhtActor(new DhtMemoryBackend()));
+                node.Add(new DhtActor(ProxyFactory.New<IDhtBackend>()));
                 //using (var cmd = new ConsoleProcessActor("cmd.exe", "cmd.exe"))
                 //{
                 //    node.Add(cmd);

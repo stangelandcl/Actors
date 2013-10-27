@@ -5,24 +5,27 @@ using System.Text;
 using System.Threading;
 using Dht;
 using System.Security.Cryptography;
+using KeyValueDatabase;
 
 namespace Actors.Dht
 {
     class DhtRing
     {
-        public DhtRing(DhtId self)
+        public DhtRing(ActorId self, IDhtBackend db)
         {
+            this.db = db;
             this.selfId = self;
-            this.actors.Add(self);
+            this.actors.Add(KeyValuePair.New(sha.ComputeHash(self.ToString()), self));
         }
 
-        DhtId selfId;
-        List<DhtId> actors = new List<DhtId>();
+        IDhtBackend db;
+        ActorId selfId;
+        List<KeyValuePair<byte[], ActorId>> actors = new List<KeyValuePair<byte[],ActorId>>();
         SHA1Managed sha = new SHA1Managed();
         List<Subscription> subscriptions = new List<Subscription>();
 
-        public void Subscribe(DhtId node, DhtOperation operations, string keyRegex)
-        {
+        public void Subscribe(ActorId node, DhtOperation operations, string keyRegex)
+        {           
             var subscription = new Subscription(node, operations, keyRegex);
             Subscribe(subscription);                   
         }
@@ -33,7 +36,7 @@ namespace Actors.Dht
                 subscriptions.Add(subscription);
         }
 
-		public void Unsubscribe(DhtId node, DhtOperation operations, string keyRegex)
+		public void Unsubscribe(ActorId node, DhtOperation operations, string keyRegex)
         {
             var subscription = new Subscription(node, operations, keyRegex);
             Unsubscribe(subscription);
@@ -52,16 +55,16 @@ namespace Actors.Dht
         }
 
         
-        public DhtId[] Actors
+        public ActorId[] Actors
         {
             get
             {
                 lock (actors)
-                    return actors.ToArray();
+                    return actors.Select(n => n.Value).ToArray();
             }
         }
 
-        public DhtId? Predecessor
+        public ActorId? Predecessor
         {
             get
             {
@@ -71,12 +74,12 @@ namespace Actors.Dht
                     var start = index;
                     if(--index < 0) index = actors.Count-1;
                     if (index == start) return null;
-                    return actors[index];
+                    return actors[index].Value;
                 }
             }
         }
 
-        public DhtId? Successor
+        public ActorId? Successor
         {
             get
             {
@@ -86,51 +89,64 @@ namespace Actors.Dht
                     var start = index;
                     if (++index == actors.Count) index = 0;
                     if (index == start) return null;
-                    return actors[index];
+                    return actors[index].Value;
                 }
             }
         }
 
-        public DhtId[] FindClosest(DhtId key, float ratio = .1f, int minCount = 3, int maxCount = int.MaxValue)
+        public ActorId[] FindClosest(DhtId key, float ratio = .1f, int minCount = 3, int maxCount = int.MaxValue)
         {
             var count = (int)Math.Ceiling(actors.Count * ratio);
             count = count.Bound(minCount, maxCount);
             return GetClosest(key, count);
         }
 
-        DhtId[] GetClosest(DhtId key, int count)
+        ActorId[] GetClosest(DhtId key, int count)
         {
-            var hash = new DhtId(sha.ComputeHash(key.Bytes));
-            var index = this.actors.BinarySearch(hash);
-            if (index < 0) index = ~index - 1;
-            if (index < 0) index = actors.Count - 1;
-            var array = new DhtId[count];
-            for (int i = 0; i < array.Length; i++)
-                array[i] = actors[(index + i) % actors.Count];
+            var hash = sha.ComputeHash(key.Bytes);
+            var array = new ActorId[count];
+            lock (actors)
+            {
+                var index = this.actors.BinarySearch(KeyValuePair.New(hash, ActorId.Empty), n => n.Key);
+                if (index < 0) index = ~index - 1;
+                if (index < 0) index = actors.Count - 1;               
+                for (int i = 0; i < array.Length; i++)
+                    array[i] = actors[(index + i) % actors.Count].Value;
+            }
             return array;
         }
 
 
-        public void AddRange(IEnumerable<DhtId> actors)
+        public void AddRange(IEnumerable<ActorId> actors)
         {
-            lock(this.actors)
-                this.actors.AddRange(actors);
+            foreach (var actor in actors)
+                AddInternal(actor);
+            db.Peers.AddRange(actors);         
+        }
+        public void Add(ActorId id)
+        {
+            AddInternal(id);
+            db.Peers.AddRange(Enumerable.Repeat(id, 1));
         }
 
-        public void Add(DhtId id)
+        void AddInternal(ActorId id)
+        {            
+            var hash = sha.ComputeHash(id.ToString());
+            lock (actors)
+            {
+                var index = actors.BinarySearch(KeyValuePair.New(hash, ActorId.Empty), n => n.Key);
+                if (index >= 0) return;
+                actors.Insert(~index, KeyValuePair.New(hash, id));
+            }               
+        }
+
+        public void Remove(ActorId id)
         {
             lock (actors)
             {
-                var index = actors.BinarySearch(id);
-                if (index >= 0) return;
-                actors.Insert(~index, id);
+                actors.RemoveWhere(n=> n.Value == id);
+                db.Peers.Remove(id);              
             }
-        }
-
-        public void Remove(DhtId id)
-        {
-            lock(actors)
-                actors.Remove(id);
         }
 
         public IDisposable Lock()
@@ -139,8 +155,9 @@ namespace Actors.Dht
             return Disposable.New(Monitor.Exit, actors);
         }
 
-        public DhtId[] FindAll(int ttl, DhtId? originator = null)
+        public ActorId[] FindAll(int ttl, ActorId? originator = null)
         {
+            if (ttl < 0) return new ActorId[0];
             lock (actors)
                 return Enumerable.Range(0, ttl)
                     .Select(n => Find(n))
@@ -149,18 +166,19 @@ namespace Actors.Dht
                     .ToArray();
         }
 
-        public DhtId[] FindAllMax()
+        public ActorId[] FindAllMax()
         {
             lock (actors)
                 return FindAll(MaxTimeToLive);
         }
 
-        public DhtId? Find(int ttl, DhtId? originator = null)
+        public ActorId? Find(int ttl, ActorId? originator = null)
         {
             lock (actors)
             {
                 if (ttl < 0) return null;
                 int selfIndex = SelfIndex;
+                if (selfIndex < 0) return null;
                 int distance = (int)Math.Pow(2, ttl);
                 if (distance >= actors.Count) return null;
                 int endPoint = selfIndex + distance;
@@ -168,8 +186,9 @@ namespace Actors.Dht
                     endPoint -= actors.Count;
                 var destination = actors[endPoint];
                 if (destination.Equals(selfId)) return null;
-                if (!originator.HasValue) return null;
-                var originatorIndex = actors.BinarySearch(originator.Value);
+                if (!originator.HasValue) originator = selfId;
+                var hash = sha.ComputeHash(originator.Value.ToString());
+                var originatorIndex = actors.BinarySearch(KeyValuePair.New(hash, ActorId.Empty), n=>n.Key);
                 if (IsBetween(originatorIndex, selfIndex, endPoint))
                 {
                     // if the originator is between us and the endpoint it means
@@ -178,7 +197,7 @@ namespace Actors.Dht
                     // so stop this message instead.
                     return null;
                 }
-                return destination;
+                return destination.Value;
             }
         }
 
@@ -193,8 +212,9 @@ namespace Actors.Dht
         {
             get
             {
-                lock (actors)
-                    return actors.BinarySearch(selfId);
+                var hash = sha.ComputeHash(selfId.ToString());
+                lock (actors)                                   
+                    return actors.BinarySearch(KeyValuePair.New(hash, ActorId.Empty), n => n.Key);                
             }
         }
 

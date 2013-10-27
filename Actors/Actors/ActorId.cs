@@ -37,6 +37,7 @@ namespace Actors
         public string Machine { get { return machine; } set { machine = value; } }
         public NodeId Node { get { return node; } set { node = value; } }
         public string Name { get { return name; } set { name = value; } }
+        
         public static readonly ActorId Empty = new ActorId();
         public bool IsEmpty { get { 
             return Machine == null &&

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FE843DA4-479E-431B-8907-0FA507BD1674}</ProjectGuid>
+    <ProjectGuid>{15113F7F-97D8-4CCB-8DDD-B2CCFC733667}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Extensions</RootNamespace>
-    <AssemblyName>Extensions</AssemblyName>
+    <RootNamespace>KeyValueDatabase</RootNamespace>
+    <AssemblyName>KeyValueDatabase</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fasterflect">
+      <HintPath>..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,19 +43,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\ByteArrayComparer.cs" />
-    <Compile Include="Extensions\ConvertEx.cs" />
-    <Compile Include="Extensions\Disposable.cs" />
-    <Compile Include="Extensions\Extensions.cs" />
-    <Compile Include="Extensions\FuncEx.cs" />
-    <Compile Include="Extensions\TaskEx.cs" />
+    <Compile Include="..\Extensions\Extensions\ByteArrayComparer.cs">
+      <Link>ByteArrayComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\Extensions\Extensions\Extensions.cs">
+      <Link>Extensions.cs</Link>
+    </Compile>
+    <Compile Include="IKvpByteDb.cs" />
+    <Compile Include="IKvpDb.cs" />
+    <Compile Include="KvpDb.cs" />
+    <Compile Include="Memory\MemoryKvpByteDb.cs" />
+    <Compile Include="Memory\MemoryKvpDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proxy\IKvpDbSet.cs" />
+    <Compile Include="Proxy\KvpDbProxy.cs" />
+    <Compile Include="Proxy\KvpDbSet.cs" />
+    <Compile Include="Proxy\ProxyFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\StructEqualityTemplate.tt" />
+    <ProjectReference Include="..\Serialization\Serialization.csproj">
+      <Project>{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}</Project>
+      <Name>Serialization</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

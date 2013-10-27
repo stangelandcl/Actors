@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;MONO</DefineConstants>
+    <DefineConstants>DEBUG;NMONO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -33,6 +33,9 @@
     <DocumentationFile>bin\Release\Actors.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fasterflect, Version=2.1.3.0, Culture=neutral, PublicKeyToken=38d18473284c1ca7, processorArchitecture=MSIL">
+      <HintPath>..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,6 +55,9 @@
     </Compile>
     <Compile Include="..\Extensions\Extensions\Extensions.cs">
       <Link>Extensions\Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Extensions\Extensions\FuncEx.cs">
+      <Link>Extensions\FuncEx.cs</Link>
     </Compile>
     <Compile Include="..\Extensions\Extensions\TaskEx.cs">
       <Link>Extensions\TaskEx.cs</Link>
@@ -84,9 +90,10 @@
     <Compile Include="Connections\Tcp\Stream\TcpStreamConnection.cs" />
     <Compile Include="Connections\Tcp\TcpConnector.cs" />
     <Compile Include="Connections\Tcp\TcpListeners.cs" />
+    <Compile Include="Dht\DhtBackend.cs" />
     <Compile Include="Dht\DhtClient.cs" />
     <Compile Include="Dht\DhtId.cs" />
-    <Compile Include="Dht\DhtMemoryBackend.cs" />
+    <Compile Include="Dht\DhtJoiner.cs" />
     <Compile Include="Dht\DhtMetadata.cs" />
     <Compile Include="Builtins\Clients\IBandwidth.cs" />
     <Compile Include="Builtins\Clients\IEcho.cs" />
@@ -95,7 +102,6 @@
     <Compile Include="Dht\DhtRing.cs" />
     <Compile Include="Dht\IByteDht.cs" />
     <Compile Include="Dht\IDht.cs" />
-    <Compile Include="Dht\ILocalData.cs" />
     <Compile Include="Dht\Subscription.cs" />
     <Compile Include="Dht\SubscriptionEventArgs.cs" />
     <Compile Include="Events\Publisher.cs" />
@@ -159,6 +165,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KeyValueDatabase\KeyValueDatabase.csproj">
+      <Project>{15113F7F-97D8-4CCB-8DDD-B2CCFC733667}</Project>
+      <Name>KeyValueDatabase</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RemoteConsole\MirrorConsole.csproj">
       <Project>{78A36ABE-5088-4FBE-8194-E2146AF6BDCD}</Project>
       <Name>MirrorConsole</Name>

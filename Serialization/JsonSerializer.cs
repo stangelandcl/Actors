@@ -15,9 +15,13 @@ namespace Serialization
 		public byte[] Serialize<T>(T item){
 			return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(item, formatting, settings));
 		}
-		public T Deserialize<T>(byte[] bytes){
+		public T Deserialize<T>(byte[] bytes)  {          
 			return Deserialize<T>(bytes, 0, bytes.Length);
 		}
+        public object Deserialize(byte[] bytes)
+        {
+            return Deserialize<object>(bytes);
+        }
 		public T Deserialize<T>(byte[] bytes, int offset, int count){
 			var str = Encoding.UTF8.GetString(bytes, offset, count);
 			return JsonConvert.DeserializeObject<T>(str, settings);

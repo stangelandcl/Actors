@@ -4,41 +4,60 @@ using System.Linq;
 using System.Text;
 using Actors.Dht;
 using Dht;
+using KeyValueDatabase;
+using System.Threading;
 
 namespace Actors.Builtins.Actors.Dht
 {
     public class DhtActor : Actor
     {
-        public DhtActor(ILocalData cache, string shortname = "System.Dht")
+        public DhtActor(IDhtBackend cache, string shortname = "System.Dht")
             : base(shortname)
         {
             this.cache = cache;
         }
- 
-        ILocalData cache;
+
+        IDhtBackend cache;
         DhtRing ring;
         RingSender sender;
         HeartbeatMonitor monitor;
+        DhtJoiner joiner;
         public event Action<string, string> SubscriptionHit;
 
         public override void AttachNode(Node node)
         {
             base.AttachNode(node);
-            this.ring = new DhtRing(Box.Id);
-            sender = new RingSender(Node, Box, ring);
-            monitor = new HeartbeatMonitor(Node, Box, ring, Run, sender);
-            monitor.Loop();
-        }
-      
-        void JoinReply(Mail m, DhtMetadata meta, ActorId[] actors, KeyValuePair<string, byte[]>[] data)
-        {
-            ring.AddRange(actors.Select(n=>(DhtId)n));
-            cache.AddRange(data);
+
+            this.ring = new DhtRing(Box.Id, cache);
+            sender = new RingSender(this, ring);
+            monitor = new HeartbeatMonitor(this, ring, Run, sender);           
+            joiner = new DhtJoiner(this, Run);
+            joiner.AddRange(cache.Peers);            
         }
 
-        void Join(Mail m, DhtMetadata meta)
+        void DhtJoinReply(Mail m, ActorId[] actors)
         {
-            Node.Send(meta.Originator, Box.Id, "JoinReply", ring.Actors, cache.Data);
+            joiner.Joined();
+            ring.AddRange(actors);
+        }
+
+        public void Join(params ActorId[] bootstraps)
+        {
+            joiner.AddRange(bootstraps);
+        }
+
+        void Join(Mail mail, ActorId[] bootstraps)
+        {
+            Join(bootstraps);
+            //while (!joiner.IsJoined)
+            //    Thread.Sleep(100);
+            //Node.Reply(mail, true);
+        }
+
+        void DhtJoin(Mail m)
+        {            
+            Node.Reply(m, ring.Actors);
+            ring.Add(m.From);
             sender.SendToRing("PeerAdded", m.From);          
         }           
 
@@ -55,10 +74,10 @@ namespace Actors.Builtins.Actors.Dht
 
         void PeerRemoved(Mail mail, DhtMetadata meta, ActorId peer)
         {
-            foreach (var kvp in cache.Data)
+            foreach (var kvp in cache.Database.Items)
             {
-                var peers = ring.FindClosest(kvp.Key);
-                var index = peers.IndexOf(peer);
+                var peers = ring.FindClosest(new DhtId(kvp.Key));
+                var index = peers.IndexOf(n=> n == peer);
                 if (index >= 0)
                 {
                     if (--index < 0)
@@ -103,20 +122,20 @@ namespace Actors.Builtins.Actors.Dht
 
         void Add(Mail mail, string key, byte[] value)
         {
-            foreach (var to in ring.FindClosest(key))
+            foreach (var to in ring.FindClosest(new DhtId(key)))
                 Node.Send(to, Box.Id, "AddLocal", key, value);            
             foreach (var subscription in ring.GetMatches(DhtOperation.Add, key))
-                Node.Send(subscription.Node, Box.Id, "SubscriptionMatched", "Add", key);
-            Node.Reply(mail, "true");
+                Node.Send(subscription.Actor, Box.Id, "SubscriptionMatched", "Add", key);
+            //Node.Reply(mail, true);
         }
 
         void Get(Mail mail, string key)
         {
             var msgIds = new List<MessageId>();
-            foreach (var to in ring.FindClosest(key))            
+            foreach (var to in ring.FindClosest(new DhtId(key)))            
                 msgIds.Add(Node.Send(to, Box.Id, "GetLocal", key));            
             foreach (var subscription in ring.GetMatches(DhtOperation.Get, key))
-                Node.Send(subscription.Node, Box.Id, "SubscriptionMatched", "Get", key);
+                Node.Send(subscription.Actor, Box.Id, "SubscriptionMatched", "Get", key);
             var ids = msgIds.ToHashSet();
             var reply = Box.CheckFor(n=> ids.Contains(n.MessageId), TimeSpan.FromSeconds(5));
             var result = reply.Coalesce(n => n.Args[0]) as byte[];          
@@ -126,11 +145,11 @@ namespace Actors.Builtins.Actors.Dht
 
         void Remove(Mail mail, string key)
         {
-            foreach (var to in ring.FindClosest(key))
+            foreach (var to in ring.FindClosest(new DhtId(key)))
                 Node.Send(to, Box.Id, "RemoveLocal", key);            
             foreach (var subscription in ring.GetMatches(DhtOperation.Remove, key))
-                Node.Send(subscription.Node, Box.Id, "SubscriptionMatched", "Remove", key);
-            Node.Reply(mail, "true");
+                Node.Send(subscription.Actor, Box.Id, "SubscriptionMatched", "Remove", key);
+           // Node.Reply(mail, true);
         }
 
         void AddLocal(Mail m, string key, byte[] value)

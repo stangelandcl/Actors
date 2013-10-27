@@ -38,4 +38,24 @@ namespace System
             return b;
         }
     }
+
+  
+    class Comparer<T,U> : IComparer<T>
+    {
+        public Comparer(Func<T,U> getValue){
+            this.getValue = getValue;
+            if (typeof(U) == typeof(byte[]))
+                this.comparer =(IComparer<U>) ByteArrayComparer.Default;
+            else
+                this.comparer = Comparer<U>.Default;
+        }
+        Func<T, U> getValue;
+        IComparer<U> comparer;
+       
+
+        public int Compare(T x, T y)
+        {
+            return comparer.Compare(getValue(x), getValue(y));
+        }
+    }
 }

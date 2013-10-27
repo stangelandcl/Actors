@@ -9,26 +9,24 @@ namespace Actors.Builtins.Actors.Dht
     class HeartbeatMonitor
     {
         public HeartbeatMonitor(
-            Node node,
-            MailBox box,
+            Actor actor,
             DhtRing ring,           
             Action<Action, int> run,
             RingSender sender)
         {
             this.ring = ring;
-            this.Box = box;            
-            this.ring = ring;
+            this.actor = actor;                       
             this.Run = run;
             this.sender = sender;
+            Loop();
         }
         static readonly TimeSpan nodeCheckTime = TimeSpan.FromSeconds(5);
         static readonly int nodeCheckIntervalMs = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
         RingSender sender;
         DhtRing ring;
-        MailBox Box;
-        Node Node;        
+        Actor actor;      
         Action<Action, int> Run;
-        public void Loop()
+        void Loop()
         {
             Run(CheckAlive, nodeCheckIntervalMs);
         }
@@ -49,8 +47,8 @@ namespace Actors.Builtins.Actors.Dht
 
         private void CheckAlive(ActorId node)
         {
-            var msg = Node.Send(node, Box.Id, "IsAlive");
-            var mail = Box.WaitFor(msg, nodeCheckTime);
+            var msg = actor.Node.Send(node, actor.Box.Id, "IsAlive");
+            var mail = actor.Box.WaitFor(msg, nodeCheckTime);
             if (mail == null)
                 sender.SendToRing("PeerRemoved", node);
         }

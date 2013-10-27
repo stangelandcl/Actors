@@ -50,10 +50,30 @@ namespace System
 			}catch{}
 		}
 
+        public static int BinarySearch<T, U>(this List<T> list, T item, Func<T, U> getValue)
+        {
+            return list.BinarySearch(item, new Comparer<T, U>(getValue));
+        }
+
+        public static void RemoveWhere<T>(this IList<T> list, Func<T, bool> remove)
+        {
+            var items = list.Where(n=> !remove(n)).ToList();
+            list.Clear();
+            list.AddRange(items);
+        }
+
         public static int IndexOf<T>(this T[] array, T item)
         {
             for (int i = 0; i < array.Length; i++)
                 if (array[i].Equals(item))
+                    return i;
+            return -1;
+        }
+
+        public static int IndexOf<T>(this T[] array, Func<T, bool> found)
+        {
+            for (int i = 0; i < array.Length; i++)
+                if (found(array[i]))
                     return i;
             return -1;
         }
@@ -76,7 +96,7 @@ namespace System
             return Math.Min(high, Math.Max(i, low));
         }
 
-        public static byte[] Hash(this HashAlgorithm hash, string str)
+        public static byte[] ComputeHash(this HashAlgorithm hash, string str)
         {
             return hash.ComputeHash(Encoding.UTF8.GetBytes(str));
         }
@@ -118,45 +138,13 @@ namespace System
             return items.FirstOrDefault(n => n.Equals(other));
         }
 
-        public static void AddRange<T>(this HashSet<T> a, IEnumerable<T> items)
+        public static void AddRange<T>(this ICollection<T> a, IEnumerable<T> items)
         {
             foreach (var c in items)
                 a.Add(c);
         }
 
-        public static void FireEvent(this Action e)
-        {
-            if (e != null) e();
-        }
-        public static void FireEventAsync(this Action e)
-        {
-            if (e != null) TaskEx.Run(e);
-        }
-        public static void FireEvent<T>(this Action<T> e, T args)
-        {
-            if (e != null) e(args);
-        }
-        public static void FireEventAsync<T>(this Action<T> e, T args)
-        {
-            if (e != null) TaskEx.Run(() => e(args));
-        }
-        public static void FireEvent<T, T2>(this Action<T, T2> e, T args, T2 args2)
-        {
-            if (e != null) e(args, args2);
-        }
-        public static void FireEventAsync<T, T2>(this Action<T, T2> e, T args, T2 args2)
-        {
-            if (e != null) TaskEx.Run(() => e(args, args2));
-        }
-        public static void FireEvent<T>(this EventHandler<T> e, object sender, T args) where T : EventArgs
-        {
-            if (e != null) e(sender, args);
-        }
-        public static void FireEventAsync<T>(this EventHandler<T> e, object sender, T args) where T : EventArgs
-        {
-            if (e != null) TaskEx.Run(() => e(sender, args));
-        }
-       
+      
 	}
 }
 

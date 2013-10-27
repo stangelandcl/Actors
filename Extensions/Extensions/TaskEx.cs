@@ -4,14 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
-
+using Fasterflect;
+using System.Linq.Expressions;
 namespace System
 {   
     static class TaskEx
     {
         static readonly Task _sPreCompletedTask = GetCompletedTask();
         static readonly Task _sPreCanceledTask = GetPreCanceledTask();
-
+     
+        public static object New(Func<object> func, Type returnType)
+        {
+            var taskType = typeof(Task<>).MakeGenericType(returnType);                     
+            return taskType.CreateInstance(FuncEx.NewFunc(func, returnType));
+        }
 
         /// <summary>
         /// Run task with try-catch
@@ -77,5 +83,39 @@ namespace System
             source.TrySetResult(null);
             return source.Task;
         }
+
+        public static void FireEvent(this Action e)
+        {
+            if (e != null) e();
+        }
+        public static void FireEventAsync(this Action e)
+        {
+            if (e != null) TaskEx.Run(e);
+        }
+        public static void FireEvent<T>(this Action<T> e, T args)
+        {
+            if (e != null) e(args);
+        }
+        public static void FireEventAsync<T>(this Action<T> e, T args)
+        {
+            if (e != null) TaskEx.Run(() => e(args));
+        }
+        public static void FireEvent<T, T2>(this Action<T, T2> e, T args, T2 args2)
+        {
+            if (e != null) e(args, args2);
+        }
+        public static void FireEventAsync<T, T2>(this Action<T, T2> e, T args, T2 args2)
+        {
+            if (e != null) TaskEx.Run(() => e(args, args2));
+        }
+        public static void FireEvent<T>(this EventHandler<T> e, object sender, T args) where T : EventArgs
+        {
+            if (e != null) e(sender, args);
+        }
+        public static void FireEventAsync<T>(this EventHandler<T> e, object sender, T args) where T : EventArgs
+        {
+            if (e != null) TaskEx.Run(() => e(sender, args));
+        }
+       
     }
 }
