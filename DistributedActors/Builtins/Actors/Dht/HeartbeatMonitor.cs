@@ -9,7 +9,7 @@ namespace Actors.Builtins.Actors.Dht
     class HeartbeatMonitor
     {
         public HeartbeatMonitor(
-            Actor actor,
+            DistributedActor actor,
             DhtRing ring,           
             Action<Action, int> run,
             RingSender sender)
@@ -24,7 +24,7 @@ namespace Actors.Builtins.Actors.Dht
         static readonly int nodeCheckIntervalMs = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
         RingSender sender;
         DhtRing ring;
-        Actor actor;      
+        DistributedActor actor;      
         Action<Action, int> Run;
         void Loop()
         {

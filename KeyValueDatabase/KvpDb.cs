@@ -38,8 +38,9 @@ namespace KeyValueDatabase
 
         public void AddRange(IEnumerable<KeyValuePair<object, object>> items)
         {
-            foreach (var kvp in items)
-                Add(kvp.Key, kvp.Value);
+            Database.AddRange(items.Select(n => KeyValuePair.New(
+                Serializer.Serialize(n.Key),
+                Serializer.Serialize(n.Value))));                      
         }
 
         public IEnumerable<object> Keys

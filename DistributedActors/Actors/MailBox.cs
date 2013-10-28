@@ -119,8 +119,12 @@ namespace Actors
                 return null;
 			}			
 		}
+        public Mail WaitFor(MessageId id, TimeSpan? timeout = null)
+        {
+            return WaitFor(n => n.MessageId == id, timeout);
+        }
 
-		public Mail WaitFor(MessageId id, TimeSpan? timeout = null){
+		public Mail WaitFor(Func<Mail, bool> match, TimeSpan? timeout = null){
             var start = Stopwatch.GetTimestamp();
             timeout = timeout ?? defaultTimeout;
             var ticks = timeout.Value.TotalSeconds * Stopwatch.Frequency;
@@ -131,7 +135,7 @@ namespace Actors
                     for (var i = mail.First; i != null; i = i.Next)
                     {
                         var m = i.Value;
-                        if (m.MessageId == id)
+                        if (match(m))
                         {
                             mail.Remove(i);
                             return m;

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Actors.Examples.Actors
 {
-    public class Shell : Actor
+    public class Shell : DistributedActor
     {
         public Shell()
             : base("System.Shell")

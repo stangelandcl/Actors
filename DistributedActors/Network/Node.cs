@@ -103,7 +103,7 @@ namespace Actors
             return server.Add(listener);
         }
 
-        public void Add<T>(T a) where T : Actor
+        public void Add<T>(T a) where T : DistributedActor
         {
             a.AttachNode(this);          
             world.Add(a);
@@ -115,7 +115,7 @@ namespace Actors
             Send(other, creator, "Link", LinkStatus.Create, "Create");
         }
 
-		public void Remove(Actor a, string msg = ""){
+		public void Remove(DistributedActor a, string msg = ""){
             var links = Links.Get(a);         
 			world.Remove(a.Box.Id);
             foreach (var link in links)

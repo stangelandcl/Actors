@@ -7,7 +7,7 @@ namespace Actors.Dht
 {
     class DhtJoiner
     {
-        public DhtJoiner(Actor actor, Action<Action, int> run)
+        public DhtJoiner(DistributedActor actor, Action<Action, int> run)
         {
             this.actor = actor;
             this.Run = run;
@@ -15,7 +15,7 @@ namespace Actors.Dht
         }
         int sleepCount;
         const int Minimum = 3;
-        Actor actor;
+        DistributedActor actor;
         Action<Action, int> Run;
         int joined;
         int count = 0;

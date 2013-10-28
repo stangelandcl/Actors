@@ -3,7 +3,7 @@ using Serialization;
 
 namespace Actors
 {
-	public class EchoActor : Actor
+	public class EchoActor : DistributedActor
 	{
         public EchoActor(string shortName = "System.Echo")
             : base(shortName)

@@ -8,11 +8,11 @@ namespace Actors
 {
 	public class TcpWorld 
 	{
-        Dictionary<string, Actor> actors = new Dictionary<string, Actor>();		
+        Dictionary<string, DistributedActor> actors = new Dictionary<string, DistributedActor>();		
 
 		public void Dispatch (Mail obj)
 		{
-            Actor actor;
+            DistributedActor actor;
             lock (actors)
             {
                 if (!actors.TryGetValue(obj.To.Name, out actor))
@@ -29,7 +29,7 @@ namespace Actors
                    (id.IsLocal && id.Name == actor.Name);
         }
 				
-		public void Add(Actor actor){
+		public void Add(DistributedActor actor){
             lock (actors)
                 actors[actor.Box.Id.Name] = actor;
 		}
@@ -37,7 +37,7 @@ namespace Actors
 		public void Remove(ActorId id){
             lock (actors)
             {
-                Actor actor;
+                DistributedActor actor;
                 if (!actors.TryGetValue(id.Name, out actor))
                     return;
                 if (!IsMatch(id, actor.Box.Id))

@@ -4,20 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
-using Fasterflect;
 using System.Linq.Expressions;
 namespace System
 {   
-    static class TaskEx
+    static partial class TaskEx
     {
         static readonly Task _sPreCompletedTask = GetCompletedTask();
-        static readonly Task _sPreCanceledTask = GetPreCanceledTask();
-     
-        public static object New(Func<object> func, Type returnType)
-        {
-            var taskType = typeof(Task<>).MakeGenericType(returnType);                     
-            return taskType.CreateInstance(FuncEx.NewFunc(func, returnType));
-        }
+        static readonly Task _sPreCanceledTask = GetPreCanceledTask();          
 
         /// <summary>
         /// Run task with try-catch

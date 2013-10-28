@@ -56,14 +56,20 @@ namespace Actors.Example
                     node.Add(actor);
                     actor.Join(new ActorId("System.Dht"));
                 }
-                Thread.Sleep(1000);             
+                           
                 var echo = node.Proxy.New<IEcho>(new ActorId("System.Echo"));
                 Console.WriteLine(echo.Echo("hey dude"));
 
                 IDht model = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht1")), new JsonSerializer());
                 model = model.Add("abce", "def").Result;
-                IDht model2 = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht85")), new JsonSerializer());               
-                Console.WriteLine(model2.Get<string>("abce").Result);
+                IDht model2 = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht85")), new JsonSerializer());
+                int j = 0;
+                while (model2.Get<string>("abce").Result == null)
+                {
+                    Console.WriteLine(++j);
+                    Thread.Sleep(1000);
+                }
+                Console.WriteLine("def");
 
                 Console.WriteLine("press a key to quit");
                 Console.ReadKey();              

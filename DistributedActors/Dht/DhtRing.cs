@@ -6,9 +6,11 @@ using System.Threading;
 using Dht;
 using System.Security.Cryptography;
 using KeyValueDatabase;
+using System.Diagnostics;
 
 namespace Actors.Dht
 {
+    [DebuggerDisplay("Count={Actors.Length}")]
     class DhtRing
     {
         public DhtRing(ActorId self, IDhtBackend db)
@@ -189,7 +191,7 @@ namespace Actors.Dht
                 if (!originator.HasValue) originator = selfId;
                 var hash = sha.ComputeHash(originator.Value.ToString());
                 var originatorIndex = actors.BinarySearch(KeyValuePair.New(hash, ActorId.Empty), n=>n.Key);
-                if (IsBetween(originatorIndex, selfIndex, endPoint))
+                if (IsBetween(originatorIndex, selfIndex,endPoint))
                 {
                     // if the originator is between us and the endpoint it means
                     // if we send this message it will have wrapped completely around
@@ -203,6 +205,7 @@ namespace Actors.Dht
 
         bool IsBetween(int check, int start, int end)
         {
+            if (check == start) return false;
             if (start < end) 
                 return check >= start && check <= end;
             return check >= start || check <= end;

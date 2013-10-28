@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace Actors.Builtins.Actors.Dht
 {
-    public class DhtActor : Actor
+    public class DhtActor : DistributedActor
     {
         public DhtActor(IDhtBackend cache, string shortname = "System.Dht")
             : base(shortname)
@@ -35,10 +35,11 @@ namespace Actors.Builtins.Actors.Dht
             joiner.AddRange(cache.Peers);            
         }
 
-        void DhtJoinReply(Mail m, ActorId[] actors)
+        void DhtJoinReply(Mail m, ActorId[] actors, KeyValuePair<object,object>[] data)
         {
             joiner.Joined();
             ring.AddRange(actors);
+            cache.AddRange(data);
         }
 
         public void Join(params ActorId[] bootstraps)
@@ -55,8 +56,12 @@ namespace Actors.Builtins.Actors.Dht
         }
 
         void DhtJoin(Mail m)
-        {            
-            Node.Reply(m, ring.Actors);
+        {
+            // we aren't joined to the DHT yet.
+            // don't allow others to join to us.
+            //if (!joiner.IsJoined) return;
+           
+            Node.Reply(m, ring.Actors, cache.Items.ToArray());
             ring.Add(m.From);
             sender.SendToRing("PeerAdded", m.From);          
         }           
@@ -137,7 +142,7 @@ namespace Actors.Builtins.Actors.Dht
             foreach (var subscription in ring.GetMatches(DhtOperation.Get, key))
                 Node.Send(subscription.Actor, Box.Id, "SubscriptionMatched", "Get", key);
             var ids = msgIds.ToHashSet();
-            var reply = Box.CheckFor(n=> ids.Contains(n.MessageId), TimeSpan.FromSeconds(5));
+            var reply = Box.WaitFor(n=> ids.Contains(n.MessageId) && n.Args[0] != null, TimeSpan.FromSeconds(5));
             var result = reply.Coalesce(n => n.Args[0]) as byte[];          
             Node.Reply(mail, result);
         }

@@ -2,7 +2,7 @@ using System;
 
 namespace Actors
 {
-	public class RemoteActor : Actor
+	public class RemoteActor : DistributedActor
 	{
 		public RemoteActor (string shortName, ActorId remote)
 			: base(shortName)

@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Actors.Builtins.Actors
 {
-    public class FileCopyActor : Actor
+    public class FileCopyActor : DistributedActor
     {
         public FileCopyActor(string shortName = "System.FileCopy")
             : base(shortName)

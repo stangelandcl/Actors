@@ -14,13 +14,13 @@ namespace Actors
     /// <summary>
     /// If you override any functions in this class be careful to add a try-catch and call Die on failure    
     /// </summary>
-	public abstract class Actor : IDisposable
+	public abstract class DistributedActor : IDisposable
 	{
-        public Actor(string shortName)
+        public DistributedActor(string shortName)
             : this(new MailBox(new ActorId(shortName)), null)
         { }        
 
-		public Actor(MailBox box, Node node)
+		public DistributedActor(MailBox box, Node node)
 		{
 			Node = node;
 			Box = box;
@@ -37,7 +37,7 @@ namespace Actors
         IEnumerable<Type> GetTypes(Type t)
         {
             yield return t;
-            if (typeof(Actor).IsAssignableFrom(t.BaseType))
+            if (typeof(DistributedActor).IsAssignableFrom(t.BaseType))
                 foreach (var x in GetTypes(t.BaseType))
                     yield return x;                    
         }
@@ -54,7 +54,7 @@ namespace Actors
             Box.Id = new ActorId(System.Environment.MachineName, Node.Id ,Box.Id.Name);
         }
 
-        public static implicit operator ActorId(Actor a){
+        public static implicit operator ActorId(DistributedActor a){
             return a.Box.Id;
         }
 

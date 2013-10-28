@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Actors.Examples
 {
-    public class BandwidthActor : Actor
+    public class BandwidthActor : DistributedActor
     {
         public BandwidthActor(string shortname = "System.Bandwidth")
             : base(shortname)

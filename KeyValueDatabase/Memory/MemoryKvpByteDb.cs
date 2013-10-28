@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.Concurrent;
 
 namespace KeyValueDatabase
 {
     class MemoryKvpByteDb : IKvpByteDb
     {
-        Dictionary<byte[], byte[]> map = new Dictionary<byte[], byte[]>(ByteArrayComparer.Default);
-        public byte[] Get(byte[] key)
-        {
+        ConcurrentDictionary<byte[], byte[]> map = new ConcurrentDictionary<byte[], byte[]>(ByteArrayComparer.Default);
+        public byte[] Get(byte[] key){
+                   
             return map.GetOrDefault(key);
         }
 
@@ -20,7 +21,8 @@ namespace KeyValueDatabase
 
         public void Remove(byte[] key)
         {
-            map.Remove(key);
+            byte[] b;
+            map.TryRemove(key, out b);
         }
 
         public void AddRange(IEnumerable<KeyValuePair<byte[], byte[]>> items)

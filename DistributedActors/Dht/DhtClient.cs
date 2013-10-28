@@ -27,7 +27,13 @@ namespace Actors.Dht
         public Task<T> Get<T>(string key)
         {
             return Task.Factory.StartNew(() =>
-                serializer.Deserialize<T>(dht.Get(key)));
+            {
+                try
+                {
+                    return serializer.Deserialize<T>(dht.Get(key));
+                }
+                catch { return default(T); }
+            });
         }    
 
         public Task<IDht> Remove(string key)

@@ -8,13 +8,13 @@ namespace Actors.Builtins.Actors.Dht
 {
     class RingSender
     {
-        public RingSender(Actor actor, DhtRing ring)
+        public RingSender(DistributedActor actor, DhtRing ring)
         {
             this.actor = actor;
             this.ring = ring;            
         }
         DhtRing ring;
-        Actor actor;
+        DistributedActor actor;
 
         public void Forward(Mail m)
         {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Actors.Examples.Actors
 {
-    public class ConsoleClientActor : Actor
+    public class ConsoleClientActor : DistributedActor
     {
         public ConsoleClientActor(string shortname)
             : base(shortname) 

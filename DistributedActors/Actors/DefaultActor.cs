@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Actors
 {
-	public class DefaultActor : Actor
+	public class DefaultActor : DistributedActor
 	{
         public DefaultActor(MailBox box, Node env)
             : base(box, env)

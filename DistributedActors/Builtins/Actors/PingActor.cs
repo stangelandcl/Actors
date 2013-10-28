@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Actors.Examples
 {
-    public class PingActor : Actor
+    public class PingActor : DistributedActor
     {
         public PingActor(string shortName = "System.Ping")
             : base(shortName)

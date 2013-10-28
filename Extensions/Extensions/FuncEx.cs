@@ -3,8 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Fasterflect;
+using System.Threading.Tasks;
+
 namespace System
 {
+    static partial class TaskEx
+    {
+        public static object New(Func<object> func, Type returnType)
+        {
+            var taskType = typeof(Task<>).MakeGenericType(returnType);
+            return taskType.CreateInstance(FuncEx.NewFunc(func, returnType));
+        }
+    }
+
     class FuncEx
     {
         public static object NewFunc(Func<object> func, Type returnType)
