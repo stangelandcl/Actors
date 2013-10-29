@@ -8,53 +8,82 @@ using KeyValueDatabase;
 
 namespace Dht.Ring
 {
-    class DhtPeer : MailActor
+    class DhtPeer : RpcActor
     {
         public DhtPeer(IActorId id, ISender sender)
-        {     
+        {
+            this.sender = sender;
             this.ring = new DhtRing(id);
             this.joiner = new Joiner(ring, sender);
-        }       
+            this.db = new MemoryKvpDb<IResource, object>();
+            this.distribute = new Distributor(ring, sender, db);
+        }
+        ISender sender;
         DhtRing ring;
         Joiner joiner;
         IKvpDb<IResource, object> db;
+        Distributor distribute;
 
-        public void Join(IEnumerable<IActorId> peers)
+        public void JoinDht(IEnumerable<IActorId> peers)
         {
             joiner.Join(peers);
         }
 
-        public IActorId[] GetPeers(IResource resource)
+        IActorId[] GetPeers(IResource resource)
         {
             return ring.FindClosest(resource);
         }
 
-        public object Get(IResource resource){
+        void JoinDht(IRpcMail mail, IActorId[] peers)
+        {
+            joiner.Join(peers);
         }
 
-        public void Put(IResource resource, object o)
+
+        void Join(IRpcMail mail)
         {
-        }
-        public void Remove(IResource resource)
-        {
+            sender.Send(mail.From, "JoinReply", ring.Actors.Select(n=>n.Value).ToArray());
         }
 
-        public void Add(IActorId peer)
+        void JoinReply(IRpcMail mail, IActorId[] peers)
+        {
+            joiner.JoinReply(peers);
+        }      
+
+        void Get(IRpcMail mail, IResource resource)
+        {
+            sender.Send(mail.From, "GetReply", resource, db.Get(resource));
+        }
+
+        void Added(IRpcMail mail, IResource resource)
+        {
+            var actor = ring.FindClosest(resource).First();
+            if (actor.Equals(mail.From))
+                db.Remove(resource); // other peer owns resource now
+        }
+
+        void Put(IRpcMail mail, IResource resource, object o)
+        {
+            db.Add(resource, o);
+            distribute.Send("Put");
+            sender.Send(mail.From, "Added", resource);
+        }
+        void Remove(IRpcMail mail, IResource resource)
+        {
+            db.Remove(resource);
+            distribute.Send("Remove");
+        }
+
+        void Add(IRpcMail mail, IActorId peer)
         {
             ring.Add(peer);
+            distribute.Send("AddPeer");
         }
 
-        public void Remove(IActorId peer)
+        void Remove(IRpcMail mail, IActorId peer)
         {
             ring.Remove(peer);
-        }
-
-        protected override void HandleMessage(IMail message)
-        {
-            if (message.Message[0] == "Joined")
-            {
-                joiner.JoinReply((IActorId[])message.Message[1]);
-            }
-        }
+            distribute.Send("RemovePeer");
+        }       
     }
 }

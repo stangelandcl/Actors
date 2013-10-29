@@ -12,7 +12,7 @@ namespace KeyValueDatabase.Proxy
             return New<T>(new MemoryKvpDb());
         }
 
-        public static T New<T>(IKvpDb backend)
+        public static T New<T>(IKvpDb<object,object> backend)
         {
             return (T)new KvpDbProxy(backend, typeof(T)).GetTransparentProxy();
         }

@@ -11,12 +11,12 @@ namespace KeyValueDatabase.Proxy
 {
     class KvpDbProxy : RealProxy
     {
-        public KvpDbProxy(IKvpDb db, Type t)
+        public KvpDbProxy(IKvpDb<object,object> db, Type t)
             : base(t)
         {
             this.db = db;
         }
-        IKvpDb db;
+        IKvpDb<object,object> db;
         Dictionary<string, object> dbsets = new Dictionary<string, object>();
 
         public override IMessage Invoke(IMessage message)

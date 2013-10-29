@@ -10,13 +10,13 @@ namespace KeyValueDatabase.Proxy
 {
     public class KvpDbSetProxy<T> : IKvpDbSet<T>
     {
-        public KvpDbSetProxy(IKvpDb db, string name)
+        public KvpDbSetProxy(IKvpDb<object,object> db, string name)
         {
             this.db = db;
             this.name = name;
         }
 
-        IKvpDb db;
+        IKvpDb<object,object> db;
         string name;
 
         public void Add(T item)
@@ -79,7 +79,7 @@ namespace KeyValueDatabase.Proxy
 
         private List<T> GetList()
         {
-            return db.Get<List<T>>(name) ?? new List<T>();
+            return (db.Get(name) as List<T>) ?? new List<T>();
         }
 
         public IEnumerator<T> GetEnumerator()

@@ -18,5 +18,5 @@ namespace Actors
         public string Name;
         public object[] Args;
     }
-    public interface IFunctionCallMail : IMail<FunctionCall> { }
+    public interface IRpcMail : IMail<FunctionCall> { }
 }

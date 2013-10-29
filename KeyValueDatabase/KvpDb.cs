@@ -6,62 +6,58 @@ using Serialization;
 
 namespace KeyValueDatabase
 {
-    public class KvpDb : IKvpDb
+    public class KvpDb<TKey, TValue> : IKvpDb<TKey, TValue>
     {
         public KvpDb(IKvpByteDb db, ISerializer serializer)
         {
             this.Database = db;
             this.Serializer = serializer;
         }
-        public object Get(object key)
-        {
-            return Get<object>(key);
-        }
 
-        public T Get<T>(object key)
+        public TValue Get(TKey key)
         {
             var bytes = Database.Get(Serializer.Serialize(key));
-            if (bytes == null) return default(T);
-            return Serializer.Deserialize<T>(bytes);
+            if (bytes == null) return default(TValue);
+            return Serializer.Deserialize<TValue>(bytes);
         }
 
-        public void Add(object key, object value)
+        public void Add(TKey key, TValue value)
         {
             Database.Add(Serializer.Serialize(key), Serializer.Serialize(value));
         }
 
-        public void Remove(object key)
+        public void Remove(TKey key)
         {
             Database.Remove(Serializer.Serialize(key));
         }
 
 
-        public void AddRange(IEnumerable<KeyValuePair<object, object>> items)
+        public void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> items)
         {
             Database.AddRange(items.Select(n => KeyValuePair.New(
                 Serializer.Serialize(n.Key),
                 Serializer.Serialize(n.Value))));                      
         }
 
-        public IEnumerable<object> Keys
+        public IEnumerable<TKey> Keys
         {
-            get { return Database.Keys.Select(n => Serializer.Deserialize(n)); }
+            get { return Database.Keys.Select(n => Serializer.Deserialize<TKey>(n)); }
         }
 
-        public IEnumerable<KeyValuePair<object, object>> Items
+        public IEnumerable<KeyValuePair<TKey, TValue>> Items
         {
             get
             {
                 return Database.Items.Select(n =>
-                    new KeyValuePair<object, object>(
-                  Serializer.Deserialize(n.Key),
-                  Serializer.Deserialize(n.Value)));
+                    new KeyValuePair<TKey, TValue>(
+                  Serializer.Deserialize<TKey>(n.Key),
+                  Serializer.Deserialize<TValue>(n.Value)));
             }
         }
 
-        public IEnumerable<object> Values
+        public IEnumerable<TValue> Values
         {
-            get { return Database.Values.Select(n => Serializer.Deserialize(n)); }
+            get { return Database.Values.Select(n => Serializer.Deserialize<TValue>(n)); }
         }
 
         public ISerializer Serializer { get; private set; }

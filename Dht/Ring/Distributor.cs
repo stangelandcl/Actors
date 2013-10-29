@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using KeyValueDatabase;
+using Actors;
 
 namespace Dht.Ring
 {
-    class Distributor
+    class Distributor : Actor
     {
         public Distributor(DhtRing ring, ISender sender, IKvpDb<IResource,object> db)
         {
@@ -16,9 +17,9 @@ namespace Dht.Ring
         }
         ISender sender;
         DhtRing ring;
-        IKvpDb<IResource, object> db;
+        IKvpDb<IResource, object> db;       
 
-        public void Run()
+        protected override void HandleMessage(object message)
         {
             foreach (var key in db.Keys)
             {

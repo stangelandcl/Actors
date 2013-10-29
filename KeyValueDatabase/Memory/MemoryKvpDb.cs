@@ -6,7 +6,7 @@ using Serialization;
 
 namespace KeyValueDatabase
 {
-    public class MemoryKvpDb : KvpDb
+    public class MemoryKvpDb<TKey, TValue> : KvpDb<TKey,TValue>
     {
         public MemoryKvpDb(ISerializer serializer)
             : base(new MemoryKvpByteDb(), serializer)

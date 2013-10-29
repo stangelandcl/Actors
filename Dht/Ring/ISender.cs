@@ -8,6 +8,6 @@ namespace Dht.Ring
 {
     public interface ISender
     {
-        void Send(IActorId id, string message, params object[] args);
+        void Send(IActorId id, params object[] args);
     }
 }

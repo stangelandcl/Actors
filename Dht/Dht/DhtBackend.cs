@@ -8,8 +8,8 @@ using KeyValueDatabase.Proxy;
 
 namespace Actors.Dht
 {
-    public interface IDhtBackend : IKvpDb
+    public interface IDhtBackend : IKvpDb<object,object>
     {       
-        IKvpDbSet<ActorId> Peers { get; }
+        IKvpDbSet<IActorId> Peers { get; }
     }
 }
