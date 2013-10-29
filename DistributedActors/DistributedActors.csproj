@@ -99,7 +99,7 @@
     <Compile Include="Network\NodeId.cs" />
     <Compile Include="Network\TcpNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Actors\Actor.cs" />
+    <Compile Include="Actors\DistributedActor.cs" />
     <Compile Include="Actors\MailBox.cs" />
     <Compile Include="Actors\Mail.cs" />
     <Compile Include="Actors\PollingResetEvent.cs" />

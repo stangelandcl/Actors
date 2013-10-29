@@ -49,7 +49,7 @@ namespace Actors.Dht
         {
             return Task.Factory.StartNew<IDht>(() =>
             {
-                dht.Add(key, serializer.Serialize(value));
+                dht.Add(key, serializer.SerializeToBytes(value));
                 return this;
             });
         }

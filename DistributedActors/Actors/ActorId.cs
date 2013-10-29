@@ -5,7 +5,7 @@ using Actors.Network;
 namespace Actors
 {   
 	//[TypeConverter(typeof(ObjectTypeConverter<ActorId>))]
-	public partial struct ActorId
+	public partial struct ActorId : IActorId
 	{
 		public ActorId(string computer, NodeId node, string name){
             this.machine = computer;
@@ -54,6 +54,13 @@ namespace Actors
                 id.node == node &&
                 id.name == name;
         }
-	}
+
+        public bool Equals(IActorId other)
+        {
+            if (other == null || other.GetType() != GetType())
+                return false;
+            return Equals((ActorId)other);
+        }
+    }
 }
 

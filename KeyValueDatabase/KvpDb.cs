@@ -16,27 +16,27 @@ namespace KeyValueDatabase
 
         public TValue Get(TKey key)
         {
-            var bytes = Database.Get(Serializer.Serialize(key));
+            var bytes = Database.Get(Serializer.SerializeToBytes(key));
             if (bytes == null) return default(TValue);
             return Serializer.Deserialize<TValue>(bytes);
         }
 
         public void Add(TKey key, TValue value)
         {
-            Database.Add(Serializer.Serialize(key), Serializer.Serialize(value));
+            Database.Add(Serializer.SerializeToBytes(key), Serializer.SerializeToBytes(value));
         }
 
         public void Remove(TKey key)
         {
-            Database.Remove(Serializer.Serialize(key));
+            Database.Remove(Serializer.SerializeToBytes(key));
         }
 
 
         public void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> items)
         {
             Database.AddRange(items.Select(n => KeyValuePair.New(
-                Serializer.Serialize(n.Key),
-                Serializer.Serialize(n.Value))));                      
+                Serializer.SerializeToBytes(n.Key),
+                Serializer.SerializeToBytes(n.Value))));                      
         }
 
         public IEnumerable<TKey> Keys

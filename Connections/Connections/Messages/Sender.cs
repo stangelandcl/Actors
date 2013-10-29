@@ -27,7 +27,7 @@ namespace Actors.Connections.Messages
 
         public void Send(object o)
         {
-            sender.Send(serializer.Serialize(o));
+            sender.Send(serializer.SerializeToBytes(o));
         }
         public void Dispose()
         {

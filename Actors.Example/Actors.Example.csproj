@@ -42,6 +42,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\Actors\Actors.csproj">
+      <Project>{DE4AF7D7-B404-420F-95CC-EB95182B920E}</Project>
+      <Name>Actors</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DistributedActors\DistributedActors.csproj">
       <Project>{1950C069-77D0-4C52-BA7D-77F713A9C5A0}</Project>
       <Name>DistributedActors</Name>

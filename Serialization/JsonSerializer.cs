@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json;
 using System.Text;
+using System.IO;
 
 namespace Serialization
 {
@@ -12,21 +13,17 @@ namespace Serialization
         
         class JsonSerializer : ISerializer
 	{
-		public byte[] Serialize<T>(T item){
-			return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(item, formatting, settings));
+		public void Serialize<T>(Stream stream, T item){
+            var str = JsonConvert.SerializeObject(item, formatting, settings);
+            var w = new BinaryWriter(stream);
+            w.Write(str);
+            w.Flush();
 		}
-		public T Deserialize<T>(byte[] bytes)  {          
-			return Deserialize<T>(bytes, 0, bytes.Length);
+		public T Deserialize<T>(Stream stream)  {
+            var r = new BinaryReader(stream);
+            return JsonConvert.DeserializeObject<T>(r.ReadString(), settings);
 		}
-        public object Deserialize(byte[] bytes)
-        {
-            return Deserialize<object>(bytes);
-        }
-		public T Deserialize<T>(byte[] bytes, int offset, int count){
-			var str = Encoding.UTF8.GetString(bytes, offset, count);
-			return JsonConvert.DeserializeObject<T>(str, settings);
-		}
-
+      
 		Formatting formatting = 
 #if DEBUG
 			Formatting.Indented;

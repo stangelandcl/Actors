@@ -63,6 +63,13 @@ namespace System
             return new ArraySegment<T>(array, start, end - start);
         }
 
+        public static T[] ToArray<T>(this ArraySegment<T> array)
+        {
+            var r = new T[array.Count];
+            Array.Copy(array.Array, array.Offset, r, 0, array.Count);
+            return r;
+        }
+        
         public static int BinarySearch<T, U>(this List<T> list, T item, Func<T, U> getValue)
         {
             return list.BinarySearch(item, new Comparer<T, U>(getValue));
