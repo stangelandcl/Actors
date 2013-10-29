@@ -6,18 +6,17 @@ using Serialization;
 
 namespace KeyValueDatabase
 {
-    public interface IKvpDb
-    {
-        T Get<T>(object key);
-        object Get(object key);
-        void Add(object key, object value);
-        void Remove(object key);
+    public interface IKvpDb<TKey,TValue>
+    {        
+        TValue Get(TKey key);
+        void Add(TKey key, TValue value);
+        void Remove(TKey key);
 
-        void AddRange(IEnumerable<KeyValuePair<object, object>> items);
+        void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> items);
 
-        IEnumerable<object> Keys { get; }
-        IEnumerable<KeyValuePair<object, object>> Items { get; }
-        IEnumerable<object> Values { get; }
+        IEnumerable<TKey> Keys { get; }
+        IEnumerable<KeyValuePair<TKey, TValue>> Items { get; }
+        IEnumerable<TValue> Values { get; }
 
         ISerializer Serializer { get; }
         IKvpByteDb Database { get; }

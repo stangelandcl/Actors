@@ -50,6 +50,19 @@ namespace System
 			}catch{}
 		}
 
+        public static ArraySegment<T> Slice<T>(this T[] array, int? offset = null, int? exclusiveEnd = null)
+        {
+            if (offset.HasValue)
+                while (offset.Value < 0)
+                    offset += array.Length;
+            if (exclusiveEnd.HasValue)
+                while (exclusiveEnd.Value < 0)
+                    exclusiveEnd += array.Length;
+            int start = offset ?? 0;
+            int end = exclusiveEnd ?? array.Length;
+            return new ArraySegment<T>(array, start, end - start);
+        }
+
         public static int BinarySearch<T, U>(this List<T> list, T item, Func<T, U> getValue)
         {
             return list.BinarySearch(item, new Comparer<T, U>(getValue));

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{805730CA-780B-4483-95B3-2CED02A377F8}</ProjectGuid>
+    <ProjectGuid>{B4FF6165-C34D-4D5B-9AD7-AFD51F7EBA66}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dht</RootNamespace>
-    <AssemblyName>Dht</AssemblyName>
+    <RootNamespace>Connections</RootNamespace>
+    <AssemblyName>Connections</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -43,9 +43,6 @@
     <Compile Include="..\Extensions\Extensions\ByteArrayComparer.cs">
       <Link>Extensions\ByteArrayComparer.cs</Link>
     </Compile>
-    <Compile Include="..\Extensions\Extensions\ConvertEx.cs">
-      <Link>Extensions\ConvertEx.cs</Link>
-    </Compile>
     <Compile Include="..\Extensions\Extensions\Disposable.cs">
       <Link>Extensions\Disposable.cs</Link>
     </Compile>
@@ -55,42 +52,49 @@
     <Compile Include="..\Extensions\Extensions\TaskEx.cs">
       <Link>Extensions\TaskEx.cs</Link>
     </Compile>
-    <Compile Include="Dht\DhtActor.cs" />
-    <Compile Include="Dht\DhtBackend.cs" />
-    <Compile Include="Dht\DhtClient.cs" />
-    <Compile Include="Dht\DhtId.cs" />
-    <Compile Include="Dht\DhtJoiner.cs" />
-    <Compile Include="Dht\DhtMetadata.cs" />
-    <Compile Include="Ring\DhtPeer.cs" />
-    <Compile Include="Ring\DhtRing.cs" />
-    <Compile Include="Dht\HeartbeatMonitor.cs" />
-    <Compile Include="Dht\IByteDht.cs" />
-    <Compile Include="Dht\IDht.cs" />
-    <Compile Include="Dht\RingSender.cs" />
-    <Compile Include="Dht\Subscription.cs" />
-    <Compile Include="Dht\SubscriptionEventArgs.cs" />
+    <Compile Include="Connections\Bytes\ByteConnection.cs" />
+    <Compile Include="Connections\Bytes\EndPoint.cs" />
+    <Compile Include="Connections\Bytes\IByteConnection.cs" />
+    <Compile Include="Connections\Bytes\IByteListener.cs" />
+    <Compile Include="Connections\Bytes\IByteReceiver.cs" />
+    <Compile Include="Connections\Bytes\IByteSender.cs" />
+    <Compile Include="Connections\Bytes\IEndPoint.cs" />
+    <Compile Include="Connections\Local\Bytes\LocalByteReceiver.cs" />
+    <Compile Include="Connections\Local\Bytes\LocalByteSender.cs" />
+    <Compile Include="Connections\Local\LocalConnection.cs" />
+    <Compile Include="Connections\Local\LocalReceiver.cs" />
+    <Compile Include="Connections\Local\LocalSender.cs" />
+    <Compile Include="Connections\Messages\Connection.cs" />
+    <Compile Include="Connections\Messages\IConnection.cs" />
+    <Compile Include="Connections\Messages\IListener.cs" />
+    <Compile Include="Connections\Messages\IReceiver.cs" />
+    <Compile Include="Connections\Messages\ISender.cs" />
+    <Compile Include="Connections\Messages\Listener.cs" />
+    <Compile Include="Connections\Messages\Listeners.cs" />
+    <Compile Include="Connections\Messages\Receiver.cs" />
+    <Compile Include="Connections\Messages\Sender.cs" />
+    <Compile Include="Connections\Ssl\Stream\SslByteConnection.cs" />
+    <Compile Include="Connections\Ssl\Stream\SslByteConnectionFactory.cs" />
+    <Compile Include="Connections\Stream\StreamByteReceiver.cs" />
+    <Compile Include="Connections\Stream\StreamByteSender.cs" />
+    <Compile Include="Connections\Tcp\Bytes\TcpByteConnection.cs" />
+    <Compile Include="Connections\Tcp\Bytes\TcpByteListener.cs" />
+    <Compile Include="Connections\Tcp\Stream\TcpStreamConnection.cs" />
+    <Compile Include="Connections\Tcp\TcpConnector.cs" />
+    <Compile Include="Connections\Tcp\TcpListeners.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ring\Distributor.cs" />
-    <Compile Include="Ring\IResource.cs" />
-    <Compile Include="Ring\ISender.cs" />
-    <Compile Include="Ring\Joiner.cs" />
-    <Compile Include="Ring\PeerMonitor.cs" />
-    <Compile Include="Ring\RingUpdate.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Actors\Actors.csproj">
       <Project>{DE4AF7D7-B404-420F-95CC-EB95182B920E}</Project>
       <Name>Actors</Name>
     </ProjectReference>
-    <ProjectReference Include="..\KeyValueDatabase\KeyValueDatabase.csproj">
-      <Project>{15113F7F-97D8-4CCB-8DDD-B2CCFC733667}</Project>
-      <Name>KeyValueDatabase</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Serialization\Serialization.csproj">
       <Project>{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}</Project>
       <Name>Serialization</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

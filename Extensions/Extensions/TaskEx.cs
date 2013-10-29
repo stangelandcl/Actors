@@ -10,7 +10,11 @@ namespace System
     static partial class TaskEx
     {
         static readonly Task _sPreCompletedTask = GetCompletedTask();
-        static readonly Task _sPreCanceledTask = GetPreCanceledTask();          
+        static readonly Task _sPreCanceledTask = GetPreCanceledTask();
+        public static Task ContinueWith(this Task t, Action a)
+        {
+            return t.ContinueWith(n => a());
+        }
 
         /// <summary>
         /// Run task with try-catch

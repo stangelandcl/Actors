@@ -16,6 +16,7 @@ using Actors.Builtins.Actors.Dht;
 using Actors.Network;
 using Actors.Connections.Local;
 using KeyValueDatabase;
+using Connections.Connections.Local;
 
 namespace Actors
 {
@@ -37,11 +38,11 @@ namespace Actors
             AddConnection(local);
         }
 
-        private Connection CreateLocalConnection()
+        private IConnection CreateLocalConnection()
         {
-            var receiver = new LocalByteReceiver(Id);
-            var sender = new LocalByteSender(Id, receiver);
-            var local = new Connection(new ByteConnection(sender, receiver), new JsonSerializer());            
+            var receiver = new LocalReceiver(new EndPoint(Id.ToString()));
+            var sender = new LocalSender(new EndPoint(Id.ToString()), receiver);
+            var local = new LocalConnection(sender, receiver);         
             return local;
         }
 
@@ -82,10 +83,9 @@ namespace Actors
         public IDisposable AddConnection(IConnection connection, bool isOutbound = true)
         {            
             var disposable = router.Add(connection, isOutbound: isOutbound);
-            connection.Received += HandleReceived;
+            connection.Received.Subscribe(HandleReceived);
             return Disposable.New(() =>
-            {
-                connection.Received -= HandleReceived;
+            {                
                 disposable.Dispose();
                 connection.Dispose();
             });

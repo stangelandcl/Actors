@@ -66,30 +66,7 @@
     <Compile Include="Builtins\Actors\Dht\HeartbeatMonitor.cs" />
     <Compile Include="Builtins\Actors\Dht\RingSender.cs" />
     <Compile Include="Builtins\Actors\FileCopyActor.cs" />
-    <Compile Include="Connections\Local\LocalByteReceiver.cs" />
-    <Compile Include="Connections\Local\LocalByteSender.cs" />
-    <Compile Include="Connections\Messages\ConnectionFactory.cs" />
-    <Compile Include="Connections\Bytes\ByteConnection.cs" />
-    <Compile Include="Connections\Bytes\EndPoint.cs" />
-    <Compile Include="Connections\Bytes\IEndPoint.cs" />
-    <Compile Include="Connections\Bytes\IByteConnection.cs" />
-    <Compile Include="Connections\Bytes\IByteListener.cs" />
-    <Compile Include="Connections\Bytes\IByteReceiver.cs" />
-    <Compile Include="Connections\Bytes\IByteSender.cs" />
-    <Compile Include="Connections\Messages\Connection.cs" />
-    <Compile Include="Connections\Messages\IConnection.cs" />
-    <Compile Include="Connections\Messages\IListener.cs" />
-    <Compile Include="Connections\Messages\IReceiver.cs" />
-    <Compile Include="Connections\Messages\ISender.cs" />
-    <Compile Include="Connections\Messages\Listener.cs" />
-    <Compile Include="Connections\Messages\Listeners.cs" />
-    <Compile Include="Connections\Messages\Receiver.cs" />
-    <Compile Include="Connections\Messages\Sender.cs" />
-    <Compile Include="Connections\Ssl\Stream\SslByteConnection.cs" />
-    <Compile Include="Connections\Ssl\Stream\SslByteConnectionFactory.cs" />
-    <Compile Include="Connections\Tcp\Stream\TcpStreamConnection.cs" />
-    <Compile Include="Connections\Tcp\TcpConnector.cs" />
-    <Compile Include="Connections\Tcp\TcpListeners.cs" />
+    <Compile Include="Connections\ConnectionFactory.cs" />
     <Compile Include="Dht\DhtBackend.cs" />
     <Compile Include="Dht\DhtClient.cs" />
     <Compile Include="Dht\DhtId.cs" />
@@ -119,11 +96,9 @@
     </Compile>
     <Compile Include="Functions\FunctionDefinition.cs" />
     <Compile Include="Network\Link.cs" />
-    <Compile Include="Connections\Tcp\TcpNode.cs" />
     <Compile Include="Network\NodeId.cs" />
+    <Compile Include="Network\TcpNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Connections\Stream\StreamByteReceiver.cs" />
-    <Compile Include="Connections\Stream\StreamByteSender.cs" />
     <Compile Include="Actors\Actor.cs" />
     <Compile Include="Actors\MailBox.cs" />
     <Compile Include="Actors\Mail.cs" />
@@ -136,8 +111,6 @@
     <Compile Include="Actors\ObjectTypeConverter.cs" />
     <Compile Include="Connections\ConnectionRouter.cs" />
     <Compile Include="Names\INameResolver.cs" />
-    <Compile Include="Connections\Tcp\Bytes\TcpByteConnection.cs" />
-    <Compile Include="Connections\Tcp\Bytes\TcpByteListener.cs" />
     <Compile Include="Mail\IMailSender.cs" />
     <Compile Include="Mail\MailSender.cs" />
     <Compile Include="Names\NameResolver.cs" />
@@ -168,6 +141,10 @@
     <ProjectReference Include="..\Actors\Actors.csproj">
       <Project>{DE4AF7D7-B404-420F-95CC-EB95182B920E}</Project>
       <Name>Actors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Connections\Connections.csproj">
+      <Project>{B4FF6165-C34D-4D5B-9AD7-AFD51F7EBA66}</Project>
+      <Name>Connections</Name>
     </ProjectReference>
     <ProjectReference Include="..\KeyValueDatabase\KeyValueDatabase.csproj">
       <Project>{15113F7F-97D8-4CCB-8DDD-B2CCFC733667}</Project>
