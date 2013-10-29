@@ -11,17 +11,15 @@ namespace Actors
             : base(100)
         { }
                            
-        List<Action<T>> subscriptions = new List<Action<T>>();
+        SynchronizedCollection<Action<T>> subscriptions = new SynchronizedCollection<Action<T>>();
        
         public void Subscribe(Action<T> subscription)
-        {
-            lock(subscriptions)
+        {            
             subscriptions.Add(subscription);
         }
 
         public void Unsubscribe(Action<T> subscription)
-        {
-            lock(subscriptions)
+        {            
             subscriptions.Remove(subscription);
         }
 
@@ -32,7 +30,7 @@ namespace Actors
 
 
         protected override void HandleMessage(T message)
-        {
+        {            
             foreach (var subscription in subscriptions)
                 subscription(message);   
         }

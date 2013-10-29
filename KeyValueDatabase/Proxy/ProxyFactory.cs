@@ -9,7 +9,7 @@ namespace KeyValueDatabase.Proxy
     {
         public static T New<T>()
         {
-            return New<T>(new MemoryKvpDb());
+            return New<T>(new MemoryKvpDb<object,object>());
         }
 
         public static T New<T>(IKvpDb<object,object> backend)

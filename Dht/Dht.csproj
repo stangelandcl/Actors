@@ -55,27 +55,14 @@
     <Compile Include="..\Extensions\Extensions\TaskEx.cs">
       <Link>Extensions\TaskEx.cs</Link>
     </Compile>
-    <Compile Include="Dht\DhtActor.cs" />
-    <Compile Include="Dht\DhtBackend.cs" />
-    <Compile Include="Dht\DhtClient.cs" />
-    <Compile Include="Dht\DhtId.cs" />
-    <Compile Include="Dht\DhtJoiner.cs" />
-    <Compile Include="Dht\DhtMetadata.cs" />
     <Compile Include="Ring\DhtPeer.cs" />
     <Compile Include="Ring\DhtRing.cs" />
-    <Compile Include="Dht\HeartbeatMonitor.cs" />
-    <Compile Include="Dht\IByteDht.cs" />
-    <Compile Include="Dht\IDht.cs" />
-    <Compile Include="Dht\RingSender.cs" />
-    <Compile Include="Dht\Subscription.cs" />
-    <Compile Include="Dht\SubscriptionEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ring\Distributor.cs" />
     <Compile Include="Ring\IResource.cs" />
     <Compile Include="Ring\ISender.cs" />
     <Compile Include="Ring\Joiner.cs" />
     <Compile Include="Ring\PeerMonitor.cs" />
-    <Compile Include="Ring\RingUpdate.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Actors\Actors.csproj">

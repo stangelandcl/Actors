@@ -43,7 +43,7 @@ namespace Dht.Ring
         }
 
 
-        public IActorId? Find(int ttl, IActorId? originator = null)
+        public IActorId Find(int ttl, IActorId originator = null)
         {
             lock (actors)
             {
@@ -57,9 +57,9 @@ namespace Dht.Ring
                     endPoint -= actors.Count;
                 var destination = actors[endPoint];
                 if (destination.Equals(SelfId)) return null;
-                if (!originator.HasValue) originator = selfId;
-                var hash = HashAlgorithm.ComputeHash(originator.Value.ToString());
-                var originatorIndex = actors.BinarySearch(KeyValuePair.New(hash, ActorId.Empty), n => n.Key);
+                if (originator == null) originator = SelfId;
+                var hash = HashAlgorithm.ComputeHash(originator.ToString());
+                var originatorIndex = actors.BinarySearch(KeyValuePair.New(hash,(IActorId) null), n => n.Key);
                 if (IsBetween(originatorIndex, selfIndex, endPoint))
                 {
                     // if the originator is between us and the endpoint it means
@@ -80,14 +80,13 @@ namespace Dht.Ring
             return check >= start || check <= end;
         }
 
-        public IActorId[] FindAll(int ttl, IActorId? originator = null)
+        public IActorId[] FindAll(int ttl, IActorId originator = null)
         {
             if (ttl < 0) return new IActorId[0];
             lock (actors)
                 return Enumerable.Range(0, ttl)
                     .Select(n => Find(n))
-                    .Where(n => n.HasValue)
-                    .Select(n => n.Value)
+                    .Where(n => n != null)                   
                     .ToArray();
         }
 
@@ -97,7 +96,7 @@ namespace Dht.Ring
                 return FindAll(MaxTimeToLive);
         }
 
-        public IActorId? Predecessor
+        public IActorId Predecessor
         {
             get
             {
@@ -112,7 +111,7 @@ namespace Dht.Ring
             }
         }
 
-        public IActorId? Successor
+        public IActorId Successor
         {
             get
             {
@@ -192,7 +191,7 @@ namespace Dht.Ring
             {
                 var hash = HashAlgorithm.ComputeHash(SelfId.ToString());
                 lock (actors)                                   
-                    return actors.BinarySearch(KeyValuePair.New(hash, new IActorId()), n => n.Key);                
+                    return actors.BinarySearch(KeyValuePair.New(hash,(IActorId) null), n => n.Key);                
             }
         }
        

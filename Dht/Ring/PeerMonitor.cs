@@ -21,14 +21,16 @@ namespace Dht.Ring
             var pred = ring.Predecessor;
             if (pred != null)
             {
-                var result = sender.SendReceive<bool>(pred.Value, "Ping");
+                //TODO: add SendReceive()/wait for reply.
+                sender.Send(pred, "Ping");
+                var result = false;
                 if (!result)
                 {
-                    ring.Remove(pred.Value);
+                    ring.Remove(pred);
                     int i = 0;
                     foreach (var node in ring.FindAllMax())
                     {
-                        sender.Send(node, "PeerRemoved", pred.Value, i);
+                        sender.Send(node, "PeerRemoved", pred, i);
                         i++;
                     }
                 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Actors
 {
-    public interface IActorId
+    public interface IActorId : IEquatable<IActorId>
     {
     }
 }
