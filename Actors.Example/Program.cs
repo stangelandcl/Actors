@@ -12,6 +12,7 @@ using KeyValueDatabase.Proxy;
 using DistributedActors;
 using Dht;
 using Dht.Ring;
+using Actors.Builtins.Actors;
 
 namespace Actors.Example
 {
@@ -52,6 +53,7 @@ namespace Actors.Example
                 node.Add(new PingActor());
 				var mainDht = new DhtActor();
                 node.Add(mainDht);
+				node.Add(new FileCopyActor());
                 for (int i = 0; i < 1000; i++)
                 {
                     var actor = new DhtActor("dht" + i);
@@ -76,6 +78,8 @@ namespace Actors.Example
                     Thread.Sleep(1000);
                 }
                 Console.WriteLine("def");
+
+				
 
                 Console.WriteLine("press a key to quit");
                 Console.ReadKey();              

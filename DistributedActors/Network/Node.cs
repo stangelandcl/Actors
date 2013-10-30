@@ -15,6 +15,7 @@ using Actors.Network;
 using Actors.Connections.Local;
 using KeyValueDatabase;
 using Connections.Connections.Local;
+using DistributedActors;
 
 namespace Actors
 {
@@ -59,7 +60,8 @@ namespace Actors
             Add(new EchoActor());
             Add(new PingActor());
             Add(new Shell());
-            //Add(new DhtActor(KeyValueDatabase.Proxy.ProxyFactory.New<IDhtBackend>()));
+			Add(new DhtActor());
+			Add(new FileCopyActor());
         }
 
         public virtual void Dispose()
