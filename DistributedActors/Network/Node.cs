@@ -23,7 +23,7 @@ namespace Actors
         public Node()
         {
             Id = NodeId.New();
-            Serializer = new JsonSerializer();
+            Serializer = new ObjectSerializer();
             server = new TcpListeners(Serializer);
             world = new TcpWorld();
             Links = new LinkMap();	

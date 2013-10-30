@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Serialization
 {
-    class ByteArraySerializer 
+    class ByteArraySerializer : ISerializer<byte[]>, ISerializer
     {
         public void Serialize(System.IO.Stream stream, byte[] item)
         {
@@ -16,11 +16,25 @@ namespace Serialization
             w.Flush();
         }
 
-        public byte[] Deserialize<T>(System.IO.Stream stream)
+        public byte[] Deserialize(System.IO.Stream stream)
         {
             var r = new BinaryReader(stream);
             int count = r.ReadInt32();
             return r.ReadBytes(count);
         }
+
+		#region ISerializer implementation
+
+		public void Serialize<T> (Stream stream, T item)
+		{
+			Serialize(stream, (byte[])(object)item);
+		}
+
+		public T Deserialize<T> (Stream stream)
+		{
+			return (T)(object)Deserialize(stream);
+		}
+
+		#endregion
     }
 }

@@ -9,9 +9,8 @@ namespace Serialization
     internal
 #else
 	public 
-#endif
-        
-        class JsonSerializer : ISerializer
+#endif        
+        class JsonSerializer : ISerializer, ISerializer<object>
 	{
 		public void Serialize<T>(Stream stream, T item){
             var str = JsonConvert.SerializeObject(item, formatting, settings);
@@ -24,6 +23,17 @@ namespace Serialization
 			var str = r.ReadString();
             return JsonConvert.DeserializeObject<T>(str, settings);
 		}
+
+		#region ISerializer implementation
+		public void Serialize (Stream stream, object item)
+		{
+			Serialize<object>(stream, item);
+		}
+		public object Deserialize (Stream stream)
+		{
+			return Deserialize<object>(stream);
+		}
+		#endregion	
       
 		Formatting formatting = 
 #if DEBUG

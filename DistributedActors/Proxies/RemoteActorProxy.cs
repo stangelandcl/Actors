@@ -7,10 +7,11 @@ using System.Runtime.Remoting.Messaging;
 using System.Reflection;
 using System.Threading.Tasks;
 using Fasterflect;
+using Proxies;
 
 namespace Actors.Proxies
 {
-    class RemoteActorProxy : RealProxy
+    class RemoteActorProxy : Proxy
     {
         public RemoteActorProxy(RemoteActor remote, Type t)
             : base(t)
@@ -19,15 +20,13 @@ namespace Actors.Proxies
         }
         public RemoteActor Remote { get; private set; }
 
-        public override IMessage Invoke(IMessage message)
-        {
-            var methodCall = (IMethodCallMessage)message;
-            var method = (MethodInfo)methodCall.MethodBase;
-            var msg = Remote.Send(method.Name, methodCall.Args);
-            var returnValue = GetReturnValue(method, msg);            
-            return new ReturnMessage(returnValue, null, 0, methodCall.LogicalCallContext, methodCall);            
-        }
-
+		protected override object Invoke (MethodInfo method, IMethodCallMessage call, out object[] outArgs)
+		{
+			outArgs = null;
+			var msg = Remote.Send(method.Name, call.Args);
+			return GetReturnValue(method, msg);            			
+		}
+		      
         private object GetReturnValue(MethodInfo method, IMessageId msg)
         {
             if (method.ReturnType == typeof(void)) return null;

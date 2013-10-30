@@ -148,6 +148,10 @@
       <Project>{805730CA-780B-4483-95B3-2CED02A377F8}</Project>
       <Name>Dht</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Proxies\Proxies.csproj">
+      <Project>{C968A7E6-5B5E-462C-9B0B-F3ED2F9BC897}</Project>
+      <Name>Proxies</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

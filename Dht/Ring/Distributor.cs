@@ -17,8 +17,7 @@ namespace Dht.Ring
         }
 		ISingleRpcSender sender;
         DhtRing ring;
-        IKvpDb<IResource, object> db;   
-			 	
+        IKvpDb<IResource, object> db;  			 
 
         protected override void HandleMessage(object message)
         {

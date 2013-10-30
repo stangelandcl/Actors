@@ -3,16 +3,16 @@ using System.IO;
 
 namespace Serialization
 {
-#if SERIALIZATION_INTERNAL
-	internal 
-#else
-    public
-#endif
-        
-        interface ISerializer
+    public interface ISerializer
 	{
         void Serialize<T>(Stream stream, T item);
         T Deserialize<T>(Stream stream);
+	}
+
+	public interface ISerializer<T>
+	{
+		void Serialize(Stream stream, T item);
+		T Deserialize(Stream stream);
 	}
 
     public static class SerializerExtensions
