@@ -50,10 +50,10 @@ namespace Actors
         public bool Equals(ActorId id)
         {
             return 
-                id.machine == machine &&
-                id.node == node &&
+                ((id.machine == null || machine == null) || (id.machine.Equals(machine, StringComparison.OrdinalIgnoreCase))) &&
+                ((id.node.IsEmpty || node.IsEmpty) || (id.node == node)) &&
                 id.name == name;
-        }
+        }       
 
         public bool Equals(IActorId other)
         {

@@ -11,8 +11,8 @@ namespace Actors.Network.Tcp
 {
     public class TcpNode : Node
     {
-        public TcpNode(int defaultPort)
-            : base()
+        public TcpNode(int defaultPort, string name = null)
+            : base(name)
         {
             this.defaultPort = defaultPort;
             router.ConnectionNotFound += HandleConnectionNotFound;

@@ -87,14 +87,22 @@ namespace Actors
                 return localConnection;
             
             var s = id.ToString().Split('/');
-            return Get(new Actors.Connections.Bytes.EndPoint(s[0]));
+            var computer = NormalizedComputerName(s[0]);
+            return Get(new Actors.Connections.Bytes.EndPoint(computer));
         }
 
         private bool IsLocal(ref ActorId id)
         {
             return (id.Machine == null || id.Machine == Environment.MachineName) &&
                    (id.Node.IsEmpty || id.Node.ToString() == localConnection.Sender.Remote.ToString());
-        }       
+        }
+
+        private string NormalizedComputerName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name) || name.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase))
+                return "localhost";
+            return name;
+        }
     }
 }
 

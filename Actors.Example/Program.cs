@@ -88,35 +88,40 @@ namespace Actors.Example
 
         private void RunAsClient()
         {
+            string machine = "localhost";
             // create a node
-            using(var node = new TcpNode(18222))
+            using(var node = new TcpNode(18222, "client"))
             // connect to an endpoint which is in this case a separate node. 
             // so now we can route messages from actors in this node to the
             // other node
 /* optional */ //           using (var conn = node.AddConnection("127.0.0.1", 18222, serializer))
+            using (var conn = node.AddConnection(machine, 18222, serializer))
             {
                 // send async but receive sync. send to localhost/echo which happens to
                 // be in the other node
-                var result = node.Default.SendReceive<string>(new ActorId("System.Echo"), "Echo", "hi");
+                var result = node.Default.SendReceive<string>(new ActorId(machine, new NodeId("server"), "System.Echo"), "Echo", "hi");
                 // print response
                 Console.WriteLine(result);
 
 
                 // DynamicProxy wraps a remote actor.
-                var echo = node.Proxy.New<IEcho>(new ActorId("localhost", "System.Echo"));
+                var echo = node.Proxy.New<IEcho>(new ActorId(machine, new NodeId("server"), "System.Echo"));
                 // this is the same as SendReceive<string>("localhost/System.Echo", "echo", "hey dude");
                 var r2 = echo.Echo("hey dude");
                 // print response
                 Console.WriteLine(r2);
+                r2 = echo.Echo("hey dude");
+                // print response
+                Console.WriteLine(r2);
 
-                var ping = node.Proxy.New<IPing>(new ActorId("localhost", "System.Ping"));
+                var ping = node.Proxy.New<IPing>(new ActorId(machine, new NodeId("server"), "System.Ping"));
                 var pong = ping.Ping(new byte[1024]);
                 Console.WriteLine("ping-pong " + pong.Length);
 
                 var client = new PingClient(ping);
                 Console.WriteLine("delay = " + client.Ping(10));
 
-                var bandwidth = node.Proxy.New<IBandwidth>(new ActorId("localhost", "System.Bandwidth"));
+                var bandwidth = node.Proxy.New<IBandwidth>(new ActorId(machine, new NodeId("server"), "System.Bandwidth"));
                 var bw = new BandwidthClient(bandwidth, ping);
                 Console.WriteLine("bandwidth = " + bw.Test());
 
@@ -132,13 +137,24 @@ namespace Actors.Example
 //                    var x = dht.Get<string>("abc");
 //					Console.WriteLine("DHT result " + x);
 //                }
-				Thread.Sleep(100000);
+				//Thread.Sleep(100000);
+                node.AddBuiltins();
+                var dhtLocal = node.Proxy.New<IDht>(new ActorId("System.Dht"));
+                dhtLocal.Join(new IActorId[] { new ActorId(machine, new NodeId("server"), "System.Dht") });
+                var dht = node.Proxy.New<IDht>(new ActorId(machine, new NodeId("server"), "System.Dht"));
 
+                dhtLocal.Put(new StringResource("abc"), "def");
 
+                Console.WriteLine("press a key to test dht get");
+                Console.ReadKey();
+                Console.WriteLine("found " + dht.Get(new StringResource("abc")));
+                Console.WriteLine("found " + dhtLocal.Get(new StringResource("abc")));
+
+                Console.ReadKey();
                 using (var shell = new ConsoleClientActor("cmd.exe-client"))
                 {
                     node.Add(shell);
-                    var proxy = node.Proxy.New<IShell>(new ActorId("localhost", "System.Shell"));
+                    var proxy = node.Proxy.New<IShell>(new ActorId(machine, new NodeId("server"), "System.Shell"));
                     var remoteId = proxy.RunConsole("cmd.exe", new string[0], shell.Id);
                     node.Link(shell.Id, remoteId);
                     while (shell.IsAlive)
@@ -168,14 +184,11 @@ namespace Actors.Example
         void RunAsServer()
         {
             // a node is like an erlang node. it is like a VM. like its own world
-            using (var node = new TcpNode(18223))
-            using(var server = node.AddListener(18222, serializer))
+            using (var node = new TcpNode(18223, "server"))
+            using(var server = node.AddListener(18222, serializer, isLocalOnly: false))
             {                              
                 // add actor, an actor is like an object. it can send & receive messages
-                node.Add(new BandwidthActor());
-                node.Add(new EchoActor());
-                node.Add(new PingActor());
-                node.Add(new Shell());
+                node.AddBuiltins();
                // node.Add(new DhtActor(ProxyFactory.New<IDhtBackend>()));
                 //using (var cmd = new ConsoleProcessActor("cmd.exe", "cmd.exe"))
                 //{

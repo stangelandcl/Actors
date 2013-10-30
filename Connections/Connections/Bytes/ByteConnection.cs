@@ -12,6 +12,7 @@ namespace Actors.Connections.Bytes
             Sender = sender;
             Receiver = receiver;
             Receiver.Received.Subscribe(HandleReceived);
+            Received = new MessageQueue<byte[]>();
             Sender.Error += HandleError;
             Receiver.Error += HandleError;
 

@@ -21,10 +21,11 @@ namespace Actors
 {
 	public class Node : IDisposable
 	{
-        public Node()
+        public Node(string name = null)
         {
-            Id = NodeId.New();
-            Serializer = new ObjectSerializer();
+            if (name != null) Id = new NodeId(name);
+            else Id = NodeId.New();
+            Serializer = new JsonSerializer();
             server = new TcpListeners(Serializer);
             world = new TcpWorld();
             Links = new LinkMap();	

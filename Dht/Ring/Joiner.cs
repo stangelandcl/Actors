@@ -46,6 +46,9 @@ namespace Dht.Ring
             }
            
         }
-        void Quit() { Joined = true; }
+        void Quit() 
+        { 
+            Joined = true; 
+        }
     }
 }

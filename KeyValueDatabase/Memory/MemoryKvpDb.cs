@@ -12,7 +12,7 @@ namespace KeyValueDatabase
             : base(new MemoryKvpByteDb(), serializer)
         { }
         public MemoryKvpDb()
-            : this(new ObjectSerializer())
+            : this(new JsonSerializer())
         { }
     }
 }

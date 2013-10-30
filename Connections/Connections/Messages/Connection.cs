@@ -39,7 +39,7 @@ namespace Actors.Connections.Messages
         IByteConnection connection;
 
         void HandleReceived(object ob)
-        {
+        {           
             Received.Post(ob);
         }
 
