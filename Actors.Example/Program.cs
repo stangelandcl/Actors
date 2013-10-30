@@ -6,8 +6,6 @@ using RemoteConsole;
 using System.Threading;
 using Actors.Network.Tcp;
 using Serialization;
-using Actors.Dht;
-using Actors.Builtins.Actors.Dht;
 using Actors.Network;
 using KeyValueDatabase;
 using KeyValueDatabase.Proxy;
@@ -49,26 +47,26 @@ namespace Actors.Example
                 node.Add(new BandwidthActor());
                 node.Add(new EchoActor());
                 node.Add(new PingActor());
-                node.Add(new DhtActor(ProxyFactory.New<IDhtBackend>()));
-                for (int i = 0; i < 1000; i++)
-                {
-                    var actor = new DhtActor(ProxyFactory.New<IDhtBackend>(), "dht" + i);
-                    node.Add(actor);
-                    actor.Join(new ActorId("System.Dht"));
-                }
-                           
+//                node.Add(new DhtActor(ProxyFactory.New<IDhtBackend>()));
+//                for (int i = 0; i < 1000; i++)
+//                {
+//                    var actor = new DhtActor(ProxyFactory.New<IDhtBackend>(), "dht" + i);
+//                    node.Add(actor);
+//                    actor.Join(new ActorId("System.Dht"));
+//                }
+//                           
                 var echo = node.Proxy.New<IEcho>(new ActorId("System.Echo"));
                 Console.WriteLine(echo.Echo("hey dude"));
-
-                IDht model = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht1")), new JsonSerializer());
-                model = model.Add("abce", "def").Result;
-                IDht model2 = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht85")), new JsonSerializer());
-                int j = 0;
-                while (model2.Get<string>("abce").Result == null)
-                {
-                    Console.WriteLine(++j);
-                    Thread.Sleep(1000);
-                }
+//
+//                IDht model = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht1")), new JsonSerializer());
+//                model = model.Add("abce", "def").Result;
+//                IDht model2 = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht85")), new JsonSerializer());
+//                int j = 0;
+//                while (model2.Get<string>("abce").Result == null)
+//                {
+//                    Console.WriteLine(++j);
+//                    Thread.Sleep(1000);
+//                }
                 Console.WriteLine("def");
 
                 Console.WriteLine("press a key to quit");
@@ -110,18 +108,18 @@ namespace Actors.Example
                 var bw = new BandwidthClient(bandwidth, ping);
                 Console.WriteLine("bandwidth = " + bw.Test());
 
-                using (var dht = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("localhost", "System.Dht")), new JsonSerializer()))
-                {
-                    dht.Add("abc", "123");
-                    dht.Subscribe(DhtOperation.All, ".*");
-                    dht.KeyMatch += (operation, key) =>
-                    {
-                        Console.WriteLine("DHT callback " + operation + " key=" + key);
-                    };
-                    dht.Add("def", "456");
-                    var x = dht.Get<string>("abc");
-					Console.WriteLine("DHT result " + x);
-                }
+//                using (var dht = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("localhost", "System.Dht")), new JsonSerializer()))
+//                {
+//                    dht.Add("abc", "123");
+//                    dht.Subscribe(DhtOperation.All, ".*");
+//                    dht.KeyMatch += (operation, key) =>
+//                    {
+//                        Console.WriteLine("DHT callback " + operation + " key=" + key);
+//                    };
+//                    dht.Add("def", "456");
+//                    var x = dht.Get<string>("abc");
+//					Console.WriteLine("DHT result " + x);
+//                }
 				Thread.Sleep(100000);
 
 
@@ -129,8 +127,8 @@ namespace Actors.Example
                 {
                     node.Add(shell);
                     var proxy = node.Proxy.New<IShell>(new ActorId("localhost", "System.Shell"));
-                    var remoteId = proxy.RunConsole("cmd.exe", new string[0], shell.Box.Id);
-                    node.Link(shell.Box.Id, remoteId);
+                    var remoteId = proxy.RunConsole("cmd.exe", new string[0], shell.Id);
+                    node.Link(shell.Id, remoteId);
                     while (shell.IsAlive)
                         Thread.Sleep(10);
                 }
@@ -166,7 +164,7 @@ namespace Actors.Example
                 node.Add(new EchoActor());
                 node.Add(new PingActor());
                 node.Add(new Shell());
-                node.Add(new DhtActor(ProxyFactory.New<IDhtBackend>()));
+               // node.Add(new DhtActor(ProxyFactory.New<IDhtBackend>()));
                 //using (var cmd = new ConsoleProcessActor("cmd.exe", "cmd.exe"))
                 //{
                 //    node.Add(cmd);

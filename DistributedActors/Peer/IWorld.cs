@@ -7,7 +7,7 @@ namespace Actors
 		string Name {get;}
 		void Add(DistributedActor actor);
 		void Remove(ActorId id);
-		void Dispatch(Mail message);
+		void Dispatch(IMail message);
 	}
 }
 

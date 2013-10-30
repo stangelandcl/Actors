@@ -31,7 +31,7 @@ namespace Actors.Connections.Messages
         void HandleReceived(byte[] b)
         {
             var obj = serializer.Deserialize<object>(b);
-            Received.Send(obj);
+            Received.Post(obj);
         }      
 
         public void Dispose()

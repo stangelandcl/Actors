@@ -24,7 +24,7 @@ namespace Actors
                 name = binder.Name.Substring(4);
 			var msg = Proxy.Send(name, args);
             if (!binder.Name.StartsWith("Send"))
-                result = Proxy.Receive(msg).Args[0];
+                result = Proxy.Receive(msg).As<RpcMail>().Message.Args[0];
             else result = null;
 			return true;
 		}

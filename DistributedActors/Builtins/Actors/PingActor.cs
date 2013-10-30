@@ -11,7 +11,7 @@ namespace Actors.Examples
             : base(shortName)
         { }
         
-        void Ping(Mail m, byte[] data)
+        void Ping(IMail m, byte[] data)
         {
             Node.Reply(m, data);
         }

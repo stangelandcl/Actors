@@ -8,76 +8,68 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Collections.Concurrent;
 
 namespace Actors
 {
     /// <summary>
     /// If you override any functions in this class be careful to add a try-catch and call Die on failure    
     /// </summary>
-	public abstract class DistributedActor : IDisposable
+	public abstract class DistributedActor : RpcActor, IDisposable
 	{
         public DistributedActor(string shortName)
-            : this(new MailBox(new ActorId(shortName)), null)
+            : this(new ActorId(shortName), null)
         { }        
 
-		public DistributedActor(MailBox box, Node node)
+		public DistributedActor(ActorId id, Node node)
 		{
-			Node = node;
-			Box = box;
-			Box.Received += HandleReceived;
-
-            functions = GetTypes(GetType()).SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(n => n.GetParameters().Length > 0 && n.GetParameters()[0].ParameterType == typeof(Mail))
-                .Where(n => n.Name != "Execute"))
-                .ToDictionary(n => n.Name);
-            if (!functions.ContainsKey("Link")) throw new Exception("No link");
+			this.Node = node;
+			this.Id = id;
             IsAlive = true;
+			functions.Remove("SendTo");
 		}
 
-        IEnumerable<Type> GetTypes(Type t)
-        {
-            yield return t;
-            if (typeof(DistributedActor).IsAssignableFrom(t.BaseType))
-                foreach (var x in GetTypes(t.BaseType))
-                    yield return x;                    
-        }
-
         int isDisposed;
-		public MailBox Box {get; internal set;}
+		public ActorId Id {get; internal set;}
 		public Node Node {get; internal set;}
-        public bool IsAlive { get; private set; }
-        Dictionary<string, MethodInfo> functions;
+        public bool IsAlive { get; private set; }   
+
+		
+		ConcurrentQueue<IRpcMail> messages = new ConcurrentQueue<IRpcMail>();
+
+		void BoundQueueSize ()
+		{
+			while (messages.Count > this.maxMessages) {
+				IRpcMail m;
+				messages.TryDequeue (out m);
+			}
+		}
+
+		protected override void HandleMessage (IRpcMail mail)
+		{
+			base.HandleMessage (mail);
+			BoundQueueSize ();
+			messages.Enqueue(mail);
+		}
 
         public virtual void AttachNode(Node node)
         {
             Node = node;
-            Box.Id = new ActorId(System.Environment.MachineName, Node.Id ,Box.Id.Name);
+            Id = new ActorId(System.Environment.MachineName, Node.Id ,Id.Name);
         }
 
         public static implicit operator ActorId(DistributedActor a){
-            return a.Box.Id;
-        }
+            return a.Id;
+        }	
 
-        protected virtual void HandleReceived()
-        {
-            try
-            {
-                Box.Execute(Execute);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine("Actor.HandleReceived error " + ex);
-                Die(ex.ToString());
-            }
-        }
-
-        void Link(Mail mail, LinkStatus status, string msg)
+        void Link(IMail mail, LinkStatus status, string msg)
         {
             switch (status)
             {
-                case LinkStatus.Create: Node.Links.Add(mail.From, mail.To);   
+                case LinkStatus.Create: Node.Links.Add((ActorId)mail.As<RpcMail>().From, 
+				                                       (ActorId)mail.As<RpcMail>().To);   
                     break;
-                case LinkStatus.Died: Die("Linked: " + mail.From + " Died");
+                case LinkStatus.Died: Die("Linked: " + mail.As<RpcMail>().From + " Died");
                     break;
                 case LinkStatus.Disconnected:
                     break;
@@ -87,28 +79,7 @@ namespace Actors
                     break;
             }
         }
-
-        private bool Execute(Mail mail)
-        {
-            try
-            {
-                MethodInfo func;
-                if (!functions.TryGetValue(mail.Name, out func) ||
-                    mail.Args.Length != func.GetParameters().Length - 1)
-                    return false;
-                var p = func.GetParameters();
-                var args = new object[p.Length];
-                args[0] = mail;
-                for (int i = 0; i < mail.Args.Length; i++)
-                    args[i + 1] = ConvertEx.Convert(mail.Args[i], p[i + 1].ParameterType);
-                Run(() => func.Invoke(this, args));
-            }
-            catch (Exception ex)
-            {
-                Die(ex.ToString());
-            }
-            return true;
-        }
+		
        
         /// <summary>
         /// Run async. IMPORTANT: Use this instead of Task, Thread or ThreadPool. 
@@ -143,14 +114,11 @@ namespace Actors
                 // order is important in this function
                 try { Disposing(true); }
                 catch { }
-                
-                if (Box != null)
-                    Box.Received -= HandleReceived;
+                               
                 if (Node != null)
                     Node.Remove(this, message);
                 //IsAlive = false;
-                Node = null;
-                Box = null;
+                Node = null;               
             }
             catch (Exception ex)
             {
@@ -163,6 +131,55 @@ namespace Actors
 		public void Dispose()
         {
             Die("Dispose called");          
+		}
+		
+
+		public IRpcMail Receive (TimeSpan? timeout = null)
+		{
+			timeout = timeout ?? TimeSpan.FromSeconds (5);
+			IRpcMail mail;
+			var sw = Stopwatch.StartNew ();
+			while (!messages.TryDequeue (out mail)) {
+				if (sw.Elapsed > timeout)
+					break;
+				Thread.Yield ();
+			}
+			return mail;
+		}
+
+		public T Receive<T>(TimeSpan? timeout = null)
+		{
+			var mail = Receive (timeout);
+			if (mail == null) return default(T);
+			return ConvertEx.Convert<T>(mail.Message.Args[0]);
+		}
+
+		public IRpcMail Receive (IMessageId msg,  TimeSpan? timeout = null)
+		{
+			timeout = timeout ?? TimeSpan.FromSeconds (5);
+			IRpcMail mail;
+			var sw = Stopwatch.StartNew ();
+			while (!messages.TryDequeue(out mail) || !mail.MessageId.Equals(msg))
+			{					
+				if (sw.Elapsed > timeout)
+					break;
+				Thread.Yield ();
+			}
+			return mail;
+		}
+
+		public T Receive<T>(IMessageId msg, TimeSpan? timeout = null)
+		{
+			var mail = Receive (msg, timeout);
+			if (mail == null) return default(T);
+			return ConvertEx.Convert<T>(mail.Message.Args[0]);
+		}
+
+		public MessageId SendTo(ActorId to, string name, params object[] args)
+		{
+			MessageId msg;
+			Node.Send(new RpcMail { To = to, From = Id, MessageId = msg = MessageId.New(), Message = new FunctionCall(name, args) });
+			return msg;
 		}
 	}
 }

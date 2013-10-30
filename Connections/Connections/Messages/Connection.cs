@@ -40,7 +40,7 @@ namespace Actors.Connections.Messages
 
         void HandleReceived(object ob)
         {
-            Received.Send(ob);
+            Received.Post(ob);
         }
 
         void HandleDisconnected(IByteConnection c)

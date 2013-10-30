@@ -11,12 +11,12 @@ namespace Actors.Examples
             : base(shortname)
         { }       
 
-        void Upload(Mail m, byte[] bytes)
+        void Upload(IMail m, byte[] bytes)
         {
             Node.Reply(m, true);
         }
 
-        void Download(Mail m, int count)
+        void Download(IMail m, int count)
         {
             var bytes = RandomData((int)count);
             Node.Reply(m, bytes);

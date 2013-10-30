@@ -21,7 +21,7 @@ namespace Dht.Ring
         {
             if (Joined) return;
             foreach (var peer in peers)
-                Send(peer);            
+                Post(peer);            
         }
 
         public void JoinReply(IActorId[] peers)
@@ -41,7 +41,7 @@ namespace Dht.Ring
             if (msg.GetType() == typeof(IActorId))
             {
                 sender.Send((IActorId)msg, "Join");
-                Send(msg);
+                Post(msg);
             }
            
         }

@@ -7,7 +7,7 @@ using Fasterflect;
 
 namespace Actors
 {
-    class RpcFunctions
+    public class RpcFunctions
     {       
         Dictionary<string, Tuple<object, MethodInfo>> functions = new Dictionary<string, Tuple<object, MethodInfo>>();
 
@@ -16,19 +16,25 @@ namespace Actors
             if (keep == null) keep = n => true;
             foreach (var method in GetMethodMatches(obj, keep))
             {
-                functions.Add(method.Name, Tuple.Create(obj, method));
+				functions[method.Name] = Tuple.Create(obj, method);
             }                 
         }
+
+		public void Remove(string name){
+			functions.Remove(name);
+		}
 
         private IEnumerable<MethodInfo> GetMethodMatches(object obj, Func<MethodInfo, bool> keep)
         {
             return GetTypes(obj.GetType()).SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                             .Where(n => n.GetParameters().Length > 0 && n.GetParameters()[0].ParameterType == typeof(IRpcMail))
+                             .Where(n => n.GetParameters().Length > 0 && typeof(IMail).IsAssignableFrom(n.GetParameters()[0].ParameterType))
                              .Where(n => keep(n)));
         }
 
         IEnumerable<Type> GetTypes(Type t)
         {
+			if(t == null || t == typeof(object))
+				yield break;
             yield return t;           
             foreach (var x in GetTypes(t.BaseType))
                 yield return x;

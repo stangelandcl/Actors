@@ -14,7 +14,7 @@ namespace Actors
             functions.Add(this, n => n.Name != "HandleMessage");           
         }
 
-        RpcFunctions functions = new RpcFunctions();
+        protected RpcFunctions functions = new RpcFunctions();
                        
         protected override void HandleMessage(IRpcMail mail)
         {

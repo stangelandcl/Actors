@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;NMONO</DefineConstants>
+    <DefineConstants>DEBUG;MONO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -33,14 +33,14 @@
     <DocumentationFile>bin\Release\DistributedActors.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fasterflect, Version=2.1.3.0, Culture=neutral, PublicKeyToken=38d18473284c1ca7, processorArchitecture=MSIL">
-      <HintPath>..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Fasterflect, Version=2.1.3.0, Culture=neutral, PublicKeyToken=38d18473284c1ca7">
+      <HintPath>..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -62,25 +62,12 @@
     <Compile Include="..\Extensions\Extensions\TaskEx.cs">
       <Link>Extensions\TaskEx.cs</Link>
     </Compile>
-    <Compile Include="Builtins\Actors\Dht\DhtActor.cs" />
-    <Compile Include="Builtins\Actors\Dht\HeartbeatMonitor.cs" />
-    <Compile Include="Builtins\Actors\Dht\RingSender.cs" />
     <Compile Include="Builtins\Actors\FileCopyActor.cs" />
     <Compile Include="Connections\ConnectionFactory.cs" />
-    <Compile Include="Dht\DhtBackend.cs" />
-    <Compile Include="Dht\DhtClient.cs" />
-    <Compile Include="Dht\DhtId.cs" />
-    <Compile Include="Dht\DhtJoiner.cs" />
-    <Compile Include="Dht\DhtMetadata.cs" />
     <Compile Include="Builtins\Clients\IBandwidth.cs" />
     <Compile Include="Builtins\Clients\IEcho.cs" />
     <Compile Include="Builtins\Clients\IPing.cs" />
     <Compile Include="Builtins\Clients\IShell.cs" />
-    <Compile Include="Dht\DhtRing.cs" />
-    <Compile Include="Dht\IByteDht.cs" />
-    <Compile Include="Dht\IDht.cs" />
-    <Compile Include="Dht\Subscription.cs" />
-    <Compile Include="Dht\SubscriptionEventArgs.cs" />
     <Compile Include="Events\Publisher.cs" />
     <Compile Include="Builtins\Actors\BandwidthActor.cs" />
     <Compile Include="Builtins\Actors\ConsoleClientActor.cs" />
@@ -101,13 +88,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Actors\DistributedActor.cs" />
     <Compile Include="Actors\MailBox.cs" />
-    <Compile Include="Actors\Mail.cs" />
     <Compile Include="Actors\PollingResetEvent.cs" />
     <Compile Include="Proxies\DynamicProxy.cs" />
-    <Compile Include="Actors\ActorSettings.cs" />
     <Compile Include="Actors\ActorId.cs" />
     <Compile Include="Actors\MessageId.cs" />
-    <Compile Include="Actors\FunctionId.cs" />
     <Compile Include="Actors\ObjectTypeConverter.cs" />
     <Compile Include="Connections\ConnectionRouter.cs" />
     <Compile Include="Names\INameResolver.cs" />

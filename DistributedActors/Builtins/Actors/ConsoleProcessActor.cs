@@ -40,7 +40,7 @@ namespace Actors.Examples.Actors
                 lastUpdate = now;
                 lastScreen = screen;
                 foreach (var actor in a)
-                    Node.Send(actor, Box.Id, "ScreenUpdate", screen, process.Console.CursorPosition);
+                    Node.Send(actor, Id, "ScreenUpdate", screen, process.Console.CursorPosition);
             }
             Loop();
         }
@@ -50,12 +50,12 @@ namespace Actors.Examples.Actors
             Run(Snapshot, 50);
         }
 
-        void Keys(Mail m, KeyPress[] keys)
+        void Keys(IMail m, KeyPress[] keys)
         {
             process.Console.Keys = keys;
         }
 
-        void Attach(Mail m, ActorId sendTo)
+        void Attach(IMail m, ActorId sendTo)
         {
             AttachConsole(sendTo);
         }
@@ -66,7 +66,7 @@ namespace Actors.Examples.Actors
                 actors.Add(sendTo);            
         }
 
-        void Detach(Mail m, ActorId sendTo)
+        void Detach(IMail m, ActorId sendTo)
         {
             lock (actors)
                 actors.Remove(sendTo);

@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace Actors
 {
 	//[TypeConverter(typeof(ObjectTypeConverter<MessageId>))]
-	public struct MessageId
+	public struct MessageId : IMessageId
 	{
 		public MessageId(string id){
 			this.id = id;
@@ -38,6 +38,27 @@ namespace Actors
 		public static implicit operator MessageId(int o){
 			return new MessageId(o.ToString());
 		}
+
+		#region IEquatable implementation
+
+		public override bool Equals (object obj)
+		{
+			return Equals(obj as IMessageId);
+		}
+
+		public override int GetHashCode ()
+		{
+			return id.GetHashCode();
+		}
+
+		public bool Equals (IMessageId other)
+		{
+			if(other == null || other.GetType() != GetType())
+				return false;
+			return ((MessageId)other).id == id;
+		}
+
+		#endregion
 	}
 }
 

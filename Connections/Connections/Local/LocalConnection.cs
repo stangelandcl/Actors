@@ -13,6 +13,8 @@ namespace Connections.Connections.Local
         {
             Sender = s;
             Receiver = r;
+			Received = new MessageQueue<object>();
+			Receiver.Received.Subscribe(n=> Received.Post(n));
         }
         public event Action<IConnection> Disconnected;
 
@@ -22,9 +24,7 @@ namespace Connections.Connections.Local
         }
 
         public MessageQueue<object> Received { get; private set; }
-
         public Actors.Connections.Messages.ISender Sender {get; private set;}
-
         public Actors.Connections.Messages.IReceiver Receiver {get; private set;}
      
         public void Dispose()

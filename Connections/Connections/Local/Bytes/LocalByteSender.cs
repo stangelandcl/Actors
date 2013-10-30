@@ -20,7 +20,7 @@ namespace Actors.Connections.Local
 
         public void Send(byte[] bytes)
         {            
-            receiver.Received.Send(bytes);           
+            receiver.Received.Post(bytes);           
         }
     }
 }

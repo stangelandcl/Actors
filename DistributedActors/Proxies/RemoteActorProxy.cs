@@ -28,7 +28,7 @@ namespace Actors.Proxies
             return new ReturnMessage(returnValue, null, 0, methodCall.LogicalCallContext, methodCall);            
         }
 
-        private object GetReturnValue(MethodInfo method, MessageId msg)
+        private object GetReturnValue(MethodInfo method, IMessageId msg)
         {
             if (method.ReturnType == typeof(void)) return null;
             if (method.IsGenericMethod && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
@@ -37,18 +37,18 @@ namespace Actors.Proxies
                 {
                     var mail = Remote.Receive(msg);
                     var returnType = method.ReturnType.GetGenericArguments()[0];
-                    return mail.Args[0].Convert(returnType);
+                    return mail.As<RpcMail>().Message.Args[0].Convert(returnType);
                 }, method.ReturnType);
             }
             else
             {
                 var mail = Remote.Receive(msg);
-                if (mail == null || mail.Args.Length == 0)
+                if (mail == null || mail.As<RpcMail>().Message.Args.Length == 0)
                 {
                     if (method.ReturnType.IsClass) return null;
                     return method.ReturnType.CreateInstance();
                 }
-                return mail.Args[0].Convert(method.ReturnType);
+                return mail.As<RpcMail>().Message.Args[0].Convert(method.ReturnType);
             }
         }
     }

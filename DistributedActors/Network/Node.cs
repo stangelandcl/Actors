@@ -7,12 +7,10 @@ using Actors.Proxies;
 using Serialization;
 using Actors.Connections.Tcp;
 using Actors.Connections.Bytes;
-using Actors.Dht;
 using Actors.Builtins.Actors;
 using Actors.Examples;
 using Actors.Examples.Actors;
 using System.Collections.Generic;
-using Actors.Builtins.Actors.Dht;
 using Actors.Network;
 using Actors.Connections.Local;
 using KeyValueDatabase;
@@ -29,7 +27,7 @@ namespace Actors
             server = new TcpListeners(Serializer);
             world = new TcpWorld();
             Links = new LinkMap();	
-            Default = new DefaultActor(new MailBox(new ActorId(Environment.MachineName, Id, "default")), this);
+            Default = new DefaultActor(new ActorId(Environment.MachineName, Id, "default"), this);
             world.Add(Default);
             Proxy = new ProxyFactory(this);
             var local = CreateLocalConnection();
@@ -61,7 +59,7 @@ namespace Actors
             Add(new EchoActor());
             Add(new PingActor());
             Add(new Shell());
-            Add(new DhtActor(KeyValueDatabase.Proxy.ProxyFactory.New<IDhtBackend>()));
+            //Add(new DhtActor(KeyValueDatabase.Proxy.ProxyFactory.New<IDhtBackend>()));
         }
 
         public virtual void Dispose()
@@ -93,7 +91,7 @@ namespace Actors
 
         void HandleReceived(object obj)
         {
-            var mail = obj as Mail;
+            var mail = obj as RpcMail;
             if (mail == null) return;
             world.Dispatch(mail);
         }
@@ -117,9 +115,9 @@ namespace Actors
 
 		public void Remove(DistributedActor a, string msg = ""){
             var links = Links.Get(a);         
-			world.Remove(a.Box.Id);
+			world.Remove(a.Id);
             foreach (var link in links)
-                Send(link, a.Box.Id, "Link", LinkStatus.Died, msg); 
+                Send(link, a.Id, "Link", LinkStatus.Died, msg); 
 		}
 
 		#region IMailSender implementation
@@ -132,26 +130,27 @@ namespace Actors
         //    mailSender.SendStream(
         //}
 
-		public MessageId Send (Mail mail)
+		public IMessageId Send (IMail mail)
 		{
-            if (mail.To.IsEmpty) return MessageId.Empty;
-            var sender = router.Get(mail.To);
+            if (mail.As<RpcMail>().To.As<ActorId>().IsEmpty) return MessageId.Empty;
+            var sender = router.Get(mail.As<RpcMail>().To.As<ActorId>());
             if (sender == null) return MessageId.Empty;
 			var mailSender = new MailSender(sender.Sender);
 			mailSender.Send(mail);
-			return mail.MessageId;
+			return mail.As<RpcMail>().MessageId;
 		}
 
-		public MessageId Send (ActorId to, ActorId fromId, FunctionId name, params object[] args)
+		public IMessageId Send (ActorId to, ActorId fromId, string name, params object[] args)
 		{           
             var id = MessageId.New();
-			Send(new Mail{To = to, From = fromId, MessageId = id, Name = name, Args = args});
+			Send(new RpcMail{To = to, From = fromId, MessageId = id, Message = new FunctionCall(name, args)});
             return id;
 		}
 		
-		public MessageId Reply (Mail mail, params object[] args)
+		public IMessageId Reply (IMail m, params object[] args)
 		{
-			return Send(new Mail{To = mail.From, From = mail.To, MessageId = mail.MessageId, Name =  mail.Name + "Reply", Args = args});
+			var mail = m.As<RpcMail>();
+			return Send(new RpcMail{To = mail.From, From = mail.To, MessageId = mail.MessageId,Message = new FunctionCall(mail.Message.Name + "Reply",args)});
 		}
 		#endregion		
 	}

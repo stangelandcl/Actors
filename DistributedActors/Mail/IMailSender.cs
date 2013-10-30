@@ -4,10 +4,10 @@ namespace Actors
 {
 	public interface IMailSender
 	{
-		void Send(Mail mail);
-		void Send(ActorId to, ActorId fromId, MessageId msg, FunctionId name, params object[] args);
-		void Send(ActorId to, FunctionId name, params object[] args);
-		void Reply(Mail mail, FunctionId name, params object[] args);
+		void Send(IMail mail);
+		void Send(ActorId to, ActorId fromId, MessageId msg, string name, params object[] args);
+		void Send(ActorId to, string name, params object[] args);
+		void Reply(IMail mail, string name, params object[] args);
 	}
 }
 

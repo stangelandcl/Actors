@@ -78,7 +78,7 @@ namespace Actors
                     return;
                 if (msg.Count == msg.Buffer.Length)
                 {
-                    Received.Send(msg.Buffer);
+                    Received.Post(msg.Buffer);
                     Listen();
                 }
                 else

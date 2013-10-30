@@ -10,17 +10,17 @@ namespace Actors
 	{
         Dictionary<string, DistributedActor> actors = new Dictionary<string, DistributedActor>();		
 
-		public void Dispatch (Mail obj)
+		public void Dispatch (IMail obj)
 		{
             DistributedActor actor;
             lock (actors)
             {
-                if (!actors.TryGetValue(obj.To.Name, out actor))
+                if (!actors.TryGetValue(obj.As<RpcMail>().To.As<ActorId>().Name, out actor))
                     return;
-                if (!IsMatch(obj.To, actor.Box.Id))
+                if (!IsMatch(obj.As<RpcMail>().To.As<ActorId>(), actor.Id))
                     return;                     
             }
-            actor.Box.Receive(obj);
+            actor.Post(obj.As<RpcMail>());
 		}
 
         private static bool IsMatch(ActorId id, ActorId actor)
@@ -31,7 +31,7 @@ namespace Actors
 				
 		public void Add(DistributedActor actor){
             lock (actors)
-                actors[actor.Box.Id.Name] = actor;
+                actors[actor.Id.Name] = actor;
 		}
 
 		public void Remove(ActorId id){
@@ -40,7 +40,7 @@ namespace Actors
                 DistributedActor actor;
                 if (!actors.TryGetValue(id.Name, out actor))
                     return;
-                if (!IsMatch(id, actor.Box.Id))
+                if (!IsMatch(id, actor.Id))
                     return;
                 actors.Remove(id.Name);
             }					

@@ -23,7 +23,7 @@ namespace Actors.Connections.Bytes
        
         void HandleReceived(byte[] bytes)
         {
-            Received.Send(bytes);
+            Received.Post(bytes);
         }
 
         public virtual void Dispose()

@@ -12,7 +12,7 @@ namespace Actors
 		}
 		ISender sender;
 
-		public void Send (Mail mail)
+		public void Send (IMail mail)
 		{
             try
             {
@@ -24,35 +24,33 @@ namespace Actors
             }
 		}
 
-		public void Send (ActorId to, ActorId fromId, MessageId msg, FunctionId name, params object[] args)
+		public void Send (ActorId to, ActorId fromId, MessageId msg, string name, params object[] args)
 		{
-			Send(new Mail{
+			Send(new RpcMail{
 				From = fromId,
 				To = to,
 				MessageId = msg,
-				Name = name,
-				Args = args,
+				Message = new FunctionCall(name, args),
 			});
 		}
 
-		public void Send(ActorId to, FunctionId name, params object[] args){
-			Send(new Mail{
+		public void Send(ActorId to, string name, params object[] args){
+			Send(new RpcMail{
 				To = to,
 				From = ActorId.Empty,
-				MessageId = Guid.NewGuid(),
-				Name = name,
-				Args = args,
+				MessageId = new MessageId(Guid.NewGuid()),
+				Message = new FunctionCall(name, args),
 			});
 		}
 
-		public void Reply (Mail mail, FunctionId name, params object[] args)
+		public void Reply (IMail m, string name, params object[] args)
 		{
-			Send(new Mail{
+			var mail = m.As<RpcMail>();
+			Send(new RpcMail{
 				To = mail.From,
 				From = mail.To,
 				MessageId = mail.MessageId,
-				Name = name,
-				Args = args,
+				Message = new FunctionCall(name, args),
 			});
 		}
 	}

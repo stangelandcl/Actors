@@ -65,25 +65,25 @@ namespace Dht.Ring
         void Put(IRpcMail mail, IResource resource, object o)
         {
             db.Add(resource, o);
-            distribute.Send("Put");
+            distribute.Post("Put");
             sender.Send(mail.From, "Added", resource);
         }
         void Remove(IRpcMail mail, IResource resource)
         {
             db.Remove(resource);
-            distribute.Send("Remove");
+            distribute.Post("Remove");
         }
 
         void Add(IRpcMail mail, IActorId peer)
         {
             ring.Add(peer);
-            distribute.Send("AddPeer");
+            distribute.Post("AddPeer");
         }
 
         void Remove(IRpcMail mail, IActorId peer)
         {
             ring.Remove(peer);
-            distribute.Send("RemovePeer");
+            distribute.Post("RemovePeer");
         }       
     }
 }

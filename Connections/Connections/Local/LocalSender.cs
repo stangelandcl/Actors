@@ -19,7 +19,7 @@ namespace Connections.Connections.Local
 
         public void Send(object o)
         {
-            receiver.Received.Send(o);
+            receiver.Received.Post(o);
         }
 
         public event Action<Exception> Error;

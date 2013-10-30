@@ -9,7 +9,7 @@ namespace Actors
             : base(shortName)
         { }		
 
-        void Echo(Mail m, string msg)
+        void Echo(IMail m, string msg)
         {
             Node.Reply(m, "Server says: " + msg);
         }

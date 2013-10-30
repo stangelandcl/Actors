@@ -71,42 +71,5 @@ namespace Actors.Network
     }
 }
 
-namespace Dht
-{
-    partial struct DhtId : IEquatable<DhtId>
-    {
-        public override bool Equals(object other)
-        {		
-			if(other == null || other.GetType() != GetType())
-				return false;
-            return Equals((DhtId)other);
-        }	
-
-		/*public bool Equals(DhtId other){		
-			return Equals((object)other); }*/		
-
-         public static bool operator==(DhtId left, DhtId right)
-		 {
-            if (ReferenceEquals(left, right))
-			     return true;
-			else if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-			      return false;
-            else
-                return left.Equals(right);
-        }
-
-        public static bool operator!=(DhtId left, DhtId right)
-        {
-            if (ReferenceEquals(left, right))
-                return false;
-            else if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-                return true;
-            else
-                return !left.Equals(right);
-        }
-    }
-}
-
-
 
 

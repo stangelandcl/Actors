@@ -140,6 +140,10 @@ namespace System
             return b;
         }
 
+		public static T As<T>(this object o){
+			return (T)o;
+		}
+
 		public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> d, TKey key){
 			TValue v;
 			if(!d.TryGetValue(key, out v))

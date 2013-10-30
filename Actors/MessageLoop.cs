@@ -12,11 +12,11 @@ namespace Actors
             this.maxMessages = maxMessages;
         }
 
-        int maxMessages;
+        protected int maxMessages;
         Queue<T> messages = new Queue<T>();        
         bool isRunning = false;      
 
-        public void Send(T message)
+        public void Post(T message)
         {
             lock (messages)
             {
@@ -30,7 +30,7 @@ namespace Actors
                 }
             }
         }
-
+		
         protected abstract void HandleMessage(T message);
         protected virtual void Next()
         {

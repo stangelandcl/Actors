@@ -10,39 +10,33 @@ namespace Actors
 			this.Remote = remote;
 		}
         public ActorId Remote { get; private set; }
-
-		public Mail Receive(MessageId id){
-			return Box.WaitFor(id);
-		}
-
-		public void Send (Mail mail)
+		
+		public void Send (IMail mail)
 		{
 			Node.Send(mail);
 		}
 
-		public void Send (MessageId msg, FunctionId name, params object[] args)
+		public void Send (IMessageId msg, string name, params object[] args)
 		{
-			Node.Send(new Mail{
+			Node.Send(new RpcMail{
 				To = Remote,
-				From = Box.Id,
-				Args = args,
-				MessageId = msg, 
-				Name = name,
+				From = Id,				
+				MessageId = msg.As<MessageId>(), 
+				Message = new FunctionCall(name, args),				
 			});
 		}
 
-		public MessageId Send (FunctionId name, params object[] args)
+		public IMessageId Send (string name, params object[] args)
 		{
-			return Node.Send(new Mail{
+			return Node.Send(new RpcMail{
 				To = Remote,
-				From = Box.Id,
-				Args = args,
+				From = Id,				
 				MessageId = MessageId.New(), 
-				Name = name,
+				Message = new FunctionCall(name, args),				
 			});
 		}
 
-		public void Reply (Mail mail,  params object[] args)
+		public void Reply (IMail mail,  params object[] args)
 		{
 			Node.Reply(mail,args);
 		}

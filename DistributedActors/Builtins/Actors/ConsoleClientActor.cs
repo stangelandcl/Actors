@@ -17,11 +17,11 @@ namespace Actors.Examples.Actors
 
         ActorId remote;
         Win32Console console = new Win32Console();
-        void ScreenUpdate(Mail m, Screen screen, CursorPosition position)
+        void ScreenUpdate(IMail m, Screen screen, CursorPosition position)
         {
             console.Screen = screen;
             console.CursorPosition = position;
-            remote = m.From;    
+			remote = m.As<RpcMail>().From.As<ActorId>(); 
         }
 
         void GetKeys()
@@ -30,7 +30,7 @@ namespace Actors.Examples.Actors
             {
                 var keys = console.Keys;
                 if(keys.Any())
-                    Node.Send(remote, Box.Id, "Keys",keys);
+                    Node.Send(remote, Id, "Keys",keys);
             }
             Loop();          
         }

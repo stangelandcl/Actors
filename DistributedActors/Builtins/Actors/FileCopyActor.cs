@@ -42,7 +42,7 @@ namespace Actors.Builtins.Actors
             }
         }
 
-        void ReceiveFileChunk(Mail mail, FileChunk chunk)
+        void ReceiveFileChunk(IMail mail, FileChunk chunk)
         {
             using (var fs = File.OpenWrite(chunk.Name))
             {
@@ -55,13 +55,13 @@ namespace Actors.Builtins.Actors
         {
             foreach (var chunk in Chunks(destFile, sourceFile))
             {
-                Node.Send(to, Box.Id, "ReceiveFileChunk", chunk);
+                Node.Send(to, Id, "ReceiveFileChunk", chunk);
             }
         }
 
         public void ReceiveFile(ActorId from, string remoteFile, string localFile)
         {
-            Node.Send(from, Box.Id, "SendMeFile", remoteFile, localFile);
+            Node.Send(from, Id, "SendMeFile", remoteFile, localFile);
         }
     }
 }
