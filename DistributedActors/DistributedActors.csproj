@@ -110,6 +110,8 @@
     <Compile Include="Actors\DefaultActor.cs" />
     <Compile Include="Names\DnsAlias.cs" />
     <Compile Include="Proxies\RemoteActor.cs" />
+    <Compile Include="Builtins\Actors\DhtActor.cs" />
+    <Compile Include="Connections\RpcSender.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -141,6 +143,10 @@
     <ProjectReference Include="..\Serialization\Serialization.csproj">
       <Project>{D8A542D9-EF5D-43AB-BAB1-FDD9EF8C0AF9}</Project>
       <Name>Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dht\Dht.csproj">
+      <Project>{805730CA-780B-4483-95B3-2CED02A377F8}</Project>
+      <Name>Dht</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

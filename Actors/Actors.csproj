@@ -63,6 +63,7 @@
     <Compile Include="RpcActor.cs" />
     <Compile Include="RpcFunctions.cs" />
     <Compile Include="IMessageId.cs" />
+    <Compile Include="ISender.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

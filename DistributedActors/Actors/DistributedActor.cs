@@ -175,7 +175,7 @@ namespace Actors
 			return ConvertEx.Convert<T>(mail.Message.Args[0]);
 		}
 
-		public MessageId SendTo(ActorId to, string name, params object[] args)
+		public IMessageId SendTo(IActorId to, string name, params object[] args)
 		{
 			MessageId msg;
 			Node.Send(new RpcMail { To = to, From = Id, MessageId = msg = MessageId.New(), Message = new FunctionCall(name, args) });

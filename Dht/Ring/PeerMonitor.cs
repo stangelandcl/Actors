@@ -2,39 +2,40 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Actors;
 
 namespace Dht.Ring
 {
     class PeerMonitor
     {
-        public PeerMonitor(DhtRing ring, ISender sender)
+		public PeerMonitor(DhtRing ring, ISingleRpcSender sender)
         {
             this.ring = ring;
             this.sender = sender;
             TaskEx.Run(Check);
         }
         DhtRing ring;
-        ISender sender;
+		ISingleRpcSender sender;
 
         void Check()
         {
-            var pred = ring.Predecessor;
-            if (pred != null)
-            {
-                //TODO: add SendReceive()/wait for reply.
-                sender.Send(pred, "Ping");
-                var result = false;
-                if (!result)
-                {
-                    ring.Remove(pred);
-                    int i = 0;
-                    foreach (var node in ring.FindAllMax())
-                    {
-                        sender.Send(node, "PeerRemoved", pred, i);
-                        i++;
-                    }
-                }
-            }
+//            var pred = ring.Predecessor;
+//            if (pred != null)
+//            {
+//                //TODO: add SendReceive()/wait for reply.
+//                sender.Send(pred, "Ping");
+//                var result = false;
+//                if (!result)
+//                {
+//                    ring.Remove(pred);
+//                    int i = 0;
+//                    foreach (var node in ring.FindAllMax())
+//                    {
+//                        sender.Send(node, "PeerRemoved", pred, i);
+//                        i++;
+//                    }
+//                }
+//            }
             Run();
         }
 

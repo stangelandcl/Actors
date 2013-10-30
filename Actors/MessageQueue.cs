@@ -7,8 +7,8 @@ namespace Actors
 {
     public class MessageQueue<T> : MessageLoop<T>, IDisposable
     {
-        public MessageQueue(int maxMessages = 100)
-            : base(100)
+        public MessageQueue(int maxMessages = 1000)
+            : base(maxMessages)
         { }
                            
         SynchronizedCollection<Action<T>> subscriptions = new SynchronizedCollection<Action<T>>();

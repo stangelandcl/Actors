@@ -3,56 +3,97 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Actors;
-using System;
 using KeyValueDatabase;
 
 namespace Dht.Ring
 {
-    class DhtPeer : RpcActor
+    public class DhtPeer : RpcActor
     {
-        public DhtPeer(IActorId id, ISender sender)
+        public DhtPeer(IActorId id, ISingleRpcSender sender)
         {
             this.sender = sender;
             this.ring = new DhtRing(id);
             this.joiner = new Joiner(ring, sender);
             this.db = new MemoryKvpDb<IResource, object>();
             this.distribute = new Distributor(ring, sender, db);
+			this.monitor = new PeerMonitor(ring, sender);
         }
-        ISender sender;
+		ISingleRpcSender sender;
         DhtRing ring;
         Joiner joiner;
         IKvpDb<IResource, object> db;
         Distributor distribute;
+		PeerMonitor monitor;
 
-        public void JoinDht(IEnumerable<IActorId> peers)
+		void SendToRing<T>(string name, T args){
+			int i = 0;
+            foreach (var node in ring.FindAllMax())
+            {
+				var msg = new RingMessage<T>{
+					TimeToLive = i,
+					Message = args,
+					Originator = ring.SelfId,
+				};
+                sender.Send(node, name, msg);
+                i++;
+            }
+		}
+		void ForwardToRing<T>(string name, RingMessage<T> msg){
+			int i = 0;
+			foreach (var node in ring.FindAll(msg.TimeToLive, msg.Originator))
+			{
+				msg.TimeToLive = i;
+				sender.Send(node, name, msg);
+				i++;
+			}
+		}
+
+        public void Join(params IActorId[] peers)
         {
             joiner.Join(peers);
-        }
+        }	
 
         IActorId[] GetPeers(IResource resource)
         {
             return ring.FindClosest(resource);
         }
 
-        void JoinDht(IRpcMail mail, IActorId[] peers)
+        void Join(IRpcMail mail, IActorId[] peers)
         {
             joiner.Join(peers);
         }
 
 
-        void Join(IRpcMail mail)
+        void TryJoin(IRpcMail mail)
         {
-            sender.Send(mail.From, "JoinReply", ring.Actors.Select(n=>n.Value).ToArray());
+			ring.Add(mail.From);
+			IActorId[] peers = ring.Actors.Select(n=>n.Value).ToArray();
+			sender.Reply(mail.From, mail.MessageId, "TryJoinReply", new object[]{peers});
+			SendToRing("PeerAdded", mail.From);
         }
 
-        void JoinReply(IRpcMail mail, IActorId[] peers)
+        void TryJoinReply(IRpcMail mail, IActorId[] peers)
         {
             joiner.JoinReply(peers);
-        }      
+        }
+
+		void GetLocal(IRpcMail mail, IResource resource, object state)
+		{
+			sender.Reply(mail.From, mail.MessageId, "GetLocalReply", db.Get(resource), state);
+		}
+
+		void GetLocalReply(IRpcMail mail, object value, object state){
+			var m = (IRpcMail)state;
+			sender.Reply(m.From, m.MessageId, "GetReply", value);
+		}
 
         void Get(IRpcMail mail, IResource resource)
         {
-            sender.Send(mail.From, "GetReply", resource, db.Get(resource));
+			var id = ring.FindClosest(resource).FirstOrDefault();
+			if(id != null)
+				sender.Send(id, "GetLocal", resource, mail);
+			else
+            	sender.Reply(mail.From, mail.MessageId, "GetReply", null);
         }
 
         void Added(IRpcMail mail, IResource resource)
@@ -66,7 +107,7 @@ namespace Dht.Ring
         {
             db.Add(resource, o);
             distribute.Post("Put");
-            sender.Send(mail.From, "Added", resource);
+            sender.Reply(mail.From, mail.MessageId, "Added", resource);
         }
         void Remove(IRpcMail mail, IResource resource)
         {
@@ -74,16 +115,18 @@ namespace Dht.Ring
             distribute.Post("Remove");
         }
 
-        void Add(IRpcMail mail, IActorId peer)
+        void PeerAdded(IRpcMail mail, RingMessage<IActorId> msg)
         {
-            ring.Add(peer);
+            ring.Add(msg.Message);
             distribute.Post("AddPeer");
+			ForwardToRing("PeerAdded", msg);
         }
 
-        void Remove(IRpcMail mail, IActorId peer)
+        void PeerRemoved(IRpcMail mail, RingMessage<IActorId> msg)
         {
-            ring.Remove(peer);
+            ring.Remove(msg.Message);
             distribute.Post("RemovePeer");
+			ForwardToRing("PeerRemoved", msg);
         }       
     }
 }

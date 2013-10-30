@@ -8,12 +8,12 @@ namespace Dht.Ring
 {
     class Joiner : Actor<object>
     {
-        public Joiner(DhtRing ring, ISender sender)
+		public Joiner(DhtRing ring, ISingleRpcSender sender)
         {
             this.sender = sender;
             this.ring = ring;
         }
-        ISender sender;
+		ISingleRpcSender sender;
         DhtRing ring;
         public bool Joined { get; private set; }
 
@@ -38,9 +38,10 @@ namespace Dht.Ring
 
         protected override void HandleMessage(object msg)
         {
-            if (msg.GetType() == typeof(IActorId))
+			var id = msg as IActorId;
+            if (id != null)
             {
-                sender.Send((IActorId)msg, "Join");
+                sender.Send(id, "TryJoin");
                 Post(msg);
             }
            

@@ -21,7 +21,8 @@ namespace Serialization
 		}
 		public T Deserialize<T>(Stream stream)  {
             var r = new BinaryReader(stream);
-            return JsonConvert.DeserializeObject<T>(r.ReadString(), settings);
+			var str = r.ReadString();
+            return JsonConvert.DeserializeObject<T>(str, settings);
 		}
       
 		Formatting formatting = 

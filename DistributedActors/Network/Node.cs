@@ -140,7 +140,7 @@ namespace Actors
 			return mail.As<RpcMail>().MessageId;
 		}
 
-		public IMessageId Send (ActorId to, ActorId fromId, string name, params object[] args)
+		public IMessageId Send (IActorId to, IActorId fromId, string name, params object[] args)
 		{           
             var id = MessageId.New();
 			Send(new RpcMail{To = to, From = fromId, MessageId = id, Message = new FunctionCall(name, args)});
@@ -151,6 +151,12 @@ namespace Actors
 		{
 			var mail = m.As<RpcMail>();
 			return Send(new RpcMail{To = mail.From, From = mail.To, MessageId = mail.MessageId,Message = new FunctionCall(mail.Message.Name + "Reply",args)});
+		}
+
+		public IMessageId Reply (IActorId to, IActorId fromId, IMessageId msg, string name, params object[] args)
+		{
+			return Send(new RpcMail{To = to, From = fromId, 
+				MessageId = msg,Message = new FunctionCall(name,args)});
 		}
 		#endregion		
 	}

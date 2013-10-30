@@ -9,6 +9,9 @@ using Serialization;
 using Actors.Network;
 using KeyValueDatabase;
 using KeyValueDatabase.Proxy;
+using DistributedActors;
+using Dht;
+using Dht.Ring;
 
 namespace Actors.Example
 {
@@ -47,26 +50,31 @@ namespace Actors.Example
                 node.Add(new BandwidthActor());
                 node.Add(new EchoActor());
                 node.Add(new PingActor());
-//                node.Add(new DhtActor(ProxyFactory.New<IDhtBackend>()));
-//                for (int i = 0; i < 1000; i++)
-//                {
-//                    var actor = new DhtActor(ProxyFactory.New<IDhtBackend>(), "dht" + i);
-//                    node.Add(actor);
-//                    actor.Join(new ActorId("System.Dht"));
-//                }
-//                           
+				var mainDht = new DhtActor();
+                node.Add(mainDht);
+                for (int i = 0; i < 1000; i++)
+                {
+                    var actor = new DhtActor("dht" + i);
+                    node.Add(actor);
+					actor.Dht.Join(mainDht.Id);
+                }
+                           
                 var echo = node.Proxy.New<IEcho>(new ActorId("System.Echo"));
                 Console.WriteLine(echo.Echo("hey dude"));
-//
-//                IDht model = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht1")), new JsonSerializer());
-//                model = model.Add("abce", "def").Result;
-//                IDht model2 = new DhtClient(node.Proxy.New<IByteDht>(new ActorId("dht85")), new JsonSerializer());
-//                int j = 0;
-//                while (model2.Get<string>("abce").Result == null)
-//                {
-//                    Console.WriteLine(++j);
-//                    Thread.Sleep(1000);
-//                }
+
+				var dht = node.Proxy.New<IDht>(new ActorId("dht1"));   
+				dht.Put(new StringResource("abc"), "def");     
+				Console.WriteLine("found " + dht.Get(new StringResource("abc")));
+				var dht2 = node.Proxy.New<IDht>(new ActorId("dht85"));
+				int j=0;
+                while (true)
+                {			
+					var result = dht2.Get<string>(new StringResource("abc"));
+					Console.WriteLine("result = " + result);
+					if(result == "def") break;
+                    Console.WriteLine((++j) + "  " + dht.Get(new StringResource("abc")) );
+                    Thread.Sleep(1000);
+                }
                 Console.WriteLine("def");
 
                 Console.WriteLine("press a key to quit");
