@@ -112,6 +112,7 @@
     <Compile Include="Proxies\RemoteActor.cs" />
     <Compile Include="Builtins\Actors\DhtActor.cs" />
     <Compile Include="Connections\RpcSender.cs" />
+    <Compile Include="Builtins\Actors\SystemInfoActor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
