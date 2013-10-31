@@ -43,7 +43,7 @@ namespace Actors.Network.Tcp
             return AddConnection(new Connection(new TcpByteConnection(client), serializer));
         }
 
-        public IDisposable AddListener(int port, ISerializer serializer, bool isLocalOnly = true)
+        public IDisposable AddListener(int port, ISerializer serializer, bool isLocalOnly = false)
         {
             var host = isLocalOnly ? "127.0.0.1" : "0.0.0.0";
             return server.Add(new Listener(new TcpByteListener(host, port), serializer));
