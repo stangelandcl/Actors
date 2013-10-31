@@ -13,6 +13,7 @@ using DistributedActors;
 using Dht;
 using Dht.Ring;
 using Actors.Builtins.Actors;
+using Actors.Extensions;
 
 namespace Actors.Example
 {
@@ -61,20 +62,20 @@ namespace Actors.Example
 					actor.Dht.Join(mainDht.Id);
                 }
                            
-                var echo = node.Proxy.New<IEcho>(new ActorId("System.Echo"));
+                var echo = node.New<IEcho>("System.Echo");
                 Console.WriteLine(echo.Echo("hey dude"));
 
-				var dht = node.Proxy.New<IDht>(new ActorId("dht1"));   
-				dht.Put(new StringResource("abc"), "def");     
-				Console.WriteLine("found " + dht.Get(new StringResource("abc")));
-				var dht2 = node.Proxy.New<IDht>(new ActorId("dht85"));
+				var dht = node.New<IDht>("dht1");   
+				dht.Put("abc", "def");     
+				Console.WriteLine("found " + dht.Get("abc"));
+				var dht2 = node.New<IDht>("dht85");
 				int j=0;
                 while (true)
                 {			
-					var result = dht2.Get<string>(new StringResource("abc"));
+					var result = dht2.Get<string>("abc");
 					Console.WriteLine("result = " + result);
 					if(result == "def") break;
-                    Console.WriteLine((++j) + "  " + dht.Get(new StringResource("abc")) );
+                    Console.WriteLine((++j) + "  " + dht.Get("abc") );
                     Thread.Sleep(1000);
                 }
                 Console.WriteLine("def");
@@ -99,13 +100,13 @@ namespace Actors.Example
             {
                 // send async but receive sync. send to localhost/echo which happens to
                 // be in the other node
-                var result = node.Default.SendReceive<string>(new ActorId(machine, new NodeId("server"), "System.Echo"), "Echo", "hi");
+				var result = node.Default.SendReceive<string>("server.{0}/System.Echo".FormatWith(machine), "Echo", "hi");
                 // print response
                 Console.WriteLine(result);
 
 
                 // DynamicProxy wraps a remote actor.
-                var echo = node.Proxy.New<IEcho>(new ActorId(machine, new NodeId("server"), "System.Echo"));
+				var echo = node.New<IEcho>("server.{0}/System.Echo".FormatWith(machine));
                 // this is the same as SendReceive<string>("localhost/System.Echo", "echo", "hey dude");
                 var r2 = echo.Echo("hey dude");
                 // print response
@@ -114,14 +115,14 @@ namespace Actors.Example
                 // print response
                 Console.WriteLine(r2);
 
-                var ping = node.Proxy.New<IPing>(new ActorId(machine, new NodeId("server"), "System.Ping"));
+				var ping = node.New<IPing>("server.{0}/System.Ping".FormatWith(machine));
                 var pong = ping.Ping(new byte[1024]);
                 Console.WriteLine("ping-pong " + pong.Length);
 
                 var client = new PingClient(ping);
                 Console.WriteLine("delay = " + client.Ping(10));
 
-                var bandwidth = node.Proxy.New<IBandwidth>(new ActorId(machine, new NodeId("server"), "System.Bandwidth"));
+				var bandwidth = node.New<IBandwidth>("server.{0}/System.Bandwidth".FormatWith(machine));
                 var bw = new BandwidthClient(bandwidth, ping);
                 Console.WriteLine("bandwidth = " + bw.Test());
 
@@ -139,22 +140,22 @@ namespace Actors.Example
 //                }
 				//Thread.Sleep(100000);
                 node.AddBuiltins();
-                var dhtLocal = node.Proxy.New<IDht>(new ActorId("System.Dht"));
-                dhtLocal.Join(new IActorId[] { new ActorId(machine, new NodeId("server"), "System.Dht") });
-                var dht = node.Proxy.New<IDht>(new ActorId(machine, new NodeId("server"), "System.Dht"));
+				var dhtLocal = node.New<IDht>("System.Dht");
+				dhtLocal.Join(ActorId.FromUrl("server.{0}/System.Dht".FormatWith(machine)) );
+				var dht = node.New<IDht>("server.{0}/System.Dht".FormatWith(machine));
 
-                dhtLocal.Put(new StringResource("abc"), "def");
+                dhtLocal.Put("abc", "def");
 
                 Console.WriteLine("press a key to test dht get");
                 Console.ReadKey();
-                Console.WriteLine("found " + dht.Get(new StringResource("abc")));
-                Console.WriteLine("found " + dhtLocal.Get(new StringResource("abc")));
+                Console.WriteLine("found " + dht.Get("abc"));
+                Console.WriteLine("found " + dhtLocal.Get("abc"));
 
                 Console.ReadKey();
                 using (var shell = new ConsoleClientActor("cmd.exe-client"))
                 {
                     node.Add(shell);
-                    var proxy = node.Proxy.New<IShell>(new ActorId(machine, new NodeId("server"), "System.Shell"));
+					var proxy = node.New<IShell>("server.{0}/System.Shell".FormatWith(machine));
                     var remoteId = proxy.RunConsole("cmd.exe", new string[0], shell.Id);
                     node.Link(shell.Id, remoteId);
                     while (shell.IsAlive)
