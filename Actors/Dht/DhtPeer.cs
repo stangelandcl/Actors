@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Actors;
-using KeyValueDatabase;
 
-namespace Dht.Ring
+
+namespace Actors
 {
     public class DhtPeer : RpcActor
     {

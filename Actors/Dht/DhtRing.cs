@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Dht;
 using System.Security.Cryptography;
 using System.Diagnostics;
-using Actors;
-using Actors.Extensions;
 
-namespace Dht.Ring
+
+namespace Actors
 {
     [DebuggerDisplay("Count={Actors.Length}")]
     class DhtRing

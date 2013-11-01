@@ -1,6 +1,6 @@
 using System;
 
-namespace Actors.Extensions
+namespace Actors
 {
     public class Disposable : IDisposable
     {

@@ -7,10 +7,9 @@ using System.Runtime.Remoting.Messaging;
 using System.Reflection;
 using System.Threading.Tasks;
 using Fasterflect;
-using Proxies;
-using Actors.Extensions;
 
-namespace Actors.Proxies
+
+namespace Actors
 {
     class RemoteActorProxy : Proxy
     {

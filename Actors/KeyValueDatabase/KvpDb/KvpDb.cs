@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Serialization;
-using Actors.Extensions;
 
 
-namespace KeyValueDatabase
+
+namespace Actors
 {
     public class KvpDb<TKey, TValue> : IKvpDb<TKey, TValue>
     {

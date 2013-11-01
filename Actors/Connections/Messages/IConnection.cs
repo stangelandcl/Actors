@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Serialization;
-using Actors.Connections.Messages;
 
-namespace Actors.Connections
+
+namespace Actors
 {
     public interface IConnection : IDisposable
     {              
@@ -14,5 +13,6 @@ namespace Actors.Connections
         MessageQueue<object> Received { get; }
         ISender Sender { get; }
         IReceiver Receiver { get; }
+		bool IsAlive {get;}
     }
 }

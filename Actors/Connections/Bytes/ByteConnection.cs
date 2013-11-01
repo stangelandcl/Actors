@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Actors.Extensions;
 
-namespace Actors.Connections.Bytes
+
+namespace Actors
 {
     public class ByteConnection : IByteConnection
     {       

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Actors.Examples.Actors
+namespace Actors
 {
     public class Shell : DistributedActor
     {

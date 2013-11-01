@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
 using System.Linq;
-using Serialization;
-using Actors.Connections;
-using Actors.Connections.Bytes;
-using Actors.Connections.Messages;
-using Actors.Connections.Local;
-using Actors.Extensions;
+
 
 namespace Actors
 {
@@ -89,7 +84,7 @@ namespace Actors
             
             var s = id.ToString().Split('/');
             var computer = NormalizedComputerName(s[0]);
-            return Get(new Actors.Connections.Bytes.EndPoint(computer));
+            return Get(new Actors.EndPoint(computer));
         }
 
         private bool IsLocal(ref ActorId id)

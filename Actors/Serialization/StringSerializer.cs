@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Serialization
+namespace Actors
 {
 	public class StringSerializer : ISerializer<string>, ISerializer
 	{

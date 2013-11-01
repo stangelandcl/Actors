@@ -9,9 +9,9 @@ using System.Net;
 using System.Security.Authentication;
 using System.Security;
 using System.Diagnostics;
-using Actors.Extensions;
 
-namespace Actors.Connections.Ssl.Stream
+
+namespace Actors
 {
     class SslByteConnectionFactory
     {

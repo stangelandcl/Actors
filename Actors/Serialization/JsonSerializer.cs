@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.IO;
 
-namespace Serialization
+namespace Actors
 {
 #if SERIALIZATION_INTERNAL
     internal

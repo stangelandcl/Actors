@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Actors.Extensions;
 
-namespace Actors.Connections.Messages
+
+namespace Actors
 {
     class ConnectionFactory
     {
@@ -31,7 +31,7 @@ namespace Actors.Connections.Messages
             try
             {
                 if (c == null) return; // User disposed connection so stop trying.
-                c.Connection = node.AddConnection(create(), isOutBound);
+                c.Connection = node.Connect(create(), isOutBound);
             }
             catch
             {

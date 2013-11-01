@@ -1,12 +1,8 @@
 using System;
 using System.Net.Sockets;
-using Actors.Connections;
-using Serialization;
-using Actors.Connections.Bytes;
 using System.Linq;
 using System.Diagnostics;
 using System.Net;
-using Actors.Connections.Tcp.Stream;
 
 namespace Actors
 {

@@ -7,7 +7,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Reflection;
 using Fasterflect;
 
-namespace KeyValueDatabase.Proxy
+namespace Actors
 {
     class KvpDbProxy : RealProxy
     {

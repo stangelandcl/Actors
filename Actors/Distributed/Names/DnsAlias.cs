@@ -1,7 +1,7 @@
 using System;
 using System.Net;
 using System.Linq;
-using Actors.Connections.Bytes;
+
 
 namespace Actors
 {
@@ -12,17 +12,17 @@ namespace Actors
             var name = ep.ToString();
             if (name == Environment.MachineName || name == "localhost" || name == "127.0.0.1")
                 return new[] { Environment.MachineName, "localhost", "127.0.0.1" }
-                    .Select(n => new Actors.Connections.Bytes.EndPoint(n)).ToArray();
+                    .Select(n => new Actors.EndPoint(n)).ToArray();
             var addresses = Dns.GetHostAddresses(name);
             return Enumerable.Repeat(ep, 1).Concat(
                 addresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    .Select(n => new Actors.Connections.Bytes.EndPoint(n.ToString())))
+                    .Select(n => new Actors.EndPoint(n.ToString())))
                     .ToArray();
         }
 
 		public static ActorId[] Get(ActorId id){
 			var s = id.ToString().Split('/');
-            var names = Get(new Actors.Connections.Bytes.EndPoint(s[0]));
+            var names = Get(new Actors.EndPoint(s[0]));
 			return names.Select(n=> new ActorId(n + "/" + string.Join("/", s.Skip(1)))).ToArray();
 		}
 	}

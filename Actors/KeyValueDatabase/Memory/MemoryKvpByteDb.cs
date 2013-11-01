@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.Concurrent;
-using Actors.Extensions;
 
-namespace KeyValueDatabase
+
+namespace Actors
 {
     class MemoryKvpByteDb : IKvpByteDb
     {

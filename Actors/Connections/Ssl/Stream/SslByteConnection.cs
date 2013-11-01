@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Sockets;
-using Actors.Connections.Bytes;
 using System.Net.Security;
-using Actors.Connections.Tcp.Stream;
 
-namespace Actors.Connections.Ssl.Stream
+
+namespace Actors
 {
     public class SslByteConnection : TcpStreamConnection
     {

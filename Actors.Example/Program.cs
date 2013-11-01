@@ -1,21 +1,10 @@
 using System;
 using Actors.Examples;
 using Actors.Examples.Clients;
-using Actors.Examples.Actors;
-using RemoteConsole;
 using System.Threading;
-using Actors.Network.Tcp;
-using Serialization;
-using Actors.Network;
-using KeyValueDatabase;
-using KeyValueDatabase.Proxy;
-using DistributedActors;
-using Dht;
-using Dht.Ring;
-using Actors.Builtins.Actors;
-using Actors.Extensions;
 
-namespace Actors.Example
+
+namespace Actors
 {
 	class MainClass
 	{
@@ -46,7 +35,7 @@ namespace Actors.Example
         {
             // a node is like an erlang node. it is like a VM. like its own world
             using (var node = new TcpNode(18223))
-            using (var server = node.AddListener(18222, serializer))
+            using (var server = node.Listen(18222, serializer))
             {
                 // add actor, an actor is like an object. it can send & receive messages
                 node.Add(new BandwidthActor());
@@ -96,7 +85,7 @@ namespace Actors.Example
             // so now we can route messages from actors in this node to the
             // other node
 /* optional */ //           using (var conn = node.AddConnection("127.0.0.1", 18222, serializer))
-            using (var conn = node.AddConnection(machine, 18222, serializer))
+            using (var conn = node.Connect(machine, 18222, serializer))
             {
                 // send async but receive sync. send to localhost/echo which happens to
                 // be in the other node
@@ -186,7 +175,7 @@ namespace Actors.Example
         {
             // a node is like an erlang node. it is like a VM. like its own world
             using (var node = new TcpNode(18223, "server"))
-            using(var server = node.AddListener(18222, serializer, isLocalOnly: false))
+            using(var server = node.Listen(18222, serializer, isLocalOnly: false))
             {                              
                 // add actor, an actor is like an object. it can send & receive messages
                 node.AddBuiltins();

@@ -5,7 +5,7 @@ using System.Text;
 using Fasterflect;
 using System.Threading.Tasks;
 
-namespace Actors.Extensions
+namespace Actors
 {
     public static partial class TaskEx
     {

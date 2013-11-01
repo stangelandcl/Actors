@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RemoteConsole;
+
 using System.Threading.Tasks;
 
-namespace Actors.Examples.Actors
+namespace Actors
 {
     public class ConsoleProcessActor : DistributedActor
     {

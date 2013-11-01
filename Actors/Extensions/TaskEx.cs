@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq.Expressions;
-namespace Actors.Extensions
+
+
+namespace Actors
 {   
     public static partial class TaskEx
     {

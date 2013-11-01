@@ -1,7 +1,7 @@
 using System;
-using Actors;
 
-namespace DistributedActors
+
+namespace Actors
 {
 	public class SystemInfoActor : DistributedActor
 	{

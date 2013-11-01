@@ -7,8 +7,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Reflection;
 using System.Threading.Tasks;
 
-
-namespace Proxies
+namespace Actors
 {
     public abstract class Proxy : RealProxy
     {

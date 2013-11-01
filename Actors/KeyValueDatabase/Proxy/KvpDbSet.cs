@@ -6,7 +6,7 @@ using System.Runtime.Remoting.Proxies;
 using System.Runtime.Remoting.Messaging;
 using System.Reflection;
 
-namespace KeyValueDatabase.Proxy
+namespace Actors
 {
     public class KvpDbSetProxy<T> : IKvpDbSet<T>
     {

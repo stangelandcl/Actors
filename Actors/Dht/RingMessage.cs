@@ -1,7 +1,7 @@
 using System;
-using Actors;
 
-namespace Dht
+
+namespace Actors
 {
 	public class RingMessage<T>
 	{

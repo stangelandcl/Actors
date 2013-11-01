@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace Actors.Builtins.Actors
+namespace Actors
 {
     public class FileCopyActor : DistributedActor
     {

@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Actors.Network;
+
 using System.Linq;
-using Actors.Connections;
 
 namespace Actors
 {

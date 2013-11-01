@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Actors.Events
+namespace Actors
 {   
     class Publisher<T> : IDisposable
     {

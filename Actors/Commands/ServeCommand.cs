@@ -1,8 +1,6 @@
 using System;
 using ManyConsole;
-using Actors.Extensions;
-using Actors.Network.Tcp;
-using Serialization;
+
 
 namespace Actors
 {
@@ -37,7 +35,7 @@ namespace Actors
 			var name = remainingArguments[0];
 			var port = remainingArguments[1].Convert<int>();
 			node = new TcpNode(port, name);			
-			node.AddListener(port, new JsonSerializer(), isLocalOnly: false);
+			node.Listen(port, new JsonSerializer(), isLocalOnly: false);
 			node.AddBuiltins();
 
 			Console.WriteLine("node " + node.Id + " listening on " + port);

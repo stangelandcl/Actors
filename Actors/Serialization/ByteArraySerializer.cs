@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace Serialization
+namespace Actors
 {
     class ByteArraySerializer : ISerializer<byte[]>, ISerializer
     {

@@ -1,8 +1,7 @@
 using System;
-using Actors;
-using Dht.Ring;
 
-namespace Dht
+
+namespace Actors
 {
 	public interface IDht
 	{		

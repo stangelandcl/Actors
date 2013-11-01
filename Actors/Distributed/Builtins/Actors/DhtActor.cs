@@ -1,8 +1,7 @@
 using System;
-using Actors;
-using Dht.Ring;
 
-namespace DistributedActors
+
+namespace Actors
 {
 	public class DhtActor : DistributedActor
 	{

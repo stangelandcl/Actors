@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Sockets;
-using Serialization;
-using Actors.Connections.Bytes;
-using Actors.Extensions;
 
-namespace Actors.Connections.Messages
+
+
+namespace Actors
 {
     public class Connection : IConnection
     {
@@ -31,8 +30,9 @@ namespace Actors.Connections.Messages
             this.Received = new MessageQueue<object>();
             this.Receiver.Received.Subscribe(HandleReceived);
             connection.Disconnected += HandleDisconnected;            
+			IsAlive = true;
         }
-
+		public bool IsAlive {get; private set;}
         public ISender Sender { get; private set; }
         public IReceiver Receiver { get; private set; }
         public event Action<IConnection> Disconnected;
@@ -60,6 +60,7 @@ namespace Actors.Connections.Messages
 
         public void Dispose()
         {
+			IsAlive = false;
             connection.Disconnected -= HandleDisconnected;
             Sender.Dispose();
             Receiver.Dispose();

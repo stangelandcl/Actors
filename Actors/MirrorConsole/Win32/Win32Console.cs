@@ -5,7 +5,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Diagnostics;
 
-namespace RemoteConsole
+namespace Actors
 {
     public class Win32Console : IConsole, IDisposable
     {

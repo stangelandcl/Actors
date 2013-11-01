@@ -3,7 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RemoteConsole
+namespace Actors
 {
 	public class ConsoleClient : IConsole
 	{
@@ -29,7 +29,7 @@ namespace RemoteConsole
             get { throw new NotImplementedException(); }
         }
 
-        private static bool IsSameSize(RemoteConsole.Screen value)
+        private static bool IsSameSize(Screen value)
         {
             return Console.BufferWidth == value.Width &&
                 Console.BufferHeight == value.Height &&

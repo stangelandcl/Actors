@@ -1,10 +1,8 @@
 using System;
 using System.Linq;
 using ManyConsole;
-using Actors.Network.Tcp;
-using Serialization;
 using NDesk.Options;
-using Dht;
+
 
 namespace Actors
 {
@@ -19,7 +17,7 @@ namespace Actors
           
             const int DefaultPort = 12848;
             using (var node = new TcpNode(DefaultPort))
-            using(var server = node.AddListener(DefaultPort, new JsonSerializer()))
+            using(var server = node.Listen(DefaultPort, new JsonSerializer()))
             {
                 node.AddBuiltins();
                 if (bootstrap != null)

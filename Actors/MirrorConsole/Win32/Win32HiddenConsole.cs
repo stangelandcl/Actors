@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Diagnostics;
 
-namespace RemoteConsole
+namespace Actors
 {
     public class Win32HiddenConsole  : IDisposable
     {

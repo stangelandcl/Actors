@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Actors.Connections.Bytes;
-using Serialization;
-using Actors.Extensions;
 
-namespace Actors.Connections.Messages
+
+namespace Actors
 {
     class Receiver : IReceiver
     {

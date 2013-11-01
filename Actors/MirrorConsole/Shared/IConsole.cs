@@ -1,6 +1,6 @@
 using System;
 
-namespace RemoteConsole
+namespace Actors
 {
 	public interface IConsole 
 	{

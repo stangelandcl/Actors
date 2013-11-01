@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Sockets;
-using Actors.Connections;
-using Actors.Connections.Messages;
-using Serialization;
-using Actors.Extensions;
 
-namespace Actors.Network.Tcp
+namespace Actors
 {
     public class TcpNode : Node
     {
-        public TcpNode(int defaultPort, string name = null)
-            : base(name)
+		public static TcpNode Open(int defaultPort = 0, string name = null){
+			var n = new TcpNode(defaultPort, name);
+			n.Listen(defaultPort);
+			return n;
+		}
+
+        public TcpNode(int defaultPort = 0, string name = null)
+            : base(name ?? Defaults.GetPort(defaultPort).ToString())
         {
-            this.defaultPort = defaultPort;
+			this.defaultPort = Defaults.GetPort(defaultPort);
             router.ConnectionNotFound += HandleConnectionNotFound;
         }
         int defaultPort;
@@ -27,24 +29,24 @@ namespace Actors.Network.Tcp
 				tcp.Connect(args.EndPoint.ToString(), defaultPort, TimeSpan.FromSeconds(3));
 
 				var conn = new Connection(new TcpByteConnection(tcp), this.Serializer);
-	            AddConnection(conn, isOutbound: true);
+	            Connect(conn, isOutbound: true);
 	            args.Added = true;
 			}catch{}
         }
 
-        public IDisposable AddConnection(string host, int port, ISerializer serializer)
+        public IDisposable Connect(string host, int port, ISerializer serializer= null)
         {
-            return AddConnection(() =>
-                new Connection(new TcpByteConnection(new TcpClient(host, port)), serializer));
+            return Connect(() =>
+                new Connection(new TcpByteConnection(new TcpClient(host, port)), Defaults.Get(serializer)));
         }
 
-        public IDisposable AddConnection(TcpClient client, ISerializer serializer)
+        public IDisposable Connect(TcpClient client, ISerializer serializer)
         {
-            return AddConnection(new Connection(new TcpByteConnection(client), serializer));
+            return Connect(new Connection(new TcpByteConnection(client), serializer));
         }
 
-        public IDisposable AddListener(int port, ISerializer serializer, bool isLocalOnly = false)
-        {
+        public IDisposable Listen(int port, ISerializer serializer = null, bool isLocalOnly = false)
+        {		
             var host = isLocalOnly ? "127.0.0.1" : "0.0.0.0";
             return server.Add(new Listener(new TcpByteListener(host, port), serializer));
         }

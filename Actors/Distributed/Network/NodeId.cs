@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 
-namespace Actors.Network
+namespace Actors
 {
     //[TypeConverter(typeof(ObjectTypeConverter<NodeId>))]
     public partial struct NodeId

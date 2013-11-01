@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Actors.Connections.Messages;
-using Actors.Connections.Bytes;
 
-namespace Connections.Connections.Local
+
+namespace Actors
 {
     public class LocalSender : ISender
     {
@@ -15,7 +14,7 @@ namespace Connections.Connections.Local
             this.receiver = r;
         }
         LocalReceiver receiver;
-        public Actors.Connections.Bytes.IEndPoint Remote { get; private set; }
+        public Actors.IEndPoint Remote { get; private set; }
 
         public void Send(object o)
         {

@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Actors;
-using Actors.Extensions;
 
-namespace Dht.Ring
+
+namespace Actors
 {
     class Joiner : Actor<object>
     {

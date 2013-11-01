@@ -36,10 +36,6 @@
     <Reference Include="Fasterflect">
       <HintPath>..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
@@ -56,6 +52,9 @@
     </Reference>
     <Reference Include="ManyConsole">
       <HintPath>..\lib\ManyConsole.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +189,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Distributed\Builtins\Actors\NodeMapActor.cs" />
     <Compile Include="Commands\InteractiveCommand.cs" />
+    <Compile Include="Dependencies\ServiceContainer.cs" />
+    <Compile Include="Dependencies\Defaults.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -203,4 +204,7 @@
   </Target>
   -->
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Dependencies\" />
+  </ItemGroup>
 </Project>

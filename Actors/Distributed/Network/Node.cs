@@ -1,22 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
-using Actors.Connections;
-using Actors.Connections.Messages;
-using Actors.Proxies;
-using Serialization;
-using Actors.Connections.Tcp;
-using Actors.Connections.Bytes;
-using Actors.Builtins.Actors;
-using Actors.Examples;
-using Actors.Examples.Actors;
 using System.Collections.Generic;
-using Actors.Network;
-using Actors.Connections.Local;
-using KeyValueDatabase;
-using Connections.Connections.Local;
-using DistributedActors;
-using Actors.Extensions;
+
 
 namespace Actors
 {
@@ -24,8 +10,7 @@ namespace Actors
 	{
         public Node(string name = null)
         {
-            if (name != null) Id = new NodeId(name);
-            else Id = NodeId.New();
+            Id = new NodeId(name ?? Guid.NewGuid().ToString());           
             Serializer = new JsonSerializer();
             server = new TcpListeners(Serializer);
             world = new TcpWorld();
@@ -38,7 +23,8 @@ namespace Actors
             var local = CreateLocalConnection();
             router = new ConnectionRouter(local);         
             server.Connected += HandleConnected;
-            AddConnection(local);
+            Connect(local);
+			AddBuiltins();
         }
 
         private IConnection CreateLocalConnection()
@@ -85,15 +71,15 @@ namespace Actors
 
         void HandleConnected(IConnection obj)
         {
-            AddConnection(obj, isOutbound: false);
+            Connect(obj, isOutbound: false);
         }
 
-        public IDisposable AddConnection(Func<IConnection> connection, bool isOutBound  = true)
+		public IDisposable Connect(Func<IConnection> connection, bool isOutBound  = true)
         {
             return ConnectionFactory.Connect(this, connection, isOutBound);
         }
 
-        public IDisposable AddConnection(IConnection connection, bool isOutbound = true)
+        public IDisposable Connect(IConnection connection, bool isOutbound = true)
         {            		
             var disposable = router.Add(connection, isOutbound: isOutbound);
             connection.Received.Subscribe(HandleReceived);
@@ -114,7 +100,7 @@ namespace Actors
             world.Dispatch(mail);
         }
 
-        public IDisposable AddListener(IListener listener)
+        public IDisposable Listen(IListener listener)
         {
             return server.Add(listener);
         }

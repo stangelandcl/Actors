@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace Serialization
+namespace Actors
 {
 	public class ObjectSerializer : ISerializer
 	{

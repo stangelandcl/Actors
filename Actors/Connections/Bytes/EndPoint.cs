@@ -5,7 +5,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 
-namespace Actors.Connections.Bytes
+namespace Actors
 {
     public class EndPoint : IEndPoint
     {       

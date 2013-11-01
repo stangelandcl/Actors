@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Actors.Extensions
+namespace Actors
 {
     public static class KeyValuePair
     {

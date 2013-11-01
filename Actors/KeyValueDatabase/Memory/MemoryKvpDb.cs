@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Serialization;
 
-namespace KeyValueDatabase
+
+namespace Actors
 {
     public class MemoryKvpDb<TKey, TValue> : KvpDb<TKey,TValue>
     {
