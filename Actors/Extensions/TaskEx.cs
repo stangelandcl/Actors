@@ -5,12 +5,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq.Expressions;
+using System.Option;
 
 
 namespace Actors
 {   
     public static partial class TaskEx
     {
+        public static Task<Option<T>> Loop<T>(Func<Option<T>> func, TimeSpan timeout, TaskCompletionSource<Option<T>> tcs = null)
+        {
+            tcs = tcs ?? new TaskCompletionSource<Option<T>>();
+            if (timeout.TotalSeconds < 0)            
+                tcs.SetResult(Option<T>.None);            
+            else 
+                Task.Factory.StartNew(func).ContinueWith(t =>
+                {
+                    if (t.Result.HasValue)
+                        tcs.SetResult(t.Result.Value);
+                    TaskEx.Delay(1).ContinueWith(() => Loop(func, timeout - TimeSpan.FromMilliseconds(1)));
+                });
+
+            return tcs.Task;
+        }
+
+
         static readonly Task _sPreCompletedTask = GetCompletedTask();
         static readonly Task _sPreCanceledTask = GetPreCanceledTask();
         public static Task ContinueWith(this Task t, Action a)

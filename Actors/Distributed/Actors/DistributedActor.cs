@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Option;
 
 
 namespace Actors
@@ -135,24 +136,27 @@ namespace Actors
 		}
 		
 
-		public IRpcMail Receive (TimeSpan? timeout = null)
+		public Task<Option<IRpcMail>> Receive (TimeSpan? timeout = null)
 		{
 			timeout = timeout ?? TimeSpan.FromSeconds (5);
-			IRpcMail mail;
-			var sw = Stopwatch.StartNew ();
-			while (!messages.TryDequeue (out mail)) {
-				if (sw.Elapsed > timeout)
-					break;
-				Thread.Yield ();
-			}
-			return mail;
+            return TaskEx.Loop<IRpcMail>(() =>
+            {
+                IRpcMail mail;
+                if(messages.TryDequeue(out mail))
+                    return Option<IRpcMail>.Some(mail);
+                return Option<IRpcMail>.None;
+            }, timeout.Value);
+			
 		}
 
-		public T Receive<T>(TimeSpan? timeout = null)
+		public Task<Option<T>> Receive<T>(TimeSpan? timeout = null)
 		{
-			var mail = Receive (timeout);
-			if (mail == null) return default(T);
-			return ConvertEx.Convert<T>(mail.Message.Args[0]);
+            return Receive(timeout).ContinueWith(t =>
+            {
+                return t.Result.HasValue ?
+                    (Option<T>)Option<T>.Some(t.Result.Value.Message.Args[0].Convert<T>()) :
+                    (Option<T>)Option<T>.None;
+            });			
 		}
 
 		public IRpcMail Receive (IMessageId msg,  TimeSpan? timeout = null)
