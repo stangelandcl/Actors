@@ -11,8 +11,9 @@ namespace Actors
 		public Joiner(DhtRing ring, ISingleRpcSender sender)
         {
             this.sender = sender;
-            this.ring = ring;
+            this.ring = ring;			
         }
+
 		ISingleRpcSender sender;
         DhtRing ring;
         public bool Joined { get; private set; }

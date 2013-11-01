@@ -26,6 +26,9 @@ namespace Actors
 			public const int Connected = 1;
 			public const int TimedOut = 2;
 		}
+		public static string ToDelimitedString<T>(this IEnumerable<T> items, string separator = ", "){
+			return string.Join<T>(separator, items);
+		}
 
 		public static string FormatWith(this string s, params object[] args){
 			return string.Format(s, args);

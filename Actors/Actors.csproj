@@ -191,6 +191,7 @@
     <Compile Include="Commands\InteractiveCommand.cs" />
     <Compile Include="Dependencies\ServiceContainer.cs" />
     <Compile Include="Dependencies\Defaults.cs" />
+    <Compile Include="Log\Log.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -206,5 +207,6 @@
   <ItemGroup />
   <ItemGroup>
     <Folder Include="Dependencies\" />
+    <Folder Include="Log\" />
   </ItemGroup>
 </Project>

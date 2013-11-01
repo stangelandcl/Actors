@@ -23,6 +23,7 @@ namespace Actors
 		IKvpDb<string, object> db;
         Distributor distribute;
 		PeerMonitor monitor;
+		Log log = Log.GetClassLogger();
 
 		void SendToRing<T>(string name, T args){
 			int i = 0;
@@ -48,7 +49,8 @@ namespace Actors
 		}
 
         public void Join(params IActorId[] peers)
-        {
+        {		
+			log.Info("Join", peers.ToDelimitedString());
             joiner.Join(peers);
         }	
 
@@ -59,6 +61,7 @@ namespace Actors
 
         void Join(IRpcMail mail, IActorId[] peers)
         {
+			log.Info("Join", peers.ToDelimitedString(), mail.From);
             joiner.Join(peers);
         }
 
@@ -73,12 +76,15 @@ namespace Actors
 
         void TryJoinReply(IRpcMail mail, IActorId[] peers)
         {
+			log.Info("TryJoinReply", peers.ToDelimitedString());
             joiner.JoinReply(peers);
         }
 
 		void GetLocal(IRpcMail mail, string resource, object state)
 		{
-			sender.Reply(mail.From, mail.MessageId, "GetLocalReply", db.Get(resource), state);
+			var obj = db.Get(resource);
+			log.Info("GetLocal", resource, obj);
+			sender.Reply(mail.From, mail.MessageId, "GetLocalReply", obj , state);
 		}
 
 		void GetLocalReply(IRpcMail mail, object value, object state){
@@ -88,6 +94,7 @@ namespace Actors
 
 		void Get(IRpcMail mail, string resource)
         {
+			log.Info("Get", resource, mail.From);
 			var id = ring.FindClosest(resource).FirstOrDefault();
 			if(id != null)
 				sender.Send(id, "GetLocal", resource, mail);
@@ -97,6 +104,7 @@ namespace Actors
 
 		void Added(IRpcMail mail, string resource)
         {
+			log.Info("Added", resource, mail.From);
             var actor = ring.FindClosest(resource).First();
             if (actor.Equals(mail.From))
                 db.Remove(resource); // other peer owns resource now
@@ -104,18 +112,21 @@ namespace Actors
 
 		void Put(IRpcMail mail, string resource, object o)
         {
+			log.Info("Put", resource, o, mail.From);
             db.Add(resource, o);
             distribute.Post("Put");
             sender.Reply(mail.From, mail.MessageId, "Added", resource);
         }
 		void Remove(IRpcMail mail, string resource)
         {
+			log.Info("Remove", resource, mail.From);
             db.Remove(resource);
             distribute.Post("Remove");
         }
 
         void PeerAdded(IRpcMail mail, RingMessage<IActorId> msg)
         {
+			log.Info("PeerAdded", msg.Message, mail.From);
             ring.Add(msg.Message);
             distribute.Post("AddPeer");
 			ForwardToRing("PeerAdded", msg);
@@ -123,6 +134,7 @@ namespace Actors
 
         void PeerRemoved(IRpcMail mail, RingMessage<IActorId> msg)
         {
+			log.Info("PeerRemoved", msg.Message, mail.From);
             ring.Remove(msg.Message);
             distribute.Post("RemovePeer");
 			ForwardToRing("PeerRemoved", msg);
