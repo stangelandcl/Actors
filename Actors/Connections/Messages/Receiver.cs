@@ -44,5 +44,10 @@ namespace Actors
         {
             get { return receiver.Remote; }
         }
+
+		public override string ToString ()
+		{
+			return string.Format ("[Receiver: Received={0}, Remote={1}]", Received, Remote);
+		}
     }
 }

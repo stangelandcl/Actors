@@ -10,10 +10,14 @@ namespace Actors
 {   
     public static partial class TaskEx
     {
-        public static Task<Option<T>> Loop<T>(Func<Option<T>> func, TimeSpan timeout, TaskCompletionSource<Option<T>> tcs = null)
+		public static Task<Option<T>> Loop<T>(Func<Option<T>> func, TimeSpan timeout){
+			return Loop(func, timeout.ToTimeout());
+		}
+
+        static Task<Option<T>> Loop<T>(Func<Option<T>> func, TimeoutTimer timeout, TaskCompletionSource<Option<T>> tcs = null)
         {
             tcs = tcs ?? new TaskCompletionSource<Option<T>>();
-            if (timeout.TotalSeconds < 0)            
+            if (timeout.IsTimedOut)            
                 tcs.SetResult(Option<T>.None);            
             else 
                 Task.Factory.StartNew(func).ContinueWith(t =>
@@ -21,7 +25,7 @@ namespace Actors
                     if (t.Result.HasValue)
                         tcs.SetResult(t.Result);
 					else
-                    	TaskEx.Delay(1).ContinueWith(() => Loop(func, timeout - TimeSpan.FromMilliseconds(1)));
+                    	TaskEx.Delay(1).ContinueWith(() => Loop(func, timeout, tcs));
                 });
 
             return tcs.Task;

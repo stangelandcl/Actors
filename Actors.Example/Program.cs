@@ -10,7 +10,7 @@ namespace Actors
 	{
 		public static void Main (string[] args)
 		{
-            serializer = new JsonSerializer();
+			serializer = Defaults.Serializer;
             if (args[0] == "server")
             {
                 new MainClass().RunAsServer();

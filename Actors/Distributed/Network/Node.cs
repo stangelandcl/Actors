@@ -11,7 +11,7 @@ namespace Actors
         public Node(string name = null)
         {
             Id = new NodeId(name ?? Guid.NewGuid().ToString());           
-            Serializer = new JsonSerializer();
+			Serializer = Defaults.Serializer;
             server = new TcpListeners(Serializer);
             World = new TcpWorld();
             Links = new LinkMap();	
@@ -21,7 +21,7 @@ namespace Actors
 			Add(nodeMap);
             proxy = new ProxyFactory(this);
             var local = CreateLocalConnection();
-            router = new ConnectionRouter(local);         
+            Router = new ConnectionRouter(local);         
             server.Connected += HandleConnected;
             Connect(local);
 			AddBuiltins();
@@ -42,7 +42,7 @@ namespace Actors
         public LinkMap Links { get; set; }       
         protected Listeners server;
 		public TcpWorld World {get; private set;}
-        protected ConnectionRouter router;
+		public ConnectionRouter Router {get; private set;}
 		protected NodeMapActor nodeMap;
 
         public void AddBuiltins()
@@ -83,7 +83,7 @@ namespace Actors
 
         public IDisposable Connect(IConnection connection, bool isOutbound = true)
         {            		
-            var disposable = router.Add(connection, isOutbound: isOutbound);
+            var disposable = Router.Add(connection, isOutbound: isOutbound);
             connection.Received.Subscribe(HandleReceived);
 
 			nodeMap.Check(connection);
@@ -143,7 +143,7 @@ namespace Actors
 		public IMessageId Send (IMail mail)
 		{
             if (mail.As<RpcMail>().To.As<ActorId>().IsEmpty) return MessageId.Empty;
-            var sender = router.Get(mail.As<RpcMail>().To.As<ActorId>());
+            var sender = Router.Get(mail.As<RpcMail>().To.As<ActorId>());
             if (sender == null) return MessageId.Empty;
 			var mailSender = new MailSender(sender.Sender);
 			mailSender.Send(mail);

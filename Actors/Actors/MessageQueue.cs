@@ -28,12 +28,17 @@ namespace Actors
             subscriptions = null;                       
         }
 
-
         protected override void HandleMessage(T message)
         {            
             foreach (var subscription in subscriptions)
                 subscription(message);   
         }
+
+		public override string ToString ()
+		{
+			lock(messages)
+				return string.Format ("[MessageQueue: Count={0}, Subscriptions={1}]", this.messages.Count, this.subscriptions.Count);
+		}
         
     }
 }

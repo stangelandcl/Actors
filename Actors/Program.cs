@@ -8,13 +8,30 @@ using System.Threading;
 namespace Actors
 {
 	public class Program
-	{
-
+	{			
 		private static void Test(){			                               
-			var node = Defaults.Node();                                                 
-			var dht = node.New<IDht>("System.Dht") ;                                      
-			dht.Put("abc", 123);
-			//Thread.Sleep(100000);
+			using(var node = Defaults.Node()){
+				var dht = node.New<IDht>("System.Dht");
+				dht.Put("abc", "def");
+				dht.Get("abc");
+
+				var proc = node.New<IProcess>("System.Process");
+				var p = proc.GetProcesses();
+				Console.WriteLine(p.ToDelimitedString(Environment.NewLine));
+
+
+				using(node.Connect("localhost", 12848)){
+					var p2 = proc.GetConnections();
+					Console.WriteLine(p2.ToDelimitedString(Environment.NewLine));
+
+
+					var dht2 = node.New<IDht>("12848.localhost/System.Dht");
+					Console.WriteLine(dht2.Get("abc"));
+					proc = node.New<IProcess>("12848.localhost/System.Process");
+					Console.WriteLine(proc.GetProcesses().ToDelimitedString(Environment.NewLine));
+
+
+				}}
 		}
 		public static void Main (string[] args)
 		{
@@ -27,7 +44,7 @@ namespace Actors
           
             const int DefaultPort = 12848;
             using (var node = new TcpNode(DefaultPort))
-            using(var server = node.Listen(DefaultPort, new JsonSerializer()))
+            using(var server = node.Listen(DefaultPort))
             {
                 node.AddBuiltins();
                 if (bootstrap != null)

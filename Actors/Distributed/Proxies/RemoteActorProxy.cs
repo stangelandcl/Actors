@@ -41,13 +41,13 @@ namespace Actors
             }
             else
             {
-                var mail = Remote.Receive(msg);
-                if (mail == null || mail.As<RpcMail>().Message.Args.Length == 0)
+				var mail = Remote.Receive(msg).Result;
+                if (!mail.HasValue || mail.Value.As<RpcMail>().Message.Args.Length == 0)
                 {
                     if (method.ReturnType.IsClass) return null;
                     return method.ReturnType.CreateInstance();
                 }
-                return mail.As<RpcMail>().Message.Args[0].Convert(method.ReturnType);
+                return mail.Value.As<RpcMail>().Message.Args[0].Convert(method.ReturnType);
             }
         }
     }

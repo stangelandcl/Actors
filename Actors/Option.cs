@@ -30,7 +30,7 @@ namespace Actors
 		public bool HasValue{get {return hasValue;}}
 		public T Value{
 			get{
-				if(!hasValue) throw new Exception("No value");
+				if(!hasValue) throw new Exception("No value in option type " + GetType().Name);
 				return item;
 			}
 		}

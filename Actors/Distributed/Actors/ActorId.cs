@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace Actors
 {   
 	//[TypeConverter(typeof(ObjectTypeConverter<ActorId>))]
-	public partial struct ActorId : IActorId
+	public partial struct ActorId : IActorId, IComparable<ActorId>
 	{
 		public ActorId(string computer, NodeId node, string name){
             this.machine = computer;
@@ -81,6 +81,16 @@ namespace Actors
                 return false;
             return Equals((ActorId)other);
         }
+
+		#region IComparable implementation
+
+		public int CompareTo (ActorId other)
+		{
+			return StringComparer.OrdinalIgnoreCase.Compare(
+				ToString(), other.ToString());
+		}
+
+		#endregion
     }
 }
 

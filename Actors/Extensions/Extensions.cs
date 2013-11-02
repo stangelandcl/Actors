@@ -30,8 +30,16 @@ namespace Actors
 			return string.Join<T>(separator, items);
 		}
 
+		public static TimeoutTimer ToTimeout(this TimeSpan s){
+			return new TimeoutTimer(s);
+		}
+
 		public static string FormatWith(this string s, params object[] args){
 			return string.Format(s, args);
+		}
+
+		public static U[] ToArray<T,U>(this IEnumerable<T> i, Func<T, U> func){
+			return i.Select(func).ToArray();
 		}
        
 		public static void Connect(this TcpClient client, string host, int port, TimeSpan timeout){

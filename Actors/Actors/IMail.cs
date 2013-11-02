@@ -8,9 +8,9 @@ namespace Actors
 {
     public interface IMail<T> : IMail
     {
-        IActorId From { get; }
-        IActorId To { get; }
-		IMessageId MessageId {get;}
+		IActorId From { get; set; }
+		IActorId To { get;set ; }
+		IMessageId MessageId {get; set;}
         T Message { get; set; }
     }
     public interface IMail 

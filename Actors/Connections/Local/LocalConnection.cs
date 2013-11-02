@@ -35,5 +35,10 @@ namespace Actors
             Receiver.Dispose();
             Sender.Dispose();
         }
+
+		public override string ToString ()
+		{
+			return string.Format ("[LocalConnection: IsAlive={0}, Received={1}, Sender={2}, Receiver={3}]", IsAlive, Received, Sender, Receiver);
+		}
     }
 }

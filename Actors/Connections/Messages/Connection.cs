@@ -39,6 +39,11 @@ namespace Actors
         public MessageQueue<object> Received { get; private set; }
         IByteConnection connection;
 
+		public override string ToString ()
+		{
+			return string.Format ("[Connection: IsAlive={0}, Sender={1}, Receiver={2}, Received={3}]", IsAlive, Sender, Receiver, Received);
+		}
+
         void HandleReceived(object ob)
         {           
             Received.Post(ob);

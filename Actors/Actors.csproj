@@ -53,6 +53,9 @@
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Serialize.Linq">
+      <HintPath>..\packages\Serialize.Linq.1.1.4\lib\net40\Serialize.Linq.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -191,7 +194,18 @@
     <Compile Include="Distributed\Actors\LogActor.cs" />
     <Compile Include="Distributed\Actors\Log.cs" />
     <Compile Include="Option.cs" />
-    <Compile Include="Distributed\Actors\ProcessActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\LoggingActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\ProcessActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\EventActor.cs" />
+    <Compile Include="Serialization\RpcMailSerializer.cs" />
+    <Compile Include="Serialization\TypeMap.cs" />
+    <Compile Include="Serialization\TwoWayDictionary.cs" />
+    <Compile Include="Serialization\ObjectArraySerializer.cs" />
+    <Compile Include="Serialization\Serializer.cs" />
+    <Compile Include="Serialization\SpecificSerializer.cs" />
+    <Compile Include="Serialization\Serializers.cs" />
+    <Compile Include="Serialization\ExprSerializer.cs" />
+    <Compile Include="Extensions\Timeout.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

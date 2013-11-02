@@ -14,7 +14,7 @@ namespace Actors
         }
 
         protected int maxMessages;
-        Queue<T> messages = new Queue<T>();        
+        protected Queue<T> messages = new Queue<T>();        
         bool isRunning = false;      
 
         public void Post(T message)
@@ -47,7 +47,10 @@ namespace Actors
             {
                 HandleMessage(message);                       
             }
-            catch { }
+            catch(Exception ex) 
+			{ 
+				Console.WriteLine("Execute error " + ex);
+			}
             lock (messages)
                 if (messages.Any())
                     Next();

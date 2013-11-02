@@ -22,6 +22,13 @@ namespace Actors
         }
 
         Dictionary<IEndPoint, List<IConnection>> connections = new Dictionary<IEndPoint, List<IConnection>>();        
+
+		public IConnection[] Connections{
+			get{
+				lock(connections)
+					return connections.SelectMany(n=>n.Value).ToArray();
+			}
+		}
  
         public IDisposable Add(IConnection connection, bool isOutbound)
         {

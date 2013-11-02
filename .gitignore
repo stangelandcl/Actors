@@ -1,3 +1,4 @@
+/.gitignore~
 /Actors/bin/Debug/NetworkTransport.dll
 /Actors/bin/Debug/NetworkTransport.dll.mdb
 /Actors/bin/Debug/NetworkTransport.exe
@@ -36,3 +37,4 @@
 /Serialization/bin/Debug/Newtonsoft.Json.dll
 /Serialization/bin/Debug/Serialization.dll
 /Serialization/bin/Debug/Serialization.dll.mdb
+/scripts

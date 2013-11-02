@@ -35,7 +35,7 @@ namespace Actors
 			var name = remainingArguments[0];
 			var port = remainingArguments[1].Convert<int>();
 			node = new TcpNode(port, name);			
-			node.Listen(port, new JsonSerializer(), isLocalOnly: false);
+			node.Listen(port, isLocalOnly: false);
 			node.AddBuiltins();
 
 			Console.WriteLine("node " + node.Id + " listening on " + port);

@@ -3,16 +3,23 @@ using System.Linq;
 
 namespace Actors
 {
-	public class ProcessActor : LoggingActor
+	public class ProcessActor : DistributedActor
 	{
 		public ProcessActor (string shortName = "System.Process")
 			: base(shortName)
 		{}			
+		Log log;
 
+		public override void AttachNode (Node node)
+		{
+			base.AttachNode (node);
+			log = Log.Get(this);
+		}
 
 		void GetConnections(IRpcMail mail){
 			log.Info("GetConnections " + mail.From);
-
+			var conn = Node.Router.Connections.ToArray(n=>n.ToString());
+			Node.Reply(mail, new[]{conn});
 		}
 
 		void GetProcesses(IRpcMail mail){

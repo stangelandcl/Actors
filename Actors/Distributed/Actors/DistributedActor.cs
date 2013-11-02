@@ -37,13 +37,13 @@ namespace Actors
         public bool IsAlive { get; private set; }   
 
 		
-		ConcurrentQueue<IRpcMail> messages = new ConcurrentQueue<IRpcMail>();
+		ConcurrentQueue<IRpcMail> messages2 = new ConcurrentQueue<IRpcMail>();
 
 		void BoundQueueSize ()
 		{
-			while (messages.Count > this.maxMessages) {
+			while (messages2.Count > this.maxMessages) {
 				IRpcMail m;
-				messages.TryDequeue (out m);
+				messages2.TryDequeue (out m);
 			}
 		}
 
@@ -51,7 +51,7 @@ namespace Actors
 		{
 			base.HandleMessage (mail);
 			BoundQueueSize ();
-			messages.Enqueue(mail);
+			messages2.Enqueue(mail);
 		}
 
         public virtual void AttachNode(Node node)
@@ -142,11 +142,10 @@ namespace Actors
             return TaskEx.Loop<IRpcMail>(() =>
             {
                 IRpcMail mail;
-                if(messages.TryDequeue(out mail))
+                if(messages2.TryDequeue(out mail))
                     return Option.Some(mail);
                 return Option.None<IRpcMail>();
-            }, timeout.Value);
-			
+            }, timeout.Value);			
 		}
 
 		public Task<Option<T>> Receive<T>(TimeSpan? timeout = null)
@@ -159,25 +158,26 @@ namespace Actors
             });			
 		}
 
-		public IRpcMail Receive (IMessageId msg,  TimeSpan? timeout = null)
+		public Task<Option<IRpcMail>> Receive (IMessageId msg,  TimeSpan? timeout = null)
 		{
 			timeout = timeout ?? TimeSpan.FromSeconds (5);
-			IRpcMail mail;
-			var sw = Stopwatch.StartNew ();
-			while (!messages.TryDequeue(out mail) || !mail.MessageId.Equals(msg))
-			{					
-				if (sw.Elapsed > timeout)
-					break;
-				Thread.Yield ();
-			}
-			return mail;
+			timeout = timeout ?? TimeSpan.FromSeconds (5);
+			return TaskEx.Loop<IRpcMail>(() =>  {
+				IRpcMail mail;
+				if(messages2.TryDequeue(out mail) && mail.MessageId.Equals(msg))
+					return Option.Some(mail);
+				return Option.None<IRpcMail>();
+			}, timeout.Value);
 		}
 
-		public T Receive<T>(IMessageId msg, TimeSpan? timeout = null)
+		public Task<Option<T>> Receive<T>(IMessageId msg, TimeSpan? timeout = null)
 		{
-			var mail = Receive (msg, timeout);
-			if (mail == null) return default(T);
-			return ConvertEx.Convert<T>(mail.Message.Args[0]);
+			return Receive(timeout).ContinueWith(t =>
+			                                     {
+				return t.Result.HasValue ?
+					Option.Some(t.Result.Value.Message.Args[0].Convert<T>()) :
+						Option<T>.None;
+			});
 		}
 
 		public IMessageId SendTo(IActorId to, string name, params object[] args)

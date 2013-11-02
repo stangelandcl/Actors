@@ -9,13 +9,14 @@ namespace Actors
 	{
 		static readonly ServiceContainer container = new ServiceContainer();
 		static Defaults(){
-			container.Register<ISerializer, JsonSerializer>(new PerContainerLifetime());
+			container.Register<ISerializer, Serializer>(new PerContainerLifetime());
 		}
 
 		public static TcpNode Node(int port = 0){
 			return TcpNode.Open(port);
 		}
 
+		public static ISerializer Serializer = new Serializer();
 		public static int Port = 12584;
 		public static int GetPort (int defaultPort)
 		{

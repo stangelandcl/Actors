@@ -32,5 +32,10 @@ namespace Actors
         {
             sender.Error -= HandleError;
         }
+
+		public override string ToString ()
+		{
+			return string.Format ("[Sender: Remote={0}]", Remote);
+		}
     }
 }

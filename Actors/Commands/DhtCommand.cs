@@ -23,7 +23,7 @@ namespace Actors
 			switch(remainingArguments[0]){
 			case "join":{
 				var port = remainingArguments[1].Convert<int>();
-				node.Connect(Environment.MachineName, port, new JsonSerializer());
+				node.Connect(Environment.MachineName, port);
 				dht = node.New<IDht>("System.Dht");
 				dht.Join(new ActorId(remainingArguments[2] + ".localhost/System.Dht"));
 			}break;

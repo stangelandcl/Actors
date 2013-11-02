@@ -18,7 +18,7 @@ namespace Actors
             : base(name ?? Defaults.GetPort(defaultPort).ToString())
         {
 			this.defaultPort = Defaults.GetPort(defaultPort);
-            router.ConnectionNotFound += HandleConnectionNotFound;
+            Router.ConnectionNotFound += HandleConnectionNotFound;
         }
         int defaultPort;
 
@@ -40,6 +40,11 @@ namespace Actors
                 new Connection(new TcpByteConnection(new TcpClient(host, port)), Defaults.Get(serializer)));
         }
 
+		public IDisposable Connect(int port, ISerializer serializer= null)
+		{
+			return Connect("localhost", port, serializer);					
+		}
+
         public IDisposable Connect(TcpClient client, ISerializer serializer)
         {
             return Connect(new Connection(new TcpByteConnection(client), serializer));
@@ -53,7 +58,7 @@ namespace Actors
 
         public override void Dispose()
         {
-            router.ConnectionNotFound -= HandleConnectionNotFound;
+            Router.ConnectionNotFound -= HandleConnectionNotFound;
             base.Dispose();
         }
     }

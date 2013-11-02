@@ -12,7 +12,7 @@ namespace Actors
             : base(new MemoryKvpByteDb(), serializer)
         { }
         public MemoryKvpDb()
-            : this(new JsonSerializer())
+            : this(Defaults.Serializer)
         { }
     }
 }
