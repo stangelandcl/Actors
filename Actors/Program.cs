@@ -2,14 +2,24 @@ using System;
 using System.Linq;
 using ManyConsole;
 using NDesk.Options;
+using System.Threading;
 
 
 namespace Actors
 {
 	public class Program
 	{
+
+		private static void Test(){			                               
+			var node = Defaults.Node();                                                 
+			var dht = node.New<IDht>("System.Dht") ;                                      
+			dht.Put("abc", 123);
+			//Thread.Sleep(100000);
+		}
 		public static void Main (string[] args)
 		{
+			Test();
+
             string[] bootstrap = null;
             var p = new OptionSet()
                 .Add("dht", n => bootstrap = n.Split(',').ToArray());
@@ -28,7 +38,7 @@ namespace Actors
                     Console.WriteLine("Joined dht with bootstrap peers " + string.Join<IActorId>(", ", peers));
                 }
                
-                Console.WriteLine("Listening on " + DefaultPort);
+                Console.WriteLine("Listening on " + DefaultPort + " " + node.Id);
                 Console.WriteLine("Press any key to quit");
                 Console.ReadKey();
             }

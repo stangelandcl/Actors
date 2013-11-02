@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq.Expressions;
-using System.Option;
-
 
 namespace Actors
 {   
@@ -21,8 +19,9 @@ namespace Actors
                 Task.Factory.StartNew(func).ContinueWith(t =>
                 {
                     if (t.Result.HasValue)
-                        tcs.SetResult(t.Result.Value);
-                    TaskEx.Delay(1).ContinueWith(() => Loop(func, timeout - TimeSpan.FromMilliseconds(1)));
+                        tcs.SetResult(t.Result);
+					else
+                    	TaskEx.Delay(1).ContinueWith(() => Loop(func, timeout - TimeSpan.FromMilliseconds(1)));
                 });
 
             return tcs.Task;

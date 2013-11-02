@@ -15,7 +15,8 @@ namespace Actors
 		public override void AttachNode (Node node)
 		{
 			base.AttachNode(node);
-			Dht = new DhtPeer(Id, new RpcSender(node, Id));
+			var log = Log.Get(this);
+			Dht = new DhtPeer(log, Id, new RpcSender(node, Id));
 			functions.Add(Dht);
 		}
 	}

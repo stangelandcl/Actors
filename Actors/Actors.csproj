@@ -44,9 +44,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Option">
-      <HintPath>..\packages\Option.2.0.2\lib\Net35\Option.dll</HintPath>
-    </Reference>
     <Reference Include="NDesk.Options">
       <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
     </Reference>
@@ -191,7 +188,10 @@
     <Compile Include="Commands\InteractiveCommand.cs" />
     <Compile Include="Dependencies\ServiceContainer.cs" />
     <Compile Include="Dependencies\Defaults.cs" />
-    <Compile Include="Log\Log.cs" />
+    <Compile Include="Distributed\Actors\LogActor.cs" />
+    <Compile Include="Distributed\Actors\Log.cs" />
+    <Compile Include="Option.cs" />
+    <Compile Include="Distributed\Actors\ProcessActor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -207,6 +207,5 @@
   <ItemGroup />
   <ItemGroup>
     <Folder Include="Dependencies\" />
-    <Folder Include="Log\" />
   </ItemGroup>
 </Project>

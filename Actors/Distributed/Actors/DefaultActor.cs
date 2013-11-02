@@ -16,9 +16,6 @@ namespace Actors
             var msg = SendTo(to, name, args);
             return Receive<T>(msg);
         }
-
-
-
 	}
 }
 

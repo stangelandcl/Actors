@@ -35,6 +35,17 @@ namespace Actors
                 actors[actor.Id.Name] = actor;
 		}
 
+		public DistributedActor[] Actors{
+			get{
+				return actors.Select(n=>n.Value).ToArray();
+			}
+		}
+
+		public DistributedActor Get(ActorId id){
+				lock(actors)
+					return actors.GetOrDefault(id.Name);
+			}
+
 		public void Remove(ActorId id){
             lock (actors)
             {

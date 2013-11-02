@@ -13,12 +13,12 @@ namespace Actors
             Id = new NodeId(name ?? Guid.NewGuid().ToString());           
             Serializer = new JsonSerializer();
             server = new TcpListeners(Serializer);
-            world = new TcpWorld();
+            World = new TcpWorld();
             Links = new LinkMap();	
 			Default = new DefaultActor();
-            world.Add(Default);
+            Add(Default);
 			nodeMap = new NodeMapActor();
-			world.Add(nodeMap);
+			Add(nodeMap);
             proxy = new ProxyFactory(this);
             var local = CreateLocalConnection();
             router = new ConnectionRouter(local);         
@@ -41,7 +41,7 @@ namespace Actors
         public ISerializer Serializer { get; set; }
         public LinkMap Links { get; set; }       
         protected Listeners server;
-        protected TcpWorld world;
+		public TcpWorld World {get; private set;}
         protected ConnectionRouter router;
 		protected NodeMapActor nodeMap;
 
@@ -53,6 +53,8 @@ namespace Actors
             Add(new Shell());
 			Add(new DhtActor());
 			Add(new FileCopyActor());
+			Add(new LogActor());
+			Add(new ProcessActor());
         }
 
 		/// <summary>
@@ -97,7 +99,7 @@ namespace Actors
         {
             var mail = obj as RpcMail;
             if (mail == null) return;
-            world.Dispatch(mail);
+            World.Dispatch(mail);
         }
 
         public IDisposable Listen(IListener listener)
@@ -108,8 +110,12 @@ namespace Actors
         public void Add<T>(T a) where T : DistributedActor
         {
             a.AttachNode(this);          
-            world.Add(a);
+            World.Add(a);
         }
+
+		public DistributedActor Get(ActorId id){
+			return World.Get(id);
+		}
 
         public void Link(ActorId creator, ActorId other)
         {
@@ -119,7 +125,7 @@ namespace Actors
 
 		public void Remove(DistributedActor a, string msg = ""){
             var links = Links.Get(a);         
-			world.Remove(a.Id);
+			World.Remove(a.Id);
             foreach (var link in links)
                 Send(link, a.Id, "Link", LinkStatus.Died, msg); 
 		}

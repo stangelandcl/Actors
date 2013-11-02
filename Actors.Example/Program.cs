@@ -25,11 +25,18 @@ namespace Actors
             }
             else
             {
-                Console.WriteLine("choose server, client, or both");
+				Test();
+                //Console.WriteLine("choose server, client, or both");
             }
 		}
 
         static ISerializer serializer;
+
+			private static void Test(){			                               
+				var node = Defaults.Node();                                                 
+				var dht = node.New<IDht>("System.Dht") ;                                      
+				dht.Put("abc", 123);
+			}
 
         private void RunAsBoth()
         {

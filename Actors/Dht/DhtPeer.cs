@@ -8,8 +8,9 @@ namespace Actors
 {
     public class DhtPeer : RpcActor
     {
-        public DhtPeer(IActorId id, ISingleRpcSender sender)
+        public DhtPeer(Log log, IActorId id, ISingleRpcSender sender)
         {
+			this.log = log;
             this.sender = sender;
             this.ring = new DhtRing(id);
             this.joiner = new Joiner(ring, sender);
@@ -23,7 +24,7 @@ namespace Actors
 		IKvpDb<string, object> db;
         Distributor distribute;
 		PeerMonitor monitor;
-		Log log = Log.GetClassLogger();
+		Log log;
 
 		void SendToRing<T>(string name, T args){
 			int i = 0;

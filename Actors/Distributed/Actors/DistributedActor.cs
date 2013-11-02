@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using System.Option;
+
 
 
 namespace Actors
@@ -143,8 +143,8 @@ namespace Actors
             {
                 IRpcMail mail;
                 if(messages.TryDequeue(out mail))
-                    return Option<IRpcMail>.Some(mail);
-                return Option<IRpcMail>.None;
+                    return Option.Some(mail);
+                return Option.None<IRpcMail>();
             }, timeout.Value);
 			
 		}
@@ -154,8 +154,8 @@ namespace Actors
             return Receive(timeout).ContinueWith(t =>
             {
                 return t.Result.HasValue ?
-                    (Option<T>)Option<T>.Some(t.Result.Value.Message.Args[0].Convert<T>()) :
-                    (Option<T>)Option<T>.None;
+                    Option.Some(t.Result.Value.Message.Args[0].Convert<T>()) :
+                    Option<T>.None;
             });			
 		}
 
@@ -183,7 +183,9 @@ namespace Actors
 		public IMessageId SendTo(IActorId to, string name, params object[] args)
 		{
 			MessageId msg;
-			Node.Send(new RpcMail { To = to, From = Id, MessageId = msg = MessageId.New(), Message = new FunctionCall(name, args) });
+			Node.Send(new RpcMail { To = to, From = Id, 
+				MessageId = msg = MessageId.New(),
+				Message = new FunctionCall(name, args) });
 			return msg;
 		}
 	}
