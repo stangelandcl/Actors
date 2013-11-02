@@ -8,13 +8,10 @@ namespace Actors.UI
 		public static void Run (ToolkitType type)
 		{
 			Application.Initialize (type);
-			MainWindow w = new MainWindow ();
-			w.Show ();
-
-			Application.Run ();
-
-			w.Dispose ();
-
+			using(var w = new MainWindow ()){
+				w.Show ();
+				Application.Run ();
+			}
 			Application.Dispose ();
 		}
 	}

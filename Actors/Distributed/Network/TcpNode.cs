@@ -34,6 +34,12 @@ namespace Actors
 			}catch{}
         }
 
+		public IDisposable Connect(string hostAndPort, ISerializer serializer= null)
+		{
+			var hp = hostAndPort.Split(':');
+			return Connect(hp[0], hp[1].Convert<int>(), serializer);
+		}
+
         public IDisposable Connect(string host, int port, ISerializer serializer= null)
         {
             return Connect(() =>

@@ -25,7 +25,7 @@ namespace Actors
 
 		public static T Get<T>(T s)
 		{
-			if(typeof(T).IsClass)
+			if(!typeof(T).IsValueType)
 			{
 				if(s != null) return s;
 			}

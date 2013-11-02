@@ -30,17 +30,35 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Reference Include="System" />
     <Reference Include="Xwt">
       <HintPath>..\lib\Xwt.dll</HintPath>
     </Reference>
-    <Reference Include="Xwt.Gtk">
-      <HintPath>..\lib\Xwt.Gtk.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="MainWindow.cs" />
+    <Compile Include="NetworkWindow.cs" />
+    <Compile Include="NodeWindow.cs" />
+    <Compile Include="ActorWindow.cs" />
+    <Compile Include="MainWindow\MainWindow.cs" />
+    <Compile Include="MainWindow\MainWindowViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Actors\Actors.csproj">
+      <Project>{DE4AF7D7-B404-420F-95CC-EB95182B920E}</Project>
+      <Name>Actors</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\lib\Xwt.Gtk.dll">
+      <Link>Xwt.Gtk.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Reactive\" />
+    <Folder Include="Views\" />
+    <Folder Include="MainWindow\" />
   </ItemGroup>
 </Project>
