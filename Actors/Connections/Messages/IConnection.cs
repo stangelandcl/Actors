@@ -7,12 +7,11 @@ using System.Text;
 namespace Actors
 {
     public interface IConnection : IDisposable
-    {              
+    {       
+		IEndPoint Remote {get;}
         event Action<IConnection> Disconnected;
         void Send(object o);
-        MessageQueue<object> Received { get; }
-        ISender Sender { get; }
-        IReceiver Receiver { get; }
+        MessageQueue<object> Received { get; }      
 		bool IsAlive {get;}
     }
 }

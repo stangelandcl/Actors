@@ -15,10 +15,7 @@ namespace Actors
         }
 
         public IEndPoint Remote { get; private set; }
-
-
         public Actors.MessageQueue<object> Received { get; private set; }
-
         public event Action<Exception> Error;
 
         public void Dispose()

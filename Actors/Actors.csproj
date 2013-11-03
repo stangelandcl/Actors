@@ -88,8 +88,6 @@
     <Compile Include="Connections\Messages\ISender.cs" />
     <Compile Include="Connections\Messages\Listener.cs" />
     <Compile Include="Connections\Messages\Listeners.cs" />
-    <Compile Include="Connections\Messages\Receiver.cs" />
-    <Compile Include="Connections\Messages\Sender.cs" />
     <Compile Include="Connections\Ssl\Stream\SslByteConnection.cs" />
     <Compile Include="Connections\Ssl\Stream\SslByteConnectionFactory.cs" />
     <Compile Include="Connections\Stream\StreamByteReceiver.cs" />

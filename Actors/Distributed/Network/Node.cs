@@ -145,7 +145,7 @@ namespace Actors
             if (mail.As<RpcMail>().To.As<ActorId>().IsEmpty) return MessageId.Empty;
             var sender = Router.Get(mail.As<RpcMail>().To.As<ActorId>());
             if (sender == null) return MessageId.Empty;
-			var mailSender = new MailSender(sender.Sender);
+			var mailSender = new MailSender(sender);
 			mailSender.Send(mail);
 			return mail.As<RpcMail>().MessageId;
 		}

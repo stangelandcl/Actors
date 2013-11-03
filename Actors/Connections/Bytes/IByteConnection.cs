@@ -7,10 +7,9 @@ namespace Actors
 {
     public interface IByteConnection : IDisposable
     {
+		IEndPoint Remote {get;}
         void Send(byte[] d);
         MessageQueue<byte[]> Received { get; }
-        event Action<IByteConnection> Disconnected;        
-        IByteSender Sender { get; }
-        IByteReceiver Receiver { get; }
+        event Action<IByteConnection> Disconnected;                
     }
 }

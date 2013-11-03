@@ -6,11 +6,11 @@ namespace Actors
 {
 	public class MailSender : IMailSender
 	{
-		public MailSender (ISender s)
+		public MailSender (IConnection s)
 		{
 			this.sender = s;
 		}
-		ISender sender;
+		IConnection sender;
 
 		public void Send (IMail mail)
 		{

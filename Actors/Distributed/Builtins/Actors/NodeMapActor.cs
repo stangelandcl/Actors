@@ -16,14 +16,14 @@ namespace Actors
 			new Dictionary<NodeId, List<string>>();
 
 		public void Check(IConnection connection){
-			connection.Sender.Send(new RpcMail{
+			connection.Send(new RpcMail{
 				To = new ActorId("System.Nodes"),
 				From = Id,
 				Message = new FunctionCall("GetNodes"),
 				MessageId = MessageId.New(),
 			});
 			lock(nodeToMachine)
-			connection.Sender.Send(new RpcMail{
+			connection.Send(new RpcMail{
 				To = new ActorId("System.Nodes"),
 				From = Id,
 				Message = new FunctionCall("GetNodesReply", nodeToMachine.ToDictionary(n=>n.Key, n=>n.Value)),

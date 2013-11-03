@@ -14,8 +14,8 @@ namespace Actors
             new StreamByteReceiver(Actors.EndPoint.GetRemote(c), s))
         {
             client = c;
-            Sender.Error += HandleError;
-            Receiver.Error += HandleError;
+            sender.Error += HandleError;
+            receiver.Error += HandleError;
         }
         TcpClient client;
         protected override void HandleError(Exception e)
@@ -29,8 +29,8 @@ namespace Actors
 
         public override void Dispose()
         {
-            Sender.Error -= HandleError;
-            Receiver.Error -= HandleError;
+            sender.Error -= HandleError;
+            receiver.Error -= HandleError;
             base.Dispose();
             client.Close();
         }

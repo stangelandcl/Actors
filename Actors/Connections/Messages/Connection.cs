@@ -9,44 +9,31 @@ using System.Net.Sockets;
 namespace Actors
 {
     public class Connection : IConnection
-    {
-        public Connection(IByteConnection b, ISerializer serializer)
-            : this(b, new Sender(b.Sender, serializer),
-                   new Receiver(b.Receiver, serializer))
-        { }
-
-        /// <summary>
-        /// Don't make this public. higher level class must be
-        /// used to determine if sender.error/receiver.error = disconnect
-        /// so we use byteconnection to do that
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="receiver"></param>
-        Connection(IByteConnection c, ISender sender, IReceiver receiver)
+    {        
+        public Connection(IByteConnection c, ISerializer serializer)
         {
-            this.connection = c;
-            this.Sender = sender;
-            this.Receiver = receiver;
+			this.serializer = serializer;
+            this.ByteConnection = c;           
             this.Received = new MessageQueue<object>();
-            this.Receiver.Received.Subscribe(HandleReceived);
-            connection.Disconnected += HandleDisconnected;            
-			IsAlive = true;
+            this.ByteConnection.Received.Subscribe(HandleReceived);
+            ByteConnection.Disconnected += HandleDisconnected;            
+			IsAlive = true;			
         }
-		public bool IsAlive {get; private set;}
-        public ISender Sender { get; private set; }
-        public IReceiver Receiver { get; private set; }
+		ISerializer serializer;
+		public IEndPoint Remote {get { return ByteConnection.Remote;}}
+		public bool IsAlive {get; private set;}      
         public event Action<IConnection> Disconnected;
         public MessageQueue<object> Received { get; private set; }
-        IByteConnection connection;
+		public IByteConnection ByteConnection {get; private set;}
 
 		public override string ToString ()
 		{
-			return string.Format ("[Connection: IsAlive={0}, Sender={1}, Receiver={2}, Received={3}]", IsAlive, Sender, Receiver, Received);
+			return string.Format ("[Connection: IsAlive={0}, Received={1}]", IsAlive, Received);
 		}
 
-        void HandleReceived(object ob)
+        void HandleReceived(byte[] bytes)
         {           
-            Received.Post(ob);
+            Received.Post(serializer.Deserialize<object>(bytes));
         }
 
         void HandleDisconnected(IByteConnection c)
@@ -60,15 +47,14 @@ namespace Actors
         }
         public void Send(object o)
         {
-            Sender.Send(o);
+			ByteConnection.Send(serializer.SerializeToBytes(o));            
         }       
 
         public void Dispose()
         {
 			IsAlive = false;
-            connection.Disconnected -= HandleDisconnected;
-            Sender.Dispose();
-            Receiver.Dispose();
+            ByteConnection.Disconnected -= HandleDisconnected;
+			ByteConnection.Dispose();
             Received.Dispose();
         }
     }

@@ -18,6 +18,7 @@ namespace Actors
         }
         public event Action<IConnection> Disconnected;
 		public bool IsAlive {get; private set;}
+		public IEndPoint Remote {get { return new EndPoint("local");}}
 
         public void Send(object o)
         {

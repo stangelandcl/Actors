@@ -10,16 +10,18 @@ namespace Actors
     {       
         public ByteConnection(IByteSender sender, IByteReceiver receiver)
         {               
-            Sender = sender;
-            Receiver = receiver;
-            Receiver.Received.Subscribe(HandleReceived);
+			this.sender = sender;
+            this.receiver = receiver;
+    		receiver.Received.Subscribe(HandleReceived);
             Received = new MessageQueue<byte[]>();
-            Sender.Error += HandleError;
-            Receiver.Error += HandleError;
+            sender.Error += HandleError;
+            receiver.Error += HandleError;
 
         }           
-        public IByteSender Sender { get; private set; }
-        public IByteReceiver Receiver { get; private set; }
+		protected IByteSender sender;
+		protected IByteReceiver receiver ;
+
+		public IEndPoint Remote {get {return receiver.Remote;}}
 
         protected virtual void HandleError(Exception e) { }
        
@@ -30,9 +32,9 @@ namespace Actors
 
         public virtual void Dispose()
         {
-            Receiver.Received.Dispose();
-            Receiver.Error -= HandleError;
-            Sender.Error -= HandleError;       
+            receiver.Received.Dispose();
+            receiver.Error -= HandleError;
+            sender.Error -= HandleError;       
         }
 
         public MessageQueue<byte[]> Received { get; private set; }
@@ -44,7 +46,7 @@ namespace Actors
 
         public void Send(byte[] d)
         {
-            Sender.Send(d);
+            sender.Send(d);
         }
         
     }

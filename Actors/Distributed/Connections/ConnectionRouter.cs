@@ -34,8 +34,7 @@ namespace Actors
         {
             lock (connections)
             {
-                var endPoint = isOutbound ? connection.Sender.Remote : connection.Receiver.Remote;
-                connections.GetOrAdd(endPoint).Add(connection);
+                connections.GetOrAdd(connection.Remote).Add(connection);
             }
             connection.Disconnected += HandleDisconnected;
             return Disposable.New(obj => Remove(obj), connection);
@@ -97,7 +96,7 @@ namespace Actors
         private bool IsLocal(ref ActorId id)
         {
             return (id.Machine == null || id.Machine == Environment.MachineName) &&
-                   (id.Node.IsEmpty || id.Node.ToString() == localConnection.Sender.Remote.ToString());
+                   (id.Node.IsEmpty || id.Node.ToString() == localConnection.Remote.ToString());
         }
 
         private string NormalizedComputerName(string name)
