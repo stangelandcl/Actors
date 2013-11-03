@@ -193,7 +193,6 @@
     <Compile Include="Dependencies\Defaults.cs" />
     <Compile Include="Distributed\Actors\LogActor.cs" />
     <Compile Include="Distributed\Actors\Log.cs" />
-    <Compile Include="Option.cs" />
     <Compile Include="Distributed\Builtins\Actors\LoggingActor.cs" />
     <Compile Include="Distributed\Builtins\Actors\ProcessActor.cs" />
     <Compile Include="Distributed\Builtins\Actors\EventActor.cs" />
@@ -206,6 +205,7 @@
     <Compile Include="Serialization\Serializers.cs" />
     <Compile Include="Serialization\ExprSerializer.cs" />
     <Compile Include="Extensions\Timeout.cs" />
+    <Compile Include="Extensions\Option.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

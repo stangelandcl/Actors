@@ -38,11 +38,11 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="NetworkWindow.cs" />
-    <Compile Include="NodeWindow.cs" />
-    <Compile Include="ActorWindow.cs" />
-    <Compile Include="MainWindow\MainWindow.cs" />
-    <Compile Include="MainWindow\MainWindowViewModel.cs" />
+    <Compile Include="Windows\ActorWindow.cs" />
+    <Compile Include="Windows\NetworkWindow.cs" />
+    <Compile Include="Windows\NodeWindow.cs" />
+    <Compile Include="Windows\MainWindow.cs" />
+    <Compile Include="Windows\MainWindowViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Actors\Actors.csproj">
@@ -57,8 +57,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Reactive\" />
-    <Folder Include="Views\" />
     <Folder Include="MainWindow\" />
+    <Folder Include="Windows\" />
   </ItemGroup>
 </Project>
