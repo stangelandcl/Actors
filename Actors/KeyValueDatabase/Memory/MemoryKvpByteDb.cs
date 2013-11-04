@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Collections.Concurrent;
 
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
-namespace Actors
+namespace Cls.Actors
 {
     class MemoryKvpByteDb : IKvpByteDb
     {

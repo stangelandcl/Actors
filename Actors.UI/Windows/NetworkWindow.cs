@@ -1,7 +1,7 @@
 using System;
 using Xwt;
 
-namespace Actors.UI
+namespace Cls.Actors.UI
 {
 	public class NetworkWindow : Window
 	{

@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class PollingResetEvent
 	{

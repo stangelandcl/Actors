@@ -5,7 +5,7 @@ using System.Text;
 
 using System.Threading.Tasks;
 
-namespace Actors
+namespace Cls.Actors
 {
     public class ConsoleProcessActor : DistributedActor
     {

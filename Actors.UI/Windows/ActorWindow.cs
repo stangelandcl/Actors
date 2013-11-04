@@ -1,6 +1,6 @@
 using System;
 
-namespace Actors.UI
+namespace Cls.Actors.UI
 {
 	public class ActorWindow
 	{

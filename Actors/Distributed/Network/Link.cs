@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
 
-namespace Actors
+namespace Cls.Actors
 {
     public struct Link
     {

@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Fasterflect;
+using Cls.Serialization;
 
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class Defaults
 	{

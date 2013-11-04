@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using System.Web;
 
 using System.Collections.ObjectModel;
+using Cls.Actors;
+using Cls.Extensions;
 
-namespace Actors.UI
+namespace Cls.Actors.UI
 {
 	public class MainWindowViewModel 
 	{	

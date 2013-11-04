@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 //
-//namespace Actors.KvpDb
+//namespace Cls.Actors.KvpDb
 //{
 //    public static class ProxyFactory
 //    {

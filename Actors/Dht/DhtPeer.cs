@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Cls.Extensions;
 
-
-namespace Actors
+namespace Cls.Actors
 {
     public class DhtPeer : RpcActor
     {

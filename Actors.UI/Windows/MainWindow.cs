@@ -3,7 +3,7 @@ using Xwt;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Actors.UI
+namespace Cls.Actors.UI
 {
 	public class MainWindow : Window
 	{

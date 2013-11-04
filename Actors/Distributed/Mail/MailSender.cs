@@ -1,8 +1,10 @@
 using System;
 using System.Diagnostics;
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
-
-namespace Actors
+namespace Cls.Actors
 {
 	public class MailSender : IMailSender
 	{

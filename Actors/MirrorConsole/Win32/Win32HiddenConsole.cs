@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Diagnostics;
 
-namespace Actors
+namespace Cls.Actors
 {
     public class Win32HiddenConsole  : IDisposable
     {

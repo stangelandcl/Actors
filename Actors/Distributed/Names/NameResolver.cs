@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class NameResolver : INameResolver
 	{

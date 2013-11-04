@@ -4,8 +4,11 @@ using ManyConsole;
 using NDesk.Options;
 using System.Threading;
 
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class Program
 	{			

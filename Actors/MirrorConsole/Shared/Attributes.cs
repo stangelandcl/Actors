@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Actors
+namespace Cls.Actors
 {
     [Flags]
     public enum Attributes : ushort

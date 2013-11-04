@@ -1,6 +1,6 @@
 using System;
 
-namespace Actors
+namespace Cls.Actors
 {
 	public interface INameResolver
 	{ 

@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 
 
-namespace Actors
+namespace Cls.Actors
 {   
 	//[TypeConverter(typeof(ObjectTypeConverter<ActorId>))]
 	public partial struct ActorId : IActorId, IComparable<ActorId>

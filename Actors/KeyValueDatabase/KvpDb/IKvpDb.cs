@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Cls.Serialization;
 
 
-namespace Actors
+namespace Cls.Actors
 {
     public interface IKvpDb<TKey,TValue>
     {        

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Actors
+namespace Cls.Actors
 {
     public abstract class MailActor<T>: Actor<IMail<T>>
     {

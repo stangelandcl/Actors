@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using Serialize.Linq;
 using Serialize.Linq.Serializers;
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class EventActor : DistributedActor
 	{

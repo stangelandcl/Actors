@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Sockets;
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
-namespace Actors
+
+namespace Cls.Actors
 {
     public class TcpNode : Node
     {

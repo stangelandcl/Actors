@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 
-namespace Actors
+namespace Cls.Actors
 {
 	//[TypeConverter(typeof(ObjectTypeConverter<MessageId>))]
 	public struct MessageId : IMessageId

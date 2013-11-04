@@ -4,8 +4,9 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Cls.Extensions;
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class DefaultActor : DistributedActor
 	{

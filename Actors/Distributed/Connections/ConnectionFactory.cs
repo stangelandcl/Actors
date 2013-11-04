@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Cls.Connections;
+using Cls.Extensions;
 
-
-namespace Actors
+namespace Cls.Actors
 {
     class ConnectionFactory
     {

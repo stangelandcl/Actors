@@ -5,7 +5,7 @@ using System.Text;
 using System.Reflection;
 
 
-namespace Actors
+namespace Cls.Actors
 {
     public class RpcActor : Actor<IRpcMail>
     {

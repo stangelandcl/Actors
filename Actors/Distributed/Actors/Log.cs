@@ -1,8 +1,11 @@
 using System;
 using System.Diagnostics;
 
-namespace Actors
+namespace Cls.Actors
 {
+    /// <summary>
+    /// TODO: add rolling
+    /// </summary>
 	public class Log
 	{
 		public static Log Get(DistributedActor actor){

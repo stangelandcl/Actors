@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-namespace Actors
+namespace Cls.Actors
 {
     class Win32
     {

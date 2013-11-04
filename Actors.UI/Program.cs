@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.IO;
 
-namespace Actors.UI
+namespace Cls.Actors.UI
 {
 	public class Program
 	{

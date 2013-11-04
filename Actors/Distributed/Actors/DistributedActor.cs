@@ -10,9 +10,12 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Collections.Concurrent;
 
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
 
-namespace Actors
+namespace Cls.Actors
 {
     /// <summary>
     /// If you override any functions in this class be careful to add a try-catch and call Die on failure    

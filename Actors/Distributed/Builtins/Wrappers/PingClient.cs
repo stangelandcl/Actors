@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 
-namespace Actors.Examples.Clients
+namespace Cls.Actors.Examples.Clients
 {
     public class PingClient
     {

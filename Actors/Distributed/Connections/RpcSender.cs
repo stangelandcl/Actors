@@ -1,7 +1,7 @@
 using System;
 
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class RpcSender : ISingleRpcSender
 	{

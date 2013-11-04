@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3F1DB72C-9B06-4D55-8DCB-7B0442619DB0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cls.Connections</RootNamespace>
+    <AssemblyName>Cls.Connections</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Connections\Bytes\ByteConnection.cs" />
+    <Compile Include="Connections\Bytes\EndPoint.cs" />
+    <Compile Include="Connections\Bytes\IByteConnection.cs" />
+    <Compile Include="Connections\Bytes\IByteListener.cs" />
+    <Compile Include="Connections\Bytes\IByteReceiver.cs" />
+    <Compile Include="Connections\Bytes\IByteSender.cs" />
+    <Compile Include="Connections\Bytes\IEndPoint.cs" />
+    <Compile Include="Connections\Http\HttpListener.cs" />
+    <Compile Include="Connections\Local\Bytes\LocalByteReceiver.cs" />
+    <Compile Include="Connections\Local\Bytes\LocalByteSender.cs" />
+    <Compile Include="Connections\Local\LocalConnection.cs" />
+    <Compile Include="Connections\Local\LocalReceiver.cs" />
+    <Compile Include="Connections\Local\LocalSender.cs" />
+    <Compile Include="Connections\Messages\Connection.cs" />
+    <Compile Include="Connections\Messages\IConnection.cs" />
+    <Compile Include="Connections\Messages\IListener.cs" />
+    <Compile Include="Connections\Messages\IReceiver.cs" />
+    <Compile Include="Connections\Messages\ISender.cs" />
+    <Compile Include="Connections\Messages\Listener.cs" />
+    <Compile Include="Connections\Messages\Listeners.cs" />
+    <Compile Include="Connections\Ssl\Stream\SslByteConnection.cs" />
+    <Compile Include="Connections\Ssl\Stream\SslByteConnectionFactory.cs" />
+    <Compile Include="Connections\Stream\StreamByteReceiver.cs" />
+    <Compile Include="Connections\Stream\StreamByteSender.cs" />
+    <Compile Include="Connections\Tcp\Bytes\TcpByteConnection.cs" />
+    <Compile Include="Connections\Tcp\Bytes\TcpByteListener.cs" />
+    <Compile Include="Connections\Tcp\Stream\TcpStreamConnection.cs" />
+    <Compile Include="Connections\Tcp\TcpClientListener.cs" />
+    <Compile Include="Connections\Tcp\TcpConnector.cs" />
+    <Compile Include="Connections\Tcp\TcpListener.cs" />
+    <Compile Include="Connections\Tcp\TcpListeners.cs" />
+    <Compile Include="MessageQueues\MessageLoop.cs" />
+    <Compile Include="MessageQueues\MessageQueue.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Extensions\Cls.Extensions.csproj">
+      <Project>{3CCD1147-7AFF-4525-8AAF-8A067199CD7C}</Project>
+      <Name>Cls.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Serialization\Cls.Serialization.csproj">
+      <Project>{4B0E2064-52ED-4D7C-B14D-16E91E85F48A}</Project>
+      <Name>Cls.Serialization</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

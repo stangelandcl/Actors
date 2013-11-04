@@ -2,9 +2,11 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Collections.Generic;
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
-
-namespace Actors
+namespace Cls.Actors
 {
 	public class Node : IDisposable
 	{

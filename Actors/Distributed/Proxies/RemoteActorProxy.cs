@@ -7,9 +7,12 @@ using System.Runtime.Remoting.Messaging;
 using System.Reflection;
 using System.Threading.Tasks;
 using Fasterflect;
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
 
-namespace Actors
+namespace Cls.Actors
 {
     class RemoteActorProxy : Proxy
     {

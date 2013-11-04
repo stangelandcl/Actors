@@ -2,7 +2,7 @@ using System;
 using ManyConsole;
 using System.Collections.Generic;
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class InteractiveCommand : ConsoleModeCommand
 	{

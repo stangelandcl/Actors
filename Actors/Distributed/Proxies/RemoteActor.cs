@@ -1,7 +1,10 @@
 using System;
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class RemoteActor : DistributedActor
 	{

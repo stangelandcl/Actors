@@ -5,9 +5,10 @@ using System.Text;
 using System.Threading;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using Cls.Extensions;
 
 
-namespace Actors
+namespace Cls.Actors
 {
     [DebuggerDisplay("Count={Actors.Length}")]
     class DhtRing

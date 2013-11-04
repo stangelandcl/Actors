@@ -4,8 +4,11 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using Fasterflect;
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class RpcMailSerializer : SpecificSerializer<IRpcMail>
 	{

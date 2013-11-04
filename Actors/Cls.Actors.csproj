@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DE4AF7D7-B404-420F-95CC-EB95182B920E}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cls.Actors</RootNamespace>
+    <AssemblyName>Cls.Actors</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Fasterflect">
+      <HintPath>..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="NDesk.Options">
+      <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="ManyConsole">
+      <HintPath>..\lib\ManyConsole.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Serialize.Linq">
+      <HintPath>..\packages\Serialize.Linq.1.1.4\lib\net40\Serialize.Linq.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Actors\Actor.cs" />
+    <Compile Include="Actors\IActorId.cs" />
+    <Compile Include="Actors\IMail.cs" />
+    <Compile Include="Actors\IMessageId.cs" />
+    <Compile Include="Actors\ISender.cs" />
+    <Compile Include="Actors\MailActor.cs" />
+    <Compile Include="Actors\RpcActor.cs" />
+    <Compile Include="Actors\RpcFunctions.cs" />
+    <Compile Include="Dht\DhtPeer.cs" />
+    <Compile Include="Dht\DhtRing.cs" />
+    <Compile Include="Dht\Distributor.cs" />
+    <Compile Include="Dht\IDht.cs" />
+    <Compile Include="Dht\Joiner.cs" />
+    <Compile Include="Dht\PeerMonitor.cs" />
+    <Compile Include="Dht\RingMessage.cs" />
+    <Compile Include="Distributed\Actors\ActorId.cs" />
+    <Compile Include="Distributed\Actors\DefaultActor.cs" />
+    <Compile Include="Distributed\Actors\DistributedActor.cs" />
+    <Compile Include="Distributed\Actors\MessageId.cs" />
+    <Compile Include="Distributed\Actors\PollingResetEvent.cs" />
+    <Compile Include="Distributed\Builtins\Actors\BandwidthActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\ConsoleClientActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\ConsoleProcessActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\DhtActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\EchoActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\FileCopyActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\NewInstance.cs" />
+    <Compile Include="Distributed\Builtins\Actors\PingActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\Shell.cs" />
+    <Compile Include="Distributed\Builtins\Actors\SystemInfoActor.cs" />
+    <Compile Include="Distributed\Builtins\Clients\IBandwidth.cs" />
+    <Compile Include="Distributed\Builtins\Clients\IEcho.cs" />
+    <Compile Include="Distributed\Builtins\Clients\IPing.cs" />
+    <Compile Include="Distributed\Builtins\Clients\IShell.cs" />
+    <Compile Include="Distributed\Builtins\Wrappers\BandwidthClient.cs" />
+    <Compile Include="Distributed\Builtins\Wrappers\PingClient.cs" />
+    <Compile Include="Distributed\Connections\ConnectionFactory.cs" />
+    <Compile Include="Distributed\Connections\ConnectionRouter.cs" />
+    <Compile Include="Distributed\Connections\RpcSender.cs" />
+    <Compile Include="Distributed\Events\Publisher.cs" />
+    <Compile Include="Distributed\Functions\FunctionDefinition.cs" />
+    <Compile Include="Distributed\Mail\IMailReceiver.cs" />
+    <Compile Include="Distributed\Mail\IMailSender.cs" />
+    <Compile Include="Distributed\Mail\MailSender.cs" />
+    <Compile Include="Distributed\Names\DnsAlias.cs" />
+    <Compile Include="Distributed\Names\INameResolver.cs" />
+    <Compile Include="Distributed\Names\NameResolver.cs" />
+    <Compile Include="Distributed\Network\Link.cs" />
+    <Compile Include="Distributed\Network\Node.cs" />
+    <Compile Include="Distributed\Network\NodeId.cs" />
+    <Compile Include="Distributed\Network\TcpNode.cs" />
+    <Compile Include="Distributed\Peer\IWorld.cs" />
+    <Compile Include="Distributed\Peer\TcpWorld.cs" />
+    <Compile Include="Distributed\Proxies\DynamicProxy.cs" />
+    <Compile Include="Distributed\Proxies\ProxyFactory.cs" />
+    <Compile Include="Distributed\Proxies\RemoteActor.cs" />
+    <Compile Include="Distributed\Proxies\RemoteActorProxy.cs" />
+    <Compile Include="KeyValueDatabase\Memory\MemoryKvpByteDb.cs" />
+    <Compile Include="KeyValueDatabase\Memory\MemoryKvpDb.cs" />
+    <Compile Include="KeyValueDatabase\Proxy\IKvpDbSet.cs" />
+    <Compile Include="KeyValueDatabase\Proxy\KvpDbProxy.cs" />
+    <Compile Include="KeyValueDatabase\Proxy\KvpDbSet.cs" />
+    <Compile Include="KeyValueDatabase\Proxy\ProxyFactory.cs" />
+    <Compile Include="KeyValueDatabase\KvpDb\IKvpByteDb.cs" />
+    <Compile Include="KeyValueDatabase\KvpDb\KvpDb.cs" />
+    <Compile Include="KeyValueDatabase\KvpDb\IKvpDb.cs" />
+    <Compile Include="MirrorConsole\Shared\Attributes.cs" />
+    <Compile Include="MirrorConsole\Shared\ControlKeyState.cs" />
+    <Compile Include="MirrorConsole\Shared\IConsole.cs" />
+    <Compile Include="MirrorConsole\Shared\KeyPress.cs" />
+    <Compile Include="MirrorConsole\Shared\VirtualKeys.cs" />
+    <Compile Include="MirrorConsole\Win32\Win32.cs" />
+    <Compile Include="MirrorConsole\Win32\Win32Console.cs" />
+    <Compile Include="MirrorConsole\Win32\Win32HiddenConsole.cs" />
+    <Compile Include="MirrorConsole\Client\ConsoleClient.cs" />
+    <Compile Include="MirrorConsole\Client\Screen.cs" />
+    <Compile Include="MirrorConsole\Client\WinFormsConsoleClient.cs" />
+    <Compile Include="Proxy\Proxy.cs" />
+    <Compile Include="Commands\DhtCommand.cs" />
+    <Compile Include="Commands\ServeCommand.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Distributed\Builtins\Actors\NodeMapActor.cs" />
+    <Compile Include="Commands\InteractiveCommand.cs" />
+    <Compile Include="Dependencies\ServiceContainer.cs" />
+    <Compile Include="Dependencies\Defaults.cs" />
+    <Compile Include="Distributed\Actors\LogActor.cs" />
+    <Compile Include="Distributed\Actors\Log.cs" />
+    <Compile Include="Distributed\Builtins\Actors\LoggingActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\ProcessActor.cs" />
+    <Compile Include="Distributed\Builtins\Actors\EventActor.cs" />
+    <Compile Include="Serialization\RpcMailSerializer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\Connections\Cls.Connections.csproj">
+      <Project>{3F1DB72C-9B06-4D55-8DCB-7B0442619DB0}</Project>
+      <Name>Cls.Connections</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Extensions\Cls.Extensions.csproj">
+      <Project>{3CCD1147-7AFF-4525-8AAF-8A067199CD7C}</Project>
+      <Name>Cls.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Serialization\Cls.Serialization.csproj">
+      <Project>{4B0E2064-52ED-4D7C-B14D-16E91E85F48A}</Project>
+      <Name>Cls.Serialization</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+</Project>

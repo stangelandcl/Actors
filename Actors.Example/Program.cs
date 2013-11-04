@@ -1,10 +1,10 @@
 using System;
-using Actors.Examples;
-using Actors.Examples.Clients;
 using System.Threading;
+using Cls.Serialization;
+using Cls.Actors.Examples.Clients;
+using Cls.Extensions;
 
-
-namespace Actors
+namespace Cls.Actors.Example
 {
 	class MainClass
 	{

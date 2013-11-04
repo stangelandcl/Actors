@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
 using System.Linq;
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
 
-namespace Actors
+namespace Cls.Actors
 {
     public class ConnectionRouter
     {
@@ -90,7 +93,7 @@ namespace Actors
             
             var s = id.ToString().Split('/');
             var computer = NormalizedComputerName(s[0]);
-            return Get(new Actors.EndPoint(computer));
+            return Get(new Cls.Connections.EndPoint(computer));
         }
 
         private bool IsLocal(ref ActorId id)

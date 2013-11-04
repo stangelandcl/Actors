@@ -2,7 +2,7 @@ using System;
 
 using System.Reflection;
 
-namespace Actors
+namespace Cls.Actors
 {
 //	public class NewInstance : Actor
 //	{

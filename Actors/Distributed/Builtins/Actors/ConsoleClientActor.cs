@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 
 using System.Threading.Tasks;
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
 
-namespace Actors
+namespace Cls.Actors
 {
     public class ConsoleClientActor : DistributedActor
     {

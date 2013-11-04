@@ -3,9 +3,12 @@ using System.Collections.Generic;
 
 using System.Collections.Concurrent;
 using System.Linq;
+using Cls.Extensions;
+using Cls.Connections;
+using Cls.Serialization;
 
 
-namespace Actors
+namespace Cls.Actors
 {
 	public class TcpWorld 
 	{

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Cls.Connections;
 
-namespace Actors
+namespace Cls.Actors
 {
     public abstract class Actor<T> : MessageLoop<T>
     {           
