@@ -11,13 +11,7 @@ namespace Cls.Actors
 		public ProcessActor (string shortName = "System.Process")
 			: base(shortName)
 		{}			
-		Log log;
-
-		public override void AttachNode (Node node)
-		{
-			base.AttachNode (node);
-			log = Log.Get(this);
-		}
+		Log log = Log.Get();
 
 		void GetConnections(IRpcMail mail){
 			log.Info("GetConnections " + mail.From);

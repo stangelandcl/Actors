@@ -11,12 +11,7 @@ namespace Cls.Actors
 			: base(id, node)
 		{}
 
-		protected Log log;
-		public override void AttachNode (Node node)
-		{
-			base.AttachNode (node);
-			log = Log.Get(this);
-		}
+		protected Log log = Log.Get();
 	}
 }
 

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using Cls.Extensions;
 
 namespace Cls.Actors
 {
-    //[TypeConverter(typeof(ObjectTypeConverter<NodeId>))]
-    public partial struct NodeId
+    [TypeConverter(typeof(StringConverter<NodeId>))]
+    public struct NodeId
     {
         public NodeId(string id)
         {
@@ -28,7 +29,7 @@ namespace Cls.Actors
 
         public override string ToString()
         {
-            return Id;
+			return Id ?? "";
         }
         public bool Equals(NodeId n)
         {

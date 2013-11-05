@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.IO;
+using Cls.Extensions;
 
 namespace Cls.Actors
 {
@@ -8,20 +10,39 @@ namespace Cls.Actors
     /// </summary>
 	public class Log
 	{
-		public static Log Get(DistributedActor actor){
+		public static Log Get(){
 			var name =  new StackTrace().GetFrame(1).GetMethod().DeclaringType.Name;			
-			return new Log(actor.Node, new ActorId("System.Log"), name);
+			writer = new StreamWriter(File.Open(Filename(), FileMode.Append,FileAccess.Write, FileShare.ReadWrite));
+			return new Log(name);
 		}
 
-		public Log (Node node, IActorId logger, string name)
+		static StreamWriter writer;
+
+		static string Filename ()
 		{
-			this.logger = logger;
-			this.node = node;
+			var proc = Process.GetCurrentProcess ().MainModule.FileName;
+			var filename = Path.Combine (Path.GetDirectoryName (proc), "Logs", Path.GetFileNameWithoutExtension (proc) + ".log");
+			if (!Directory.Exists (Path.GetDirectoryName (filename)))
+				Directory.CreateDirectory (Path.GetDirectoryName (filename));
+			return filename;
+		}
+
+
+		void Write(string name, string type, object[] args){
+			var str = string.Format(DateTime.Now + " " +  name + "[" + type + "] " + args.ToDelimitedString());
+			Console.WriteLine(str);
+			lock(writer)
+				writer.WriteLine(str);
+		}
+
+		Log (string name)
+		{
+
 			this.name = name;
 		}
 		string name;
-		Node node;
-		IActorId logger;
+
+
 
 		public void Info(params object[] args){
 			Write("INFO", args);
@@ -32,7 +53,7 @@ namespace Cls.Actors
 		}
 
 		void Write(string type,  params object[] args){
-			node.Default.SendTo(logger, "Write", name, type, args);
+			Write(name, type, args);
 		}
 
 	}

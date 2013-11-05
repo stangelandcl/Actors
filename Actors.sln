@@ -357,7 +357,7 @@ Global
 		{FE25211A-3CB8-41C3-A401-633C8B34903F}.Unity|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Actors.UI\Cls.Actors.UI.csproj
+		StartupItem = Actors\Cls.Actors.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

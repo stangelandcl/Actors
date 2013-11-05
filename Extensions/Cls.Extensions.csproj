@@ -52,6 +52,7 @@
     <Compile Include="Extensions\TaskEx.cs" />
     <Compile Include="Extensions\Timeout.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Conversions\StringConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -64,4 +65,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Conversions\" />
+  </ItemGroup>
 </Project>

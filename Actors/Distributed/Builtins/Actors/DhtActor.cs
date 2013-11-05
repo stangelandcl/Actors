@@ -15,7 +15,7 @@ namespace Cls.Actors
 		public override void AttachNode (Node node)
 		{
 			base.AttachNode(node);
-			var log = Log.Get(this);
+			var log = Log.Get();
 			Dht = new DhtPeer(log, Id, new RpcSender(node, Id));
 			functions.Add(Dht);
 		}

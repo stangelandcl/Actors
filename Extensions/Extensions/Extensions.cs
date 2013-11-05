@@ -27,6 +27,8 @@ namespace Cls.Extensions
 			public const int TimedOut = 2;
 		}
 		public static string ToDelimitedString<T>(this IEnumerable<T> items, string separator = ", "){
+			if(items == null) return "";
+			items = items.Where(n=>n != null);
 			return string.Join<T>(separator, items);
 		}
 
