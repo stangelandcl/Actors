@@ -63,7 +63,7 @@ namespace Cls.Actors
         public IDisposable Listen(int port, ISerializer serializer = null, bool isLocalOnly = false)
         {		
             var host = isLocalOnly ? "127.0.0.1" : "0.0.0.0";
-            return server.Add(new Listener(new TcpByteListener(host, port), serializer));
+			return server.Add (new Listener (new TcpByteListener (host, port), Defaults.Get (serializer)));
         }
 
         public override void Dispose()
