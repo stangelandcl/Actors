@@ -4,30 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 using System.Net;
+using System.ComponentModel;
+using Cls.Extensions;
 
 namespace Cls.Connections
 {
+	//[TypeConverter(typeof(StringConverter<EndPoint>))]
     public class EndPoint : IEndPoint
     {       
         public EndPoint(string name)
         {
-            this.name = name;
+            this.Name = name;
         }
 
-        string name;
+		public string Name { get; set; }
         public override string ToString()
         {
-            return name;
+			return Name ?? "";
         }
         public override int GetHashCode()
         {
-            return name.GetHashCode();
+            return Name.GetHashCode();
         }
         public override bool Equals(object obj)
         {
             var ep = obj as EndPoint;
             if (ep != null)
-                return string.Equals(name, ep.name, StringComparison.InvariantCultureIgnoreCase);
+                return string.Equals(Name, ep.Name, StringComparison.InvariantCultureIgnoreCase);
             return false;
         }
 

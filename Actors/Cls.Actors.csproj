@@ -56,6 +56,9 @@
     <Reference Include="Serialize.Linq">
       <HintPath>..\packages\Serialize.Linq.1.1.4\lib\net40\Serialize.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="Xwt">
+      <HintPath>..\lib\Xwt.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -139,7 +142,6 @@
     <Compile Include="Proxy\Proxy.cs" />
     <Compile Include="Commands\DhtCommand.cs" />
     <Compile Include="Commands\ServeCommand.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Distributed\Builtins\Actors\NodeMapActor.cs" />
     <Compile Include="Commands\InteractiveCommand.cs" />
     <Compile Include="Dependencies\ServiceContainer.cs" />
@@ -150,9 +152,21 @@
     <Compile Include="Distributed\Builtins\Actors\ProcessActor.cs" />
     <Compile Include="Distributed\Builtins\Actors\EventActor.cs" />
     <Compile Include="Serialization\RpcMailSerializer.cs" />
+    <Compile Include="UI\Windows\ActorWindow.cs" />
+    <Compile Include="UI\Windows\MainWindow.cs" />
+    <Compile Include="UI\Windows\MainWindowViewModel.cs" />
+    <Compile Include="UI\Windows\NetworkWindow.cs" />
+    <Compile Include="UI\Windows\NodeWindow.cs" />
+    <Compile Include="UI\App.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="UI\Controls\InputBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\lib\Xwt.Gtk.dll">
+      <Link>Xwt.Gtk.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -177,4 +191,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="UI\" />
+    <Folder Include="UI\Controls\" />
+  </ItemGroup>
 </Project>

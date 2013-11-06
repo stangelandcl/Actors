@@ -21,6 +21,7 @@ namespace Cls.Actors
             Add(Default);
 			nodeMap = new NodeMapActor();
 			Add(nodeMap);
+			nodeMap.NodeFound += (arg1, arg2) => Connected.FireEventAsync (arg1, arg2);
             proxy = new ProxyFactory(this);
             var local = CreateLocalConnection();
             Router = new ConnectionRouter(local);         
@@ -59,6 +60,8 @@ namespace Cls.Actors
 			Add(new ProcessActor());
         }
 
+		public event Action<IEndPoint, NodeId> Connected;
+
 		/// <summary>
 		/// New proxy
 		/// </summary>
@@ -87,7 +90,6 @@ namespace Cls.Actors
         {            		
             var disposable = Router.Add(connection, isOutbound: isOutbound);
             connection.Received.Subscribe(HandleReceived);
-
 			nodeMap.Check(connection);
 
             return Disposable.New(() =>

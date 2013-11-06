@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using System.Linq;
 using Cls.Connections;
+using Cls.Extensions;
 
 namespace Cls.Actors
 {
@@ -13,6 +14,8 @@ namespace Cls.Actors
 		{
 
 		}
+
+		public event Action<IEndPoint, NodeId> NodeFound;
 
 		Dictionary<NodeId, List<IEndPoint>> nodeToMachine = 
 			new Dictionary<NodeId, List<IEndPoint>>();
@@ -46,6 +49,7 @@ namespace Cls.Actors
 				if(!nodeToMachine[node].Contains(machine))
 					nodeToMachine[node].Add(machine);
 			}
+			NodeFound.FireEventAsync (machine, node);
 		}
 
 
@@ -56,12 +60,12 @@ namespace Cls.Actors
 		}
 
 		void GetNodesReply(RpcMail mail,IEndPoint ep, NodeId id, Dictionary<NodeId, List<IEndPoint>> nodes){
-			log.Info("GetNodesReply", ep, id , nodes.Count);
-			lock(nodeToMachine){
-				Add(ep, id);
-			foreach(var kvp in nodes)
-				foreach(var v in kvp.Value)
-					Add(v, kvp.Key);									
+			log.Info ("GetNodesReply", ep, id, nodes.Count);
+			lock (nodeToMachine) {
+				Add (ep, id);
+				foreach (var kvp in nodes)
+					foreach (var v in kvp.Value)
+						Add (v, kvp.Key);									
 			}
 		}
 	}

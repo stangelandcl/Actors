@@ -36,15 +36,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Windows\ActorWindow.cs" />
-    <Compile Include="Windows\NetworkWindow.cs" />
-    <Compile Include="Windows\NodeWindow.cs" />
-    <Compile Include="Windows\MainWindow.cs" />
-    <Compile Include="Windows\MainWindowViewModel.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Actors\Cls.Actors.csproj">
       <Project>{DE4AF7D7-B404-420F-95CC-EB95182B920E}</Project>
       <Name>Cls.Actors</Name>
@@ -61,12 +52,6 @@
       <Project>{4B0E2064-52ED-4D7C-B14D-16E91E85F48A}</Project>
       <Name>Cls.Serialization</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\lib\Xwt.Gtk.dll">
-      <Link>Xwt.Gtk.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup />
 </Project>

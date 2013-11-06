@@ -1,71 +1,39 @@
 using System;
-using System.Linq;
-using ManyConsole;
-using NDesk.Options;
-using System.Threading;
+using Xwt;
+using System.Reflection;
+using System.Diagnostics;
+using System.IO;
 
-using Cls.Extensions;
-using Cls.Connections;
-using Cls.Serialization;
-
-namespace Cls.Actors
+namespace Cls.Actors.UI
 {
 	public class Program
-	{			
-		private static void Test(){			                               
-			using (var node = Defaults.Node()) 
-			using(var listener = node.Listen(Defaults.Port))
-			{
-
-				var dht = node.New<IDht> ("System.Dht");
-				dht.Put ("abc", "def");
-				dht.Get ("abc");
-				Console.ReadKey ();
-				var proc = node.New<IProcess> ("System.Process");
-				var p = proc.GetProcesses ();
-				Console.WriteLine (p.ToDelimitedString (Environment.NewLine));
-
-
-//				using (node.Connect("localhost", 12848)) {
-//					var p2 = proc.GetConnections ();
-//					Console.WriteLine (p2.ToDelimitedString (Environment.NewLine));
-//
-//
-//					var dht2 = node.New<IDht> ("12848.localhost/System.Dht");
-//					Console.WriteLine (dht2.Get ("abc"));
-//					proc = node.New<IProcess> ("12848.localhost/System.Process");
-//					Console.WriteLine (proc.GetProcesses ().ToDelimitedString (Environment.NewLine));
-//
-//
-//				}
-			}
-		}
+	{
 		public static void Main (string[] args)
 		{
-			Test();
+			//LoadPlatformLibrary ();
+			App.Run (ToolkitType.Gtk);
+		}
 
-            string[] bootstrap = null;
-            var p = new OptionSet()
-                .Add("dht", n => bootstrap = n.Split(',').ToArray());
-            p.Parse(args);
-          
-            const int DefaultPort = 12848;
-            using (var node = new TcpNode(DefaultPort))
-            using(var server = node.Listen(DefaultPort))
-            {
-                node.AddBuiltins();
-                if (bootstrap != null)
-                {
-                    var dht = node.New<IDht>("System.Dht");
-                    var peers = bootstrap.Select(n => (IActorId)ActorId.FromUrl(n)).ToArray();
-                    dht.Join(peers);
-                    Console.WriteLine("Joined dht with bootstrap peers " + string.Join<IActorId>(", ", peers));
-                }
-               
-                Console.WriteLine("Listening on " + DefaultPort + " " + node.Id);
-                Console.WriteLine("Press any key to quit");
-                Console.ReadKey();
-            }
+		static void LoadPlatformLibrary ()
+		{
+			Assembly assembly;
+			var path = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+			switch (Environment.OSVersion.Platform) {
+			case PlatformID.MacOSX:
+			case PlatformID.Unix:
+				assembly = Assembly.LoadFrom (Path.Combine(path, "Xwt.Gtk.dll"));
+				break;
+			default:
+				assembly = Assembly.LoadFrom (Path.Combine(path, "Xwt.WPF.dll"));
+				break;
+			}
+
+			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => 
+			{
+				if(args.Name == assembly.FullName)
+					return assembly;
+				return null;
+			};
 		}
 	}
 }
