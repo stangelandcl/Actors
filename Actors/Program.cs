@@ -5,13 +5,17 @@ using System.Diagnostics;
 using System.IO;
 
 namespace Cls.Actors.UI
-{
+{   
 	public class Program
 	{
+         [STAThread]
 		public static void Main (string[] args)
 		{
 			//LoadPlatformLibrary ();
-			App.Run (ToolkitType.Gtk);
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                App.Run(ToolkitType.Wpf);
+            else
+			    App.Run (ToolkitType.Gtk);
 		}
 
 		static void LoadPlatformLibrary ()

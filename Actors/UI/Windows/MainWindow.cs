@@ -53,8 +53,10 @@ namespace Cls.Actors.UI
 			tree.Columns.Add ("Name", nameCol);
 			panel.Panel1.Content = tree;
 			var conns = store.AddNode (null).SetValue (nameCol, "Nodes").CurrentPosition;
-			vm.ConnectionAdded += (a, b) => store.AddNode (conns).SetValue (nameCol, a + "-" + b.Id);
-			tree.SelectionChanged += HandleSelectionChanged;
+			vm.ConnectionAdded += (a, b) => 
+                store.AddNode (conns).SetValue (nameCol, a + "-" + b.Id);
+			tree.SelectionChanged += 
+                HandleSelectionChanged;
 
 		}
 
@@ -101,7 +103,11 @@ namespace Cls.Actors.UI
 			var menu = new Menu ();
 			var file = CreateFileMenu ();
 			menu.Items.Add (file);
-			status.Menu = menu;
+            try
+            {
+                status.Menu = menu;
+            }
+            catch { }
 			MainMenu = menu;
 		}
 	}

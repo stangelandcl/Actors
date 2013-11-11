@@ -190,9 +190,11 @@
       <Name>Cls.Serialization</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Folder Include="UI\" />
-    <Folder Include="UI\Controls\" />
+    <Content Include="..\lib\Xwt.WPF.dll">
+      <Link>Xwt.WPF.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
+  <ItemGroup />
 </Project>
